@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AthenasAcademy.Services.Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AthenasAcademy.Services.API", "AthenasAcademy.Services.API\AthenasAcademy.Services.API.csproj", "{2239ECB1-F694-460A-9AF3-241FE62E6362}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AthenasAcademy.Services.Domain", "AthenasAcademy.Services.Domain\AthenasAcademy.Services.Domain.csproj", "{AD66B80F-A184-46CD-ACAC-E15AB3DF5BB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AthenasAcademy.Services.Test", "AthenasAcademy.Services.Test\AthenasAcademy.Services.Test.csproj", "{B21E5225-D4AB-456F-8486-8FEC18B74C40}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{2239ECB1-F694-460A-9AF3-241FE62E6362}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2239ECB1-F694-460A-9AF3-241FE62E6362}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2239ECB1-F694-460A-9AF3-241FE62E6362}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD66B80F-A184-46CD-ACAC-E15AB3DF5BB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD66B80F-A184-46CD-ACAC-E15AB3DF5BB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD66B80F-A184-46CD-ACAC-E15AB3DF5BB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD66B80F-A184-46CD-ACAC-E15AB3DF5BB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B21E5225-D4AB-456F-8486-8FEC18B74C40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B21E5225-D4AB-456F-8486-8FEC18B74C40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B21E5225-D4AB-456F-8486-8FEC18B74C40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B21E5225-D4AB-456F-8486-8FEC18B74C40}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
