@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AthenasAcademy.Services.API.Controllers
+namespace AthenasAcademy.Services.API.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class CursoController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CursoController : ControllerBase
-    {
-    }
+
 }
