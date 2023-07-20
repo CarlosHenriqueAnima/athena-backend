@@ -13,4 +13,8 @@
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AthenasAcademy.Services.Core\AthenasAcademy.Services.Core.csproj" />
+  </ItemGroup>
+
 </Project>

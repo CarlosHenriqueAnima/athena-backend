@@ -17,4 +17,10 @@
     <PackageReference Include="coverlet.collector" Version="3.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AthenasAcademy.Services.Core\AthenasAcademy.Services.Core.csproj" />
+    <ProjectReference Include="..\AthenasAcademy.Services.Domain\AthenasAcademy.Services.Domain.csproj" />
+    <ProjectReference Include="..\AthenasAcademy.Services.Handling\AthenasAcademy.Services.Handling.csproj" />
+  </ItemGroup>
+
 </Project>
