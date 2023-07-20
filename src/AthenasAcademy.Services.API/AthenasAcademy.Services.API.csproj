@@ -15,10 +15,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Controllers\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <ProjectReference Include="..\AthenasAcademy.Services.Core\AthenasAcademy.Services.Core.csproj" />
 	  <ProjectReference Include="..\AthenasAcademy.Services.Domain\AthenasAcademy.Services.Domain.csproj" />
 	</ItemGroup>
