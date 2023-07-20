@@ -1,6 +1,6 @@
 ﻿namespace AthenasAcademy.Services.Core.Repositories.Intercfaces;
 
-public interface IAthenaBaseRepository
+public interface IPagamentoRepository
 {
 
 }

@@ -7,6 +7,7 @@
 		<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
 		<RootNamespace>AthenasAcademy.Services.API</RootNamespace>
 		<StartupObject></StartupObject>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
