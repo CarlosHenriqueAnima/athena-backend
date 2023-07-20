@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AthenasAcademy.Services.Core", "AthenasAcademy.Services.Core\AthenasAcademy.Services.Core.csproj", "{8F618C66-FE0C-4875-86E5-FC38A9008D83}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AthenasAcademy.Services.Core", "AthenasAcademy.Services.Core\AthenasAcademy.Services.Core.csproj", "{8F618C66-FE0C-4875-86E5-FC38A9008D83}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AthenasAcademy.Services.API", "AthenasAcademy.Services.API\AthenasAcademy.Services.API.csproj", "{2239ECB1-F694-460A-9AF3-241FE62E6362}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +17,15 @@ Global
 		{8F618C66-FE0C-4875-86E5-FC38A9008D83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F618C66-FE0C-4875-86E5-FC38A9008D83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F618C66-FE0C-4875-86E5-FC38A9008D83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2239ECB1-F694-460A-9AF3-241FE62E6362}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2239ECB1-F694-460A-9AF3-241FE62E6362}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2239ECB1-F694-460A-9AF3-241FE62E6362}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2239ECB1-F694-460A-9AF3-241FE62E6362}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A62ED684-5C75-422D-8557-D49D2F05D787}
 	EndGlobalSection
 EndGlobal
