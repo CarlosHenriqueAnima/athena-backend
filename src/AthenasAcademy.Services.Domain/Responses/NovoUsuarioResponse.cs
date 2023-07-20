@@ -1,8 +1,10 @@
-﻿namespace AthenasAcademy.Services.Domain.Responses;
+﻿using AthenasAcademy.Services.Domain.Configurations.DTO;
 
-public  class NovoUsuarioResponse
+namespace AthenasAcademy.Services.Domain.Responses;
+
+public class NovoUsuarioResponse
 {
-    public string Usuario { get; set; }
+    public bool Resultado { get; set; }
 
-    public string ResultadoCadastro { get; set; }
+    public TokenDTO Token { get; set; }
 }

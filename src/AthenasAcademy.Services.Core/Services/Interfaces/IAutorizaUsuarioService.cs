@@ -3,7 +3,7 @@ using AthenasAcademy.Services.Domain.Responses;
 
 namespace AthenasAcademy.Services.Core.Services.Interfaces;
 
-public interface IUsuarioService
+public interface IAutorizaUsuarioService
 {
     Task<NovoUsuarioResponse> CadastrarUsuario(NovoUsuarioRequest novoUsuario);
 

@@ -1,29 +1,41 @@
 using AthenasAcademy.Services.API.Extensions;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-// Adicionando Services
-builder.Services.AddServicosScopo();
+builder.Services.AddServicosScoped();// Adicionando Services
 
-// Adicionando suporte a versionamento
-builder.Services.AddApiVersionamento();
-builder.Services.AddVersionamentoApiExplorer();
+builder.Services.AddRepositoriosSingleton();// Adicionando Repositories
 
-// Adicionando suporte a documentação
-builder.Services.AddSwaggerGenDoc();
+builder.Services.AddApiVersionamento(); // Adicionando suporte a versionamento
+
+builder.Services.AddApiVersionamentoExplorer(); // Adicionando suporte a versionamento explorer
+
+builder.Services.AddSwaggerGenDoc("API Athenas Academy", "1.0");// Adicionando suporte a documentação
+
+builder.Services.AddAutenticacaoJwtBearer(builder.Configuration); // Adicionando configuração JWT Tokens
+
+builder.Services.AddSwaggerAutenticacaoJwtBearer(); ; // Adicionando configuração JWT Tokens no swagger
 
 builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddConfigureLowerCaseRoutes();
+
 WebApplication app = builder.Build();
+
 app.UseSwagger();
 
-// Configura suporte a documentação
-app.UseSwaggerUIDoc(app.Services);
+app.UseSwaggerUIDoc(app.Services); // Configura suporte a documentação
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+
 app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();

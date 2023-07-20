@@ -4,12 +4,17 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using AthenasAcademy.Services.Core.Services.Interfaces;
 using AthenasAcademy.Services.Core.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using AthenasAcademy.Services.Core.Repositories.Intercfaces;
+using AthenasAcademy.Services.Core.Repositories;
 
 namespace AthenasAcademy.Services.API.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddServicosScopo(this IServiceCollection services)
+    public static IServiceCollection AddServicosScoped(this IServiceCollection services)
     {
         services.AddScoped<IAlunoService, AlunoService>();
         services.AddScoped<ICertificadoService, CertificadoService>();
@@ -17,6 +22,15 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IInscricaoService, InscricaoService>();
         services.AddScoped<IMatriculaService, MatriculaService>();
         services.AddScoped<IPagamentoService, PagamentoService>();
+        services.AddScoped<IAutorizaUsuarioService, AutorizaUsuarioService>();
+        services.AddScoped<ITokenService, TokenService>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddRepositoriosSingleton(this IServiceCollection services)
+    {
+        services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
         return services;
     }
@@ -38,14 +52,14 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddSwaggerGenDoc(this IServiceCollection services)
+    public static IServiceCollection AddSwaggerGenDoc(this IServiceCollection services, string apiTitulo, string apiVersao)
     {
         services.AddSwaggerGen(options =>
         {
             options.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "API Athenas Academy",
-                Version = "1.0",
+                Title = apiTitulo,
+                Version = apiVersao,
                 Description = "API para gerenciamento dos microservicos da Athenas Academy",
                 Contact = new OpenApiContact
                 {
@@ -62,12 +76,80 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddVersionamentoApiExplorer(this IServiceCollection services)
+    public static IServiceCollection AddApiVersionamentoExplorer(this IServiceCollection services)
     {
         services.AddVersionedApiExplorer(setup =>
         {
             setup.GroupNameFormat = "'v'VVV";
             setup.SubstituteApiVersionInUrl = true;
+        });
+
+        return services;
+    }
+
+    public static IServiceCollection AddAutenticacaoJwtBearer(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = true,
+                            ValidIssuer = configuration["TokenConfiguration:Issue"],
+                            ValidAudience = configuration["TokenConfiguration:Audience"],
+                            IssuerSigningKey = new SymmetricSecurityKey(
+                                Encoding.UTF8.GetBytes(configuration["Jwt:key"]))
+                        };
+                    });
+
+        return services;
+    }
+
+    public static IServiceCollection AddSwaggerAutenticacaoJwtBearer(this IServiceCollection services)
+    {
+        services.AddSwaggerGen(options =>
+        {
+            //options.SwaggerDoc(apiVersion, new OpenApiInfo { Title = apiTitle, Version = apiVersion });
+
+            // Define o esquema de segurança Bearer
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "Header de autenticação JWT - Schema Bearer.\r\n\r\nInforme 'Bearer <token>'.\r\n\r\n"
+            });
+
+            // Define a exigência de segurança com o esquema Bearer
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+        });
+
+        return services;
+    }
+
+    public static IServiceCollection AddConfigureLowerCaseRoutes(this IServiceCollection services)
+    {
+        services.Configure<RouteOptions>(options =>
+        {
+            options.LowercaseUrls = true;
         });
 
         return services;
