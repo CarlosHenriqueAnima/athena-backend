@@ -12,10 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\AthenasAcademy.Services.Domain\AthenasAcademy.Services.Domain.csproj" />
   </ItemGroup>
 
