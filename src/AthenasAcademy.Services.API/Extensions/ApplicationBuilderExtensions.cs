@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
+﻿using AthenasAcademy.Services.Core.Middlewares;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 namespace AthenasAcademy.Services.API.Extensions;
 
@@ -19,4 +20,10 @@ public static class ApplicationBuilderExtensions
         return builder;
     }
 
+    public static IApplicationBuilder UseHandleException(this IApplicationBuilder builder)
+    {
+        builder.UseMiddleware<ExceptionHandlerMiddleware>();
+
+        return builder;
+    }
 }

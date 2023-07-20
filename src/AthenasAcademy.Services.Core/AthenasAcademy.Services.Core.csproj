@@ -16,9 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Configurations\Enums\" />
     <Folder Include="Configurations\Mappers\Profiles\" />
     <Folder Include="Configurations\DTOs\" />
-    <Folder Include="Configurations\Enums\" />
   </ItemGroup>
 
   <ItemGroup>

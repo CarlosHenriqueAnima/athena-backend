@@ -1,7 +1,9 @@
 ﻿using AthenasAcademy.Services.Core.Arguments;
+using AthenasAcademy.Services.Core.Exceptions;
 using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Core.Repositories.Intercfaces;
 using AthenasAcademy.Services.Core.Services.Interfaces;
+using AthenasAcademy.Services.Domain.Configurations.Enums;
 using AthenasAcademy.Services.Domain.Requests;
 using AthenasAcademy.Services.Domain.Responses;
 using System.Net;
@@ -30,8 +32,10 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
         if (_usuarioRepository.BuscarUsuario(
             new() { Email = novoUsuario.Email.Trim().ToLower() }) is null)
         {
-            _httpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
-            throw new Exception(message: $"O e-mail {novoUsuario.Email} já está sendo utilizado por outro usuário.");
+            throw new CustomAPIException(
+                message: $"O e-mail {novoUsuario.Email} já está sendo utilizado por outro usuário.",
+                responseType: ExceptionResponseType.Warning,
+                statusCode: HttpStatusCode.BadRequest);
         }
 
         // Cria um novo usuário
@@ -50,8 +54,10 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
         // Verifica se a criação do usuário foi bem-sucedida
         if (!result)
         {
-            _httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            throw new Exception("Não foi possível efetivar cadastro do usuário.");
+            throw new CustomAPIException(
+                message: "Não foi possível efetivar cadastro do usuário.",
+                responseType: ExceptionResponseType.Warning,
+                statusCode: HttpStatusCode.InternalServerError);
         }
         else
         {
@@ -72,21 +78,22 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
         // Validar se usuario-email existe
         if (usuario is null)
         {
-            _httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            throw new Exception(message: $"O e-mail {loginUsuario.Email} não encontrado.");
+            throw new CustomAPIException(
+                message: $"O usuário {loginUsuario.Email} não foi localizado.",
+                responseType: ExceptionResponseType.Warning,
+                statusCode: HttpStatusCode.Unauthorized);
         }
 
         // Verifica credenciais
         if (!ValidarHashDeSenhaSHA256(usuario.Senha, loginUsuario.Senha))
         {
-            _httpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            throw new Exception("Login inválido!");
+            throw new CustomAPIException(
+                message: "Login inválido!",
+                responseType: ExceptionResponseType.Warning,
+                statusCode: HttpStatusCode.Unauthorized);
         }
 
-
         // Retorna sucesso no login
-        _httpContext.Response.StatusCode = (int)HttpStatusCode.OK;
-
         return await Task.FromResult(new LoginUsuarioResponse
         {
             Resultado = true,

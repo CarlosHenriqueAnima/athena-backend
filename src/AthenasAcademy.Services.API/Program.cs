@@ -36,6 +36,8 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+app.UseHandleException(); // Configura tratamento de excecao global
+
 app.MapControllers();
 
 app.Run();

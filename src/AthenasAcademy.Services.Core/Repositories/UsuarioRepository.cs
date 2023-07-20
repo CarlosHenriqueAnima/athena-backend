@@ -12,6 +12,7 @@ public class UsuarioRepository : IUsuarioRepository
             new UsuarioModel
             {
                 Usuario = "rafael.deroncio@example.com",
+                //Senha = "asdasd"
                 Senha = "8bb0cf6eb9b17d0f7d22b456f121257dc1254e1f01665370476383ea776df414"
             });
     }
