@@ -9,7 +9,7 @@ namespace AthenasAcademy.Services.API.Controllers;
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
 [ApiController]
-[Authorize]
+//[Authorize]
 public class CursoController : ControllerBase
 {
     private readonly ICursoService _cursoService;
