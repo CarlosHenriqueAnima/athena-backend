@@ -1,6 +1,6 @@
 ﻿using AthenasAcademy.Services.Core.Models;
 
-namespace AthenasAcademy.Services.Core.Repositories.Intercfaces;
+namespace AthenasAcademy.Services.Core.Repositories.Interfaces;
 
 /// <summary>
 /// Interface que define os métodos de acesso aos dados relacionados a cursos, disciplinas e áreas de conhecimento.

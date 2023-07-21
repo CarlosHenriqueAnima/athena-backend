@@ -1,7 +1,7 @@
 ﻿using AthenasAcademy.Services.Core.Arguments;
 using AthenasAcademy.Services.Core.Models;
 
-namespace AthenasAcademy.Services.Core.Repositories.Intercfaces;
+namespace AthenasAcademy.Services.Core.Repositories.Interfaces;
 
 public interface IUsuarioRepository
 {

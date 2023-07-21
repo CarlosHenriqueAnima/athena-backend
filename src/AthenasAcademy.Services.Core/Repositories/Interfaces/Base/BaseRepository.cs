@@ -4,7 +4,7 @@ using AthenasAcademy.Services.Domain.Configurations.Enums;
 using Npgsql;
 using System.Data;
 
-namespace AthenasAcademy.Services.Core.Repositories.Intercfaces.Base;
+namespace AthenasAcademy.Services.Core.Repositories.Interfaces.Base;
 
 public class BaseRepository
 {
