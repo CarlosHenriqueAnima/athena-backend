@@ -4,20 +4,20 @@ using System.Net;
 
 namespace AthenasAcademy.Services.Core.Exceptions;
 
-public class CustomAPIException : Exception
+public class APICustomException : Exception
 {
     public ExceptionResponseType ResponseType { get; set; }
 
     public HttpStatusCode StatusCode { get; set; }
 
 
-    public CustomAPIException(string message, ExceptionResponseType responseType, HttpStatusCode statusCode) : base(message)
+    public APICustomException(string message, ExceptionResponseType responseType, HttpStatusCode statusCode) : base(message)
     {
         ResponseType = responseType;
         StatusCode = statusCode;
     }
 
-    public CustomAPIException(string message, ExceptionResponseType responseType, Exception innerException, HttpStatusCode statusCode) : base(message, innerException)
+    public APICustomException(string message, ExceptionResponseType responseType, Exception innerException, HttpStatusCode statusCode) : base(message, innerException)
     {
         ResponseType = responseType;
         StatusCode = statusCode;
