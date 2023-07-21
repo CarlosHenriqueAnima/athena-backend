@@ -1,5 +1,5 @@
 ﻿using AthenasAcademy.Services.Core.Models;
-using AthenasAcademy.Services.Core.Repositories.Intercfaces;
+using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Core.Services.Interfaces;
 
 namespace AthenasAcademy.Services.Core.Services;
