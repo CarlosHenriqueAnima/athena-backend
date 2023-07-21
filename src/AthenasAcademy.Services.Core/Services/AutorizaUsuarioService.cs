@@ -32,7 +32,7 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
         if (_usuarioRepository.BuscarUsuario(
             new() { Email = novoUsuario.Email.Trim().ToLower() }) is null)
         {
-            throw new CustomAPIException(
+            throw new APICustomException(
                 message: $"O e-mail {novoUsuario.Email} já está sendo utilizado por outro usuário.",
                 responseType: ExceptionResponseType.Warning,
                 statusCode: HttpStatusCode.BadRequest);
@@ -54,7 +54,7 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
         // Verifica se a criação do usuário foi bem-sucedida
         if (!result)
         {
-            throw new CustomAPIException(
+            throw new APICustomException(
                 message: "Não foi possível efetivar cadastro do usuário.",
                 responseType: ExceptionResponseType.Warning,
                 statusCode: HttpStatusCode.InternalServerError);
@@ -78,7 +78,7 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
         // Validar se usuario-email existe
         if (usuario is null)
         {
-            throw new CustomAPIException(
+            throw new APICustomException(
                 message: $"O usuário {loginUsuario.Email} não foi localizado.",
                 responseType: ExceptionResponseType.Warning,
                 statusCode: HttpStatusCode.Unauthorized);
@@ -87,7 +87,7 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
         // Verifica credenciais
         if (!ValidarHashDeSenhaSHA256(usuario.Senha, loginUsuario.Senha))
         {
-            throw new CustomAPIException(
+            throw new APICustomException(
                 message: "Login inválido!",
                 responseType: ExceptionResponseType.Warning,
                 statusCode: HttpStatusCode.Unauthorized);
