@@ -30,7 +30,13 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddRepositoriosSingleton(this IServiceCollection services)
     {
-        services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+        services.AddSingleton<IUsuarioRepository, UsuarioRepository>();
+        services.AddSingleton<IAlunoRepository, AlunoRepository>();
+        services.AddSingleton<ICertificadoRepository, CertificadoRepository>();
+        services.AddSingleton<ICursoRepository, CursoRepository>();
+        services.AddSingleton<IInscricaoRepository, InscricaoRepository>();
+        services.AddSingleton<IMatriculaRepository, MatriculaRepository>();
+        services.AddSingleton<IPagamentoRepository, PagamentoRepository>();
 
         return services;
     }
@@ -154,4 +160,5 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
+
 }
