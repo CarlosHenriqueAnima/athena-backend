@@ -1,4 +1,4 @@
-﻿using AthenasAcademy.Services.Core.Repositories.Intercfaces;
+﻿using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Core.Services.Interfaces;
 using AthenasAcademy.Services.Domain.Requests;
 using AthenasAcademy.Services.Domain.Responses;

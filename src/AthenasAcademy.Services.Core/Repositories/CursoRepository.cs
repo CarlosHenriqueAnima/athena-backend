@@ -1,4 +1,4 @@
-﻿using AthenasAcademy.Services.Core.Repositories.Intercfaces;
+﻿using AthenasAcademy.Services.Core.Repositories.Interfaces;
 
 namespace AthenasAcademy.Services.Core.Repositories;
 
