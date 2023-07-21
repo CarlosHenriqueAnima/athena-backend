@@ -21,7 +21,7 @@ public class ExceptionHandlerMiddleware
         {
             await _next(context);
         }
-        catch (CustomAPIException ex)
+        catch (APICustomException ex)
         {
             ExceptionResponse errorResponse = new()
             {
