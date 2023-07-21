@@ -123,11 +123,15 @@ public static class ServiceCollectionExtensions
             // Define o esquema de segurança Bearer
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                Name = "Authorization",
-                Type = SecuritySchemeType.ApiKey,
-                Scheme = "Bearer",
+                //Name = "Authorization",
+                //Type = SecuritySchemeType.ApiKey,
+                //Scheme = "Bearer",
+                //BearerFormat = "JWT",
+                //In = ParameterLocation.Header,
+
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
                 BearerFormat = "JWT",
-                In = ParameterLocation.Header,
                 Description = "Header de autenticação JWT - Schema Bearer.\r\n\r\nInforme 'Bearer <token>'.\r\n\r\n"
             });
 

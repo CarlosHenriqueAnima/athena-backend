@@ -1,5 +1,4 @@
 using AthenasAcademy.Services.API.Extensions;
-using AthenasAcademy.Services.Core.Middlewares;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -33,7 +32,7 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.UseSwaggerUIDoc(app.Services); // Configura suporte a documentação
+app.UseSwaggerUIDoc("API Athenas Academy"); // Configura suporte a documentação
 
 app.UseHandleException(); // Configura tratamento de excecao global
 
