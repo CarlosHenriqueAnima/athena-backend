@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Core.Repositories;
+using AthenasAcademy.Services.Core.Configurations.Enums;
 
 namespace AthenasAcademy.Services.API.Extensions;
 
@@ -161,4 +162,13 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    public static IServiceCollection AddPoliciesAutorizacao(this IServiceCollection services)
+    {
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy(nameof(Role), policy => policy.RequireClaim(nameof(Role), nameof(Role.Admin)));
+        });
+
+        return services;
+    }
 }

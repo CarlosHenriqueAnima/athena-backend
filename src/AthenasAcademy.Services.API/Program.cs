@@ -14,7 +14,9 @@ builder.Services.AddSwaggerGenDoc("API Athenas Academy", "1.0");// Adicionando s
 
 builder.Services.AddAutenticacaoJwtBearer(builder.Configuration); // Adicionando configuração JWT Tokens
 
-builder.Services.AddSwaggerAutenticacaoJwtBearer(); ; // Adicionando configuração JWT Tokens no swagger
+builder.Services.AddSwaggerAutenticacaoJwtBearer(); // Adicionando configuração JWT Tokens no swagger
+
+//builder.Services.AddPoliciesAutorizacao(); // Adicionando policies de admin e usuario
 
 builder.Services.AddControllers();
 

@@ -1,15 +1,18 @@
-﻿using AthenasAcademy.Services.Core.Services.Interfaces;
+﻿using AthenasAcademy.Services.API.Filters;
+using AthenasAcademy.Services.Core.Configurations.Enums;
+using AthenasAcademy.Services.Core.Services.Interfaces;
 using AthenasAcademy.Services.Domain.Requests;
 using AthenasAcademy.Services.Domain.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace AthenasAcademy.Services.API.Controllers;
 
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
 [ApiController]
-//[Authorize]
+[Authorize]
 public class CursoController : ControllerBase
 {
     private readonly ICursoService _cursoService;
@@ -81,6 +84,7 @@ public class CursoController : ControllerBase
     /// <param name="request">Objeto contendo informações do curso a ser desativado.</param>
     /// <returns>Indicação de sucesso na desativação do curso.</returns>
     [HttpDelete("desativar/{id:int}")]
+    
     [ProducesResponseType(typeof(bool), StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]

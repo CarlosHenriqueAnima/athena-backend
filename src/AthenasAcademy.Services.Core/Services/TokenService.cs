@@ -1,4 +1,5 @@
-﻿using AthenasAcademy.Services.Core.Models;
+﻿using AthenasAcademy.Services.Core.Configurations.Enums;
+using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Core.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -24,7 +25,7 @@ public class TokenService : ITokenService
         JwtSecurityToken jwtToken = new(
             issuer: _configuration["TokenConfiguration:Issuer"],
             audience: _configuration["TokenConfiguration:Audience"],
-            claims: GenerateClaims(user.Usuario),
+            claims: GenerateClaims(user.Usuario, user.Tipo),
             expires: expires,
             signingCredentials: GenerateSymmetricSigningCredentials());
 
@@ -33,18 +34,20 @@ public class TokenService : ITokenService
             new UsuarioTokenModel()
             {
                 Atenticado = true,
-                Token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
+                Token = "bearer " + new JwtSecurityTokenHandler().WriteToken(jwtToken),
                 Expira = expires,
                 Menssagem = "Token JWT OK"
             });
     }
 
-    private Claim[] GenerateClaims(string userName)
+    private Claim[] GenerateClaims(string userName, Role Tipo)
     {
+
         Claim[] claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.UniqueName, userName),
-            new Claim("UserName", userName),
+            new Claim(ClaimTypes.NameIdentifier, userName),
+            new Claim(ClaimTypes.Role, Tipo.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
