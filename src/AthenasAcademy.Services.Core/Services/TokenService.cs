@@ -25,7 +25,7 @@ public class TokenService : ITokenService
         JwtSecurityToken jwtToken = new(
             issuer: _configuration["TokenConfiguration:Issuer"],
             audience: _configuration["TokenConfiguration:Audience"],
-            claims: GenerateClaims(user.Usuario, user.Tipo),
+            claims: GenerateClaims(user.Usuario, user.Perfil),
             expires: expires,
             signingCredentials: GenerateSymmetricSigningCredentials());
 
@@ -34,22 +34,25 @@ public class TokenService : ITokenService
             new UsuarioTokenModel()
             {
                 Atenticado = true,
-                Token = "bearer " + new JwtSecurityTokenHandler().WriteToken(jwtToken),
+                Token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
                 Expira = expires,
                 Menssagem = "Token JWT OK"
             });
     }
 
-    private Claim[] GenerateClaims(string userName, Role Tipo)
+    private List<Claim> GenerateClaims(string userName, Role perfil)
     {
 
-        Claim[] claims = new[]
+        List<Claim> claims = new()
         {
             new Claim(JwtRegisteredClaimNames.UniqueName, userName),
-            new Claim(ClaimTypes.NameIdentifier, userName),
-            new Claim(ClaimTypes.Role, Tipo.ToString()),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(nameof(Role), nameof(Role.Usuario))
         };
+
+        if (perfil == Role.Admin)
+            claims.Add(new Claim(nameof(Role), nameof(Role.Admin)));
+
 
         return claims;
     }

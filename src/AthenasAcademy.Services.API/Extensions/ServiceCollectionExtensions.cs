@@ -4,7 +4,6 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using AthenasAcademy.Services.Core.Services.Interfaces;
 using AthenasAcademy.Services.Core.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AthenasAcademy.Services.Core.Repositories.Interfaces;
@@ -96,21 +95,21 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddAutenticacaoJwtBearer(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(options =>
-                    {
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateIssuer = true,
-                            ValidateAudience = true,
-                            ValidateLifetime = true,
-                            ValidateIssuerSigningKey = true,
-                            ValidIssuer = configuration["TokenConfiguration:Issue"],
-                            ValidAudience = configuration["TokenConfiguration:Audience"],
-                            IssuerSigningKey = new SymmetricSecurityKey(
-                                Encoding.UTF8.GetBytes(configuration["Jwt:key"]))
-                        };
-                    });
+        services.AddAuthentication()
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = configuration["TokenConfiguration:Issue"],
+                ValidAudience = configuration["TokenConfiguration:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(configuration["Jwt:key"]))
+            };
+        });
 
         return services;
     }
@@ -164,9 +163,11 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddPoliciesAutorizacao(this IServiceCollection services)
     {
+
         services.AddAuthorization(options =>
         {
-            options.AddPolicy(nameof(Role), policy => policy.RequireClaim(nameof(Role), nameof(Role.Admin)));
+            options.AddPolicy("perfil", policy => policy.RequireClaim(nameof(Role), nameof(Role.Admin)));
+            options.AddPolicy("perfil", policy => policy.RequireClaim(nameof(Role), nameof(Role.Usuario)));
         });
 
         return services;

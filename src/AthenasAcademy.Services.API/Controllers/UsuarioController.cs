@@ -1,6 +1,7 @@
 ﻿using AthenasAcademy.Services.Core.Services.Interfaces;
 using AthenasAcademy.Services.Domain.Requests;
 using AthenasAcademy.Services.Domain.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AthenasAcademy.Services.API.Controllers;
@@ -24,6 +25,7 @@ public class UsuarioController : ControllerBase
     /// <returns>Resposta com informações do usuário cadastrado.</returns>
     [HttpPost]
     [Route("registrar")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(NovoUsuarioResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
@@ -39,6 +41,7 @@ public class UsuarioController : ControllerBase
     /// <returns>Resposta com informações do usuário logado.</returns>
     [HttpPost]
     [Route("login")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(LoginUsuarioResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]

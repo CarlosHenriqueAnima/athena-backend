@@ -8,5 +8,5 @@ public class UsuarioModel
 
     public string Senha { get; set; }
 
-    public Role Tipo { get; set; }
+    public Role Perfil { get; set; }
 }    

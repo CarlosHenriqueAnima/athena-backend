@@ -1,6 +1,4 @@
-﻿using AthenasAcademy.Services.API.Filters;
-using AthenasAcademy.Services.Core.Configurations.Enums;
-using AthenasAcademy.Services.Core.Services.Interfaces;
+﻿using AthenasAcademy.Services.Core.Services.Interfaces;
 using AthenasAcademy.Services.Domain.Requests;
 using AthenasAcademy.Services.Domain.Responses;
 using Microsoft.AspNetCore.Authorization;
