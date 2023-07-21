@@ -30,8 +30,6 @@ public class InscricaoService : IInscricaoService
             throw new ArgumentNullException(nameof(inscricao), "A inscrição não pode ser nula.");
         }
 
-        // Implemente aqui a validação dos dados da inscrição, se necessário.
-
         await _inscricaoRepository.AdicionarInscricaoAsync(inscricao);
     }
 
@@ -41,8 +39,6 @@ public class InscricaoService : IInscricaoService
         {
             throw new ArgumentNullException(nameof(inscricao), "A inscrição não pode ser nula.");
         }
-
-        // Implemente aqui a validação dos dados da inscrição, se necessário.
 
         await _inscricaoRepository.AtualizarInscricaoAsync(inscricao);
     }
