@@ -7,7 +7,7 @@ using AthenasAcademy.Services.Core.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using AthenasAcademy.Services.Core.Repositories.Intercfaces;
+using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Core.Repositories;
 
 namespace AthenasAcademy.Services.API.Extensions;

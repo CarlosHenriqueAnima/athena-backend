@@ -1,8 +1,8 @@
 ﻿using AthenasAcademy.Services.Core.Arguments;
 using AthenasAcademy.Services.Core.Configurations.Enums;
 using AthenasAcademy.Services.Core.Models;
-using AthenasAcademy.Services.Core.Repositories.Intercfaces;
-using AthenasAcademy.Services.Core.Repositories.Intercfaces.Base;
+using AthenasAcademy.Services.Core.Repositories.Interfaces;
+using AthenasAcademy.Services.Core.Repositories.Interfaces.Base;
 using System.Data;
 
 namespace AthenasAcademy.Services.Core.Repositories;
