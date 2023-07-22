@@ -1,12 +1,15 @@
 using AthenasAcademy.Services.API.Extensions;
+using AthenasAcademy.Services.Core.Configurations.Mappers;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddServicosScoped();// Adicionando Services
+builder.Services.AddAthenasServicesDI();// Adicionando Services
 
-builder.Services.AddRepositoriosSingleton();// Adicionando Repositories
+builder.Services.AddAthenasRepositoriesDI();// Adicionando Repositories
+
+builder.Services.AddSingleton<IObjectConverter, ObjectConverter>();
 
 builder.Services.AddPoliciesCors(); // Aciciona as políticas de CORS
 

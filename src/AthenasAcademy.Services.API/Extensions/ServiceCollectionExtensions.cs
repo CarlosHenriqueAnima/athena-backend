@@ -8,14 +8,14 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Core.Repositories;
-using AthenasAcademy.Services.Core.Configurations.Enums;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using AthenasAcademy.Services.Core.Configurations.Mappers;
 
 namespace AthenasAcademy.Services.API.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddServicosScoped(this IServiceCollection services)
+    public static IServiceCollection AddAthenasServicesDI(this IServiceCollection services)
     {
         services.AddScoped<IAlunoService, AlunoService>();
         services.AddScoped<ICertificadoService, CertificadoService>();
@@ -29,7 +29,7 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddRepositoriosSingleton(this IServiceCollection services)
+    public static IServiceCollection AddAthenasRepositoriesDI(this IServiceCollection services)
     {
         services.AddSingleton<IUsuarioRepository, UsuarioRepository>();
         services.AddSingleton<IAlunoRepository, AlunoRepository>();
