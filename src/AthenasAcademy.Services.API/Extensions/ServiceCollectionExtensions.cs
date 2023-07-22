@@ -9,6 +9,7 @@ using System.Text;
 using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Core.Repositories;
 using AthenasAcademy.Services.Core.Configurations.Enums;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace AthenasAcademy.Services.API.Extensions;
 
@@ -93,21 +94,25 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddAutenticacaoJwtBearer(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddAuthentication()
+        var key = Encoding.UTF8.GetBytes(configuration["Jwt:key"]);
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
         .AddJwtBearer(options =>
         {
+            options.RequireHttpsMetadata = false;
+            options.SaveToken = true;
             options.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = configuration["TokenConfiguration:Issue"],
-                ValidAudience = configuration["TokenConfiguration:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(configuration["Jwt:key"]))
+                ValidateIssuer = false,
+                ValidateAudience = false,
             };
         });
 
@@ -160,18 +165,6 @@ public static class ServiceCollectionExtensions
         services.Configure<RouteOptions>(options =>
         {
             options.LowercaseUrls = true;
-        });
-
-        return services;
-    }
-
-    public static IServiceCollection AddPoliciesAutorizacao(this IServiceCollection services)
-    {
-
-        services.AddAuthorization(options =>
-        {
-            options.AddPolicy("perfil", policy => policy.RequireClaim(nameof(Role), nameof(Role.Admin)));
-            options.AddPolicy("perfil", policy => policy.RequireClaim(nameof(Role), nameof(Role.Usuario)));
         });
 
         return services;

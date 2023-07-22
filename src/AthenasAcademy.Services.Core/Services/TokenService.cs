@@ -17,56 +17,79 @@ public class TokenService : ITokenService
         _configuration = configuration;
     }
 
-    public async Task<UsuarioTokenModel> GerarTokenAsync(UsuarioModel user)
+    public async Task<UsuarioTokenModel> GerarTokenAsync(UsuarioModel usuario)
     {
-        var expires = GenerateTokenExpiration();
-
         // Gera Token
-        JwtSecurityToken jwtToken = new(
-            issuer: _configuration["TokenConfiguration:Issuer"],
-            audience: _configuration["TokenConfiguration:Audience"],
-            claims: GenerateClaims(user.Usuario, user.Perfil),
-            expires: expires,
-            signingCredentials: GenerateSymmetricSigningCredentials());
+        string token = await Task.FromResult(GerarToken(usuario));
 
         // Gera Model
-        return await Task.FromResult(
-            new UsuarioTokenModel()
+        return new UsuarioTokenModel()
             {
                 Atenticado = true,
-                Token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
-                Expira = expires,
+                Token = token,
                 Menssagem = "Token JWT OK"
-            });
+            };
     }
 
-    private List<Claim> GenerateClaims(string userName, Role perfil)
+    public string GerarToken(UsuarioModel usuario)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var tokenExpires = GerarTokenExpires();
+        var tokenClaims = GerarClaims(usuario);
+        var tokenCredentials = GerarTokenCredentials();
+        var tokenDescriptor = GerarTokenDescriptor(tokenExpires, tokenCredentials, tokenClaims);
+
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+
+        return tokenHandler.WriteToken(token);
+    }
+
+    private List<Claim> GenerateClaims(string usuario, Role perfil)
     {
 
         List<Claim> claims = new()
         {
-            new Claim(JwtRegisteredClaimNames.UniqueName, userName),
+            new Claim(JwtRegisteredClaimNames.UniqueName, usuario),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(nameof(Role), nameof(Role.Usuario))
         };
 
-        if (perfil == Role.Admin)
-            claims.Add(new Claim(nameof(Role), nameof(Role.Admin)));
+        if (perfil == Role.Administrador)
+            claims.Add(new Claim(nameof(Role), nameof(Role.Administrador)));
 
 
         return claims;
     }
 
-    private SigningCredentials GenerateSymmetricSigningCredentials()
+    private DateTime GerarTokenExpires()
+    {
+        var expireHours = double.Parse(_configuration["TokenConfiguration:ExpireHours"]);
+        return DateTime.UtcNow.AddHours(expireHours);
+    }
+
+    private ClaimsIdentity GerarClaims(UsuarioModel usuario)
+    {
+        return new(new[]
+        {
+            new Claim(type: ClaimTypes.Name, value: usuario.Usuario),
+            new Claim(type: ClaimTypes.Role, value: usuario.Perfil.ToString()),
+        });
+    }
+
+    private SigningCredentials GerarTokenCredentials()
     {
         string key = _configuration["Jwt:Key"];
         SymmetricSecurityKey symmetricKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         return new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha256);
     }
 
-    private DateTime GenerateTokenExpiration()
+    private SecurityTokenDescriptor GerarTokenDescriptor(DateTime tokenExpires, SigningCredentials tokenCredentials, ClaimsIdentity tokenClaims)
     {
-        var expireHours = double.Parse(_configuration["TokenConfiguration:ExpireHours"]);
-        return DateTime.UtcNow.AddHours(expireHours);
+        return new SecurityTokenDescriptor()
+        {
+            Subject = tokenClaims,
+            Expires = tokenExpires,
+            SigningCredentials = tokenCredentials
+        };
     }
 }

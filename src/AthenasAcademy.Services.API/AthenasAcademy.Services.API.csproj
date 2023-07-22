@@ -29,8 +29,4 @@
 	  <ProjectReference Include="..\AthenasAcademy.Services.Domain\AthenasAcademy.Services.Domain.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Configurations\Enums\" />
-	</ItemGroup>
-
 </Project>

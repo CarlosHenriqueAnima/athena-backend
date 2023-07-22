@@ -1,4 +1,5 @@
-﻿using AthenasAcademy.Services.Core.Services.Interfaces;
+﻿using AthenasAcademy.Services.Core.Configurations.Enums;
+using AthenasAcademy.Services.Core.Services.Interfaces;
 using AthenasAcademy.Services.Domain.Requests;
 using AthenasAcademy.Services.Domain.Responses;
 using Microsoft.AspNetCore.Authorization;
@@ -49,5 +50,4 @@ public class UsuarioController : ControllerBase
     {
         return Ok(await _autorizaService.LoginUsuario(request));
     }
-
 }

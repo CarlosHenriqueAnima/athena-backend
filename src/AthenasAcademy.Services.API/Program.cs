@@ -2,11 +2,7 @@ using AthenasAcademy.Services.API.Extensions;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAutenticacaoJwtBearer(builder.Configuration); // Adicionando configuração JWT Tokens
-
-builder.Services.AddPoliciesAutorizacao(); // Adicionando policies de admin e usuario
-
-builder.Services.AddSwaggerAutenticacaoJwtBearer(); // Adicionando configuração JWT Tokens no swagger
+builder.Services.AddControllers();
 
 builder.Services.AddServicosScoped();// Adicionando Services
 
@@ -18,15 +14,21 @@ builder.Services.AddApiVersionamentoExplorer(); // Adicionando suporte a version
 
 builder.Services.AddSwaggerGenDoc("API Athenas Academy", "1.0");// Adicionando suporte a documentação
 
-builder.Services.AddControllers();
+builder.Services.AddSwaggerAutenticacaoJwtBearer(); // Adicionando configuração JWT Tokens no swagger
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddHttpContextAccessor();
-
 builder.Services.AddConfigureLowerCaseRoutes();
 
+builder.Services.AddAuthentication(builder.Configuration); // Adicionando configuração JWT Tokens
+
+builder.Services.AddAuthorization(); // Adicionando policies de admin e usuario
+
+builder.Services.AddHttpContextAccessor();
+
 WebApplication app = builder.Build();
+
+app.UseRouting();
 
 app.UseAuthentication();
 

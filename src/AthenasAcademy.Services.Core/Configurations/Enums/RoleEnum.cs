@@ -2,6 +2,7 @@
 
 public enum Role
 {
-    Admin,
-    Usuario
+    Administrador,
+    Usuario,
+    Aluno
 }

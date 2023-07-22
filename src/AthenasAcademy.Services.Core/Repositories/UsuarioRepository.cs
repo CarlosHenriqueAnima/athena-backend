@@ -17,7 +17,7 @@ public class UsuarioRepository : BaseRepository, IUsuarioRepository
             {
                 Usuario = "rafael.deroncio@example.com",
                 Senha = "8bb0cf6eb9b17d0f7d22b456f121257dc1254e1f01665370476383ea776df414",
-                Perfil = Role.Admin
+                Perfil = Role.Administrador
             });
     }
 
@@ -28,7 +28,7 @@ public class UsuarioRepository : BaseRepository, IUsuarioRepository
             {
                 Usuario = "rafael.deroncio@example.com",
                 Senha = "1234567",
-                Perfil = Role.Admin
+                Perfil = Role.Administrador
             });
     }
 }
