@@ -8,6 +8,8 @@ builder.Services.AddServicosScoped();// Adicionando Services
 
 builder.Services.AddRepositoriosSingleton();// Adicionando Repositories
 
+builder.Services.AddPoliciesCors(); // Aciciona as políticas de CORS
+
 builder.Services.AddApiVersionamento(); // Adicionando suporte a versionamento
 
 builder.Services.AddApiVersionamentoExplorer(); // Adicionando suporte a versionamento explorer

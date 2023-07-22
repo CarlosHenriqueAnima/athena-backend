@@ -71,7 +71,7 @@ public class CursoController : ControllerBase
     /// </summary>
     /// <param name="request">Objeto contendo os novos dados do curso.</param>
     /// <returns>Objeto contendo informações do curso atualizado.</returns>
-    [HttpPut("atualizar")]
+    [HttpPut("atualizar/")]
     [Authorize(Roles = nameof(Role.Administrador))]
     [ProducesResponseType(typeof(CursoResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]

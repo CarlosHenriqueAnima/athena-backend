@@ -17,7 +17,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         using (IDbConnection connection = GetConnection(Database.Curso))
         {
-
+            // Implementação para obter um curso por ID a partir do banco de dados
         }
 
         throw new NotImplementedException();
@@ -27,7 +27,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         using (IDbConnection connection = GetConnection(Database.Curso))
         {
-
+            // Implementação para obter todos os cursos do banco de dados
         }
 
         throw new NotImplementedException();
@@ -37,7 +37,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         using (IDbConnection connection = GetConnection(Database.Curso))
         {
-
+            // Implementação para cadastrar um novo curso no banco de dados
         }
 
         throw new NotImplementedException();
@@ -47,7 +47,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         using (IDbConnection connection = GetConnection(Database.Curso))
         {
-
+            // Implementação para atualizar um curso no banco de dados
         }
 
         throw new NotImplementedException();
@@ -57,7 +57,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         using (IDbConnection connection = GetConnection(Database.Curso))
         {
-
+            // Implementação para desativar um curso no banco de dados
         }
 
         throw new NotImplementedException();
@@ -71,7 +71,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         using (IDbConnection connection = GetConnection(Database.Curso))
         {
-
+            // Implementação para obter uma disciplina por ID a partir do banco de dados
         }
 
         throw new NotImplementedException();
@@ -81,7 +81,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         using (IDbConnection connection = GetConnection(Database.Curso))
         {
-
+            // Implementação para obter todas as disciplinas do banco de dados
         }
 
         throw new NotImplementedException();
@@ -91,7 +91,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         using (IDbConnection connection = GetConnection(Database.Curso))
         {
-
+            // Implementação para cadastrar uma nova disciplina no banco de dados
         }
 
         throw new NotImplementedException();
@@ -101,7 +101,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         using (IDbConnection connection = GetConnection(Database.Curso))
         {
-
+            // Implementação para atualizar uma disciplina no banco de dados
         }
 
         throw new NotImplementedException();
@@ -111,7 +111,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         using (IDbConnection connection = GetConnection(Database.Curso))
         {
-
+            // Implementação para desativar uma disciplina no banco de dados
         }
 
         throw new NotImplementedException();
@@ -125,7 +125,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         using (IDbConnection connection = GetConnection(Database.Curso))
         {
-
+            // Implementação para obter uma área de conhecimento por ID a partir do banco de dados
         }
 
         throw new NotImplementedException();
@@ -135,7 +135,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         using (IDbConnection connection = GetConnection(Database.Curso))
         {
-
+            // Implementação para obter todas as áreas de conhecimento do banco de dados
         }
 
         throw new NotImplementedException();
@@ -145,7 +145,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         using (IDbConnection connection = GetConnection(Database.Curso))
         {
-
+            // Implementação para cadastrar uma nova área de conhecimento no banco de dados
         }
 
         throw new NotImplementedException();
@@ -155,7 +155,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         using (IDbConnection connection = GetConnection(Database.Curso))
         {
-
+            // Implementação para atualizar uma área de conhecimento no banco de dados
         }
 
         throw new NotImplementedException();
@@ -165,7 +165,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         using (IDbConnection connection = GetConnection(Database.Curso))
         {
-
+            // Implementação para desativar uma área de conhecimento no banco de dados
         }
 
         throw new NotImplementedException();
@@ -173,4 +173,5 @@ public class CursoRepository : BaseRepository, ICursoRepository
 
     #endregion
 }
+
 
