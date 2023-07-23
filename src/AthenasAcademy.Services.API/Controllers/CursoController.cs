@@ -76,7 +76,7 @@ public class CursoController : ControllerBase
     [ProducesResponseType(typeof(CursoResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult> AtualizarCurso([FromBody] NovoCursoRequest request)
+    public async Task<ActionResult> AtualizarCurso([FromBody] CursoRequest request)
     {
         return Ok(await _cursoService.AtualizarCurso(request));
     }

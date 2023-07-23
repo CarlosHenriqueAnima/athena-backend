@@ -14,4 +14,7 @@ public class NovaDisciplinaRequest
     [Required(ErrorMessage = "O campo CargaHoraria é obrigatório.")]
     [Range(1, 1000, ErrorMessage = "A Carga Horária deve estar entre 1 e 1000 horas.")]
     public int CargaHoraria { get; set; }
+
+    [Required(ErrorMessage = "O ID do Curso é obrigatório.")]
+    public int IdCurso { get; set; }
 }

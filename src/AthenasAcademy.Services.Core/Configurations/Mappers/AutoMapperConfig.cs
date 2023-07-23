@@ -8,9 +8,11 @@ public static class AutoMapperConfig
     public static MapperConfiguration RegisterMappings()
     {
         return new MapperConfiguration(
-            cfg => { 
-                cfg.AddProfile(new RequestoToArrgumentProfile());
-                cfg.AddProfile(new ModelToResponseProfile());
+            cfg => {
+            cfg.AddProfile(new RequestToArgumentProfile());
+            cfg.AddProfile(new ModelToResponseProfile());
+            cfg.AddProfile(new RequestToResponseProfile());
+            cfg.AddProfile(new ModelToRequestProfile());
             });
     }
 }
