@@ -6,5 +6,5 @@ public class LoginUsuarioResponse
 {
     public bool Resultado { get; set; }
 
-    public TokenDTO Token { get; set; }
+    public TokenResponse Token { get; set; }
 }

@@ -6,7 +6,7 @@ public class UsuarioResponse
 
     public string Perfil { get; set; }
     
-    public int DataCadastro { get; set; }
+    public DateTime DataCadastro { get; set; }
     
-    public int Ativo { get; set; }
+    public bool Ativo { get; set; }
 }

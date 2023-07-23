@@ -18,5 +18,6 @@ public class ModelToResponseProfile : Profile
         CreateMap<DisciplinaModel, NovaDisciplinaResponse>().ReverseMap();
 
         CreateMap<TokenModel, TokenResponse>().ReverseMap();
+        CreateMap<UsuarioModel, UsuarioResponse>().ReverseMap();
     }
 }

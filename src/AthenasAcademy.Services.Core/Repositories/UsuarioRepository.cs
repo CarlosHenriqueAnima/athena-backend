@@ -23,12 +23,36 @@ public class UsuarioRepository : BaseRepository, IUsuarioRepository
                 string query = @"SELECT 
                                     id,
                                     usuario, 
-                                    senha_hash Senha, 
-                                    id_perfil Perfil
-                                    FROM usuario
-                                    WHERE usuario = @Usuario OR email = @Usuario";
+                                    senha_hash AS Senha, 
+                                    id_perfil AS Perfil
+                                FROM usuario
+                                WHERE usuario = @Usuario OR email = @Usuario";
 
-                return await connection.QueryFirstAsync<UsuarioModel>(query, new { Usuario = novoUsuario.Email });
+                return await connection.QueryFirstOrDefaultAsync<UsuarioModel>(query, new { Usuario = novoUsuario.Email });
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
+        }
+    }
+
+    public async Task<IEnumerable<UsuarioModel>> BuscarUsuarios()
+    {
+        try
+        {
+            using (IDbConnection connection = GetConnection(Database.Usuario))
+            {
+                string query = @"SELECT 
+                                    id,
+                                    usuario, 
+                                    senha_hash AS Senha, 
+                                    id_perfil AS Perfil,
+                                    ativo,
+                                    data_cadastro As DataCadastro
+                                FROM usuario";
+
+                return await connection.QueryAsync<UsuarioModel>(query);
             }
         }
         catch (Exception ex)

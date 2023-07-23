@@ -62,8 +62,8 @@ public class UsuarioController : ControllerBase
     /// </summary>
     /// <returns>Lista de objetos contendo informações de todos os usuários.</returns>
     [HttpGet]
-    [Route("usuarios")]
-    [AllowAnonymous]
+    [Route("todos")]
+    [Authorize(Roles = "Administrador")]
     [ProducesResponseType(typeof(IEnumerable<UsuarioResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
