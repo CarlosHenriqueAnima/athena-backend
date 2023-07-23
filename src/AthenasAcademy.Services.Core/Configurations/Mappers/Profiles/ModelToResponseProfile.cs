@@ -1,4 +1,5 @@
-﻿using AthenasAcademy.Services.Core.Models;
+﻿using AthenasAcademy.Services.Core.Arguments;
+using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Domain.Responses;
 using AutoMapper;
 
@@ -8,8 +9,12 @@ public class ModelToResponseProfile : Profile
 {
     public ModelToResponseProfile()
     {
-        CreateMap<CursoModel, CursoResponse>().ReverseMap();
-        CreateMap<AreaConhecimentoModel, AreaConhecimentoResponse>().ReverseMap();
-        CreateMap<DisciplinaModel, DisciplinaResponse>().ReverseMap();
+        CreateMap<CursoResponse, CursoArgument>().ReverseMap();
+        CreateMap<AreaConhecimentoResponse, AreaConhecimentoArgument>().ReverseMap();
+        CreateMap<DisciplinaResponse, DisciplinaArgument>().ReverseMap();
+
+        CreateMap<NovoCursoResponse, CursoArgument>().ReverseMap();
+        CreateMap<NovaAreaConhecimentoResponse, AreaConhecimentoArgument>().ReverseMap();
+        CreateMap<NovaDisciplinaResponse, DisciplinaArgument>().ReverseMap();
     }
 }

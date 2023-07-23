@@ -7,6 +7,7 @@ using AthenasAcademy.Services.Core.Repositories.Interfaces.Base;
 using AthenasAcademy.Services.Domain.Configurations.Enums;
 using Dapper;
 using System.Data;
+using System.Reflection.Metadata.Ecma335;
 
 namespace AthenasAcademy.Services.Core.Repositories;
 
@@ -39,7 +40,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
         }
         catch (Exception ex)
         {
-            throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
+            return null;
         }
     }
 
@@ -58,7 +59,8 @@ public class CursoRepository : BaseRepository, ICursoRepository
                                     ativo, 
                                     data_cadastro DataCadastro, 
                                     data_alteracao DataAlteracao
-                                    FROM curso";
+                                    FROM curso
+                                    WHERE ativo";
 
                 return await connection.QueryAsync<CursoModel>(query);
             }
@@ -163,7 +165,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
         }
         catch (Exception ex)
         {
-            throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
+            return null;
         }
     }
 
@@ -257,9 +259,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
                                  WHERE id = @Id
                                  RETURNING id, nome, descricao, carga_horaria AS CargaHoraria, id_curso AS IdCurso, ativo, data_cadastro AS DataCadastro, data_alteracao AS DataAlteracao";
 
-                await connection.ExecuteAsync(query, argument);
-
-                return await ObterDisciplina(argument.Id);
+                return await connection.QueryFirstOrDefaultAsync<DisciplinaModel>(query, argument);
             }
         }
         catch (Exception ex)
@@ -313,7 +313,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
         }
         catch (Exception ex)
         {
-            throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
+            return null;
         }
     }
 
@@ -353,7 +353,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
                 RETURNING id, nome, descricao, ativo, data_cadastro AS DataCadastro, data_alteracao AS DataAlteracao
             ";
 
-                return await connection.QueryFirstOrDefaultAsync<AreaConhecimentoModel>(query, argument);
+                    return await connection.QueryFirstOrDefaultAsync<AreaConhecimentoModel>(query, argument);
             }
         }
         catch (Exception ex)

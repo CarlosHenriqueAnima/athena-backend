@@ -91,7 +91,7 @@ public class CursoController : ControllerBase
     [ProducesResponseType(typeof(bool), StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult> DesativarCurso([FromBody] int id)
+    public async Task<ActionResult> DesativarCurso(int id)
     {
         return Ok(await _cursoService.DesativarCurso(id));
     }

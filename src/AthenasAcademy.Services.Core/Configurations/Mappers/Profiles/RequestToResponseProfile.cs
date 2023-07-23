@@ -15,5 +15,9 @@ public class RequestToResponseProfile : Profile
         CreateMap<CursoRequest, CursoResponse>().ReverseMap();
         CreateMap<DisciplinaRequest, DisciplinaResponse>().ReverseMap();
         CreateMap<AreaConhecimentoRequest, AreaConhecimentoResponse>().ReverseMap();
+
+        CreateMap<CursoRequest, NovoCursoResponse>().ReverseMap();
+        CreateMap<DisciplinaRequest, NovaDisciplinaResponse>().ReverseMap();
+        CreateMap<AreaConhecimentoRequest, NovaAreaConhecimentoResponse>().ReverseMap();
     }
 }

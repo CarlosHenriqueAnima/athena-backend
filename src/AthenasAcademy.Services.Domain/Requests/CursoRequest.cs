@@ -4,6 +4,7 @@ namespace AthenasAcademy.Services.Domain.Requests;
 
 public class CursoRequest
 {
+    [Required(ErrorMessage = "O campo Id é obrigatório.")]
     public int Id { get; set; }
 
     [Required(ErrorMessage = "O campo Nome é obrigatório.")]
@@ -13,7 +14,6 @@ public class CursoRequest
     [StringLength(500, ErrorMessage = "O campo Descrição deve ter no máximo 500 caracteres.")]
     public string Descricao { get; set; }
 
-    [Range(1, int.MaxValue, ErrorMessage = "A Carga Horária deve ser um valor positivo.")]
     public int CargaHoraria { get; set; }
 
     public List<DisciplinaRequest> Disciplinas { get; set; }

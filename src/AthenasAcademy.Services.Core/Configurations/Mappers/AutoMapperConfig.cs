@@ -9,10 +9,13 @@ public static class AutoMapperConfig
     {
         return new MapperConfiguration(
             cfg => {
-            cfg.AddProfile(new RequestToArgumentProfile());
-            cfg.AddProfile(new ModelToResponseProfile());
-            cfg.AddProfile(new RequestToResponseProfile());
-            cfg.AddProfile(new ModelToRequestProfile());
+                cfg.AddProfile(new RequestToArgumentProfile());
+                cfg.AddProfile(new RequestToResponseProfile());
+
+                cfg.AddProfile(new ModelToResponseProfile());
+                cfg.AddProfile(new ModelToRequestProfile());
+
+                cfg.AddProfile(new ResponseToArgumentProfile());
             });
     }
 }
