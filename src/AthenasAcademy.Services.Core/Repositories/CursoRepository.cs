@@ -38,7 +38,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
                 return await connection.QueryFirstAsync<CursoModel>(query, new { Id = id });
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return null;
         }
@@ -163,7 +163,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
                 return await connection.QueryFirstAsync<DisciplinaModel>(query, new { Id = id });
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return null;
         }
@@ -311,7 +311,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
                 return await connection.QueryFirstAsync<AreaConhecimentoModel>(query, new { Id = id });
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return null;
         }
