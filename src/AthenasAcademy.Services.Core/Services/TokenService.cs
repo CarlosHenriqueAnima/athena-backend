@@ -1,8 +1,11 @@
 ﻿using AthenasAcademy.Services.Core.Configurations.Enums;
+using AthenasAcademy.Services.Core.Exceptions;
 using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Core.Services.Interfaces;
+using AthenasAcademy.Services.Domain.Configurations.Enums;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 
@@ -17,21 +20,20 @@ public class TokenService : ITokenService
         _configuration = configuration;
     }
 
-    public async Task<UsuarioTokenModel> GerarTokenAsync(UsuarioModel usuario)
+    public async Task<TokenModel> GerarTokenUsuario(UsuarioTokenModel usuario)
     {
-        // Gera Token
-        string token = await Task.FromResult(GerarToken(usuario));
+        (string token, DateTime validade) = GerarToken(usuario);
 
-        // Gera Model
-        return new UsuarioTokenModel()
+        return await Task.FromResult<TokenModel>(
+            new ()
             {
-                Atenticado = true,
+                Menssagem = "Token OK",
                 Token = token,
-                Menssagem = "Token JWT OK"
-            };
+                Validade = validade
+            });
     }
 
-    public string GerarToken(UsuarioModel usuario)
+    public (string, DateTime) GerarToken(UsuarioTokenModel usuario)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var tokenExpires = GerarTokenExpires();
@@ -41,7 +43,7 @@ public class TokenService : ITokenService
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
 
-        return tokenHandler.WriteToken(token);
+        return (tokenHandler.WriteToken(token), tokenExpires);
     }
 
     private List<Claim> GenerateClaims(string usuario, Role perfil)
@@ -67,13 +69,23 @@ public class TokenService : ITokenService
         return DateTime.UtcNow.AddHours(expireHours);
     }
 
-    private ClaimsIdentity GerarClaims(UsuarioModel usuario)
+    private ClaimsIdentity GerarClaims(UsuarioTokenModel usuario)
     {
-        return new(new[]
+        try
         {
-            new Claim(type: ClaimTypes.Name, value: usuario.Usuario),
-            new Claim(type: ClaimTypes.Role, value: usuario.Perfil.ToString()),
-        });
+            Role perfil = (Role)usuario.Perfil;
+            string usuarioPerfil = nameof(perfil);
+
+            return new(new[]
+            {
+                new Claim(type: ClaimTypes.Name, value: usuario.Usuario),
+                new Claim(type: ClaimTypes.Role, value: usuarioPerfil)
+            });
+        }
+        catch (Exception ex)
+        {
+            throw new TokenCustomException(string.Format("Perfil {0} não é válido.", usuario.Perfil), ExceptionResponseType.Error, ex, HttpStatusCode.BadRequest);
+        }
     }
 
     private SigningCredentials GerarTokenCredentials()

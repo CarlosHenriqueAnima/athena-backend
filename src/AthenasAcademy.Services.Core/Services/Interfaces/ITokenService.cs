@@ -4,5 +4,5 @@ namespace AthenasAcademy.Services.Core.Services.Interfaces;
 
 public interface ITokenService
 {
-    Task<UsuarioTokenModel> GerarTokenAsync(UsuarioModel user);
+    Task<TokenModel> GerarTokenUsuario(UsuarioTokenModel usuario);
 }

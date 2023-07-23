@@ -349,8 +349,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
                 string query = @"
                 INSERT INTO area_conhecimento (nome, descricao, ativo, data_cadastro, data_alteracao)
                 VALUES (@Nome, @Descricao, @Ativo, @DataCadastro, @DataAlteracao)
-                RETURNING id, nome, descricao, ativo, data_cadastro AS DataCadastro, data_alteracao AS DataAlteracao
-            ";
+                RETURNING id, nome, descricao, ativo, data_cadastro AS DataCadastro, data_alteracao AS DataAlteracao";
 
                 return await connection.QueryFirstOrDefaultAsync<AreaConhecimentoModel>(query, argument);
             }

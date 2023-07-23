@@ -9,12 +9,14 @@ public class ModelToResponseProfile : Profile
 {
     public ModelToResponseProfile()
     {
-        CreateMap<CursoResponse, CursoArgument>().ReverseMap();
-        CreateMap<AreaConhecimentoResponse, AreaConhecimentoArgument>().ReverseMap();
-        CreateMap<DisciplinaResponse, DisciplinaArgument>().ReverseMap();
+        CreateMap<CursoModel, CursoResponse>().ReverseMap();
+        CreateMap<AreaConhecimentoModel, AreaConhecimentoResponse>().ReverseMap();
+        CreateMap<DisciplinaModel, DisciplinaResponse>().ReverseMap();
 
-        CreateMap<NovoCursoResponse, CursoArgument>().ReverseMap();
-        CreateMap<NovaAreaConhecimentoResponse, AreaConhecimentoArgument>().ReverseMap();
-        CreateMap<NovaDisciplinaResponse, DisciplinaArgument>().ReverseMap();
+        CreateMap<CursoModel, NovoCursoResponse>().ReverseMap();
+        CreateMap<AreaConhecimentoModel, NovaAreaConhecimentoResponse>().ReverseMap();
+        CreateMap<DisciplinaModel, NovaDisciplinaResponse>().ReverseMap();
+
+        CreateMap<TokenModel, TokenResponse>().ReverseMap();
     }
 }

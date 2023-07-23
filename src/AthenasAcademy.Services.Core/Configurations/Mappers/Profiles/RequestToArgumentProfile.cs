@@ -8,6 +8,7 @@ public class RequestToArgumentProfile : Profile
 {
     public RequestToArgumentProfile()
     {
+        // servico-curso
         CreateMap<CursoRequest, CursoArgument>().ReverseMap();
         CreateMap<DisciplinaRequest, DisciplinaArgument>().ReverseMap();
         CreateMap<AreaConhecimentoRequest, AreaConhecimentoArgument>().ReverseMap();
@@ -15,5 +16,8 @@ public class RequestToArgumentProfile : Profile
         CreateMap<NovoCursoRequest, CursoArgument>().ReverseMap();
         CreateMap<NovaDisciplinaRequest, DisciplinaArgument>().ReverseMap();
         CreateMap<NovaAreaConhecimentoRequest, AreaConhecimentoArgument>().ReverseMap();
+
+        //servico-usuario
+        CreateMap<NovoUsuarioRequest, NovoUsuarioArgument>().ReverseMap();        
     }
 }

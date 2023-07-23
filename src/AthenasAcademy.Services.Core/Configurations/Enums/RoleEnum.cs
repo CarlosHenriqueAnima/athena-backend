@@ -2,7 +2,7 @@
 
 public enum Role
 {
-    Administrador,
-    Usuario,
-    Aluno
+    Administrador = 1,
+    Usuario = 2,
+    Aluno = 3
 }
