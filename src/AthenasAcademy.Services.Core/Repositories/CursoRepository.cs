@@ -7,7 +7,6 @@ using AthenasAcademy.Services.Core.Repositories.Interfaces.Base;
 using AthenasAcademy.Services.Domain.Configurations.Enums;
 using Dapper;
 using System.Data;
-using System.Reflection.Metadata.Ecma335;
 
 namespace AthenasAcademy.Services.Core.Repositories;
 
@@ -353,7 +352,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
                 RETURNING id, nome, descricao, ativo, data_cadastro AS DataCadastro, data_alteracao AS DataAlteracao
             ";
 
-                    return await connection.QueryFirstOrDefaultAsync<AreaConhecimentoModel>(query, argument);
+                return await connection.QueryFirstOrDefaultAsync<AreaConhecimentoModel>(query, argument);
             }
         }
         catch (Exception ex)
@@ -412,5 +411,3 @@ public class CursoRepository : BaseRepository, ICursoRepository
     }
     #endregion
 }
-
-
