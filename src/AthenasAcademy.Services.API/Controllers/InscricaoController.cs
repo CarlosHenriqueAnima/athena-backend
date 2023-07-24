@@ -1,5 +1,8 @@
-﻿using AthenasAcademy.Services.Core.Models;
+﻿using AthenasAcademy.Services.Core.Configurations.Enums;
+using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Core.Services;
+using AthenasAcademy.Services.Domain.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,10 +20,19 @@ public class InscricaoController : ControllerBase
         _inscricaoService = inscricaoService;
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<CandidatoModel>> ObterInscricaoPorIdAsync(int id)
+    /// <summary>
+    /// Obtém uma inscrição por ID.
+    /// </summary>
+    /// <param name="matriculaId">ID da inscrição a ser buscada.</param>
+    /// <returns>Objeto contendo informações do candidato.</returns>
+    [HttpGet("buscar/{id:int}")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(InscricaoResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<CandidatoModel>> ObterInscricaoPorIdAsync(int matriculaId)
     {
-        var inscricao = await _inscricaoService.ObterInscricaoPorIdAsync(id);
+        var inscricao = await _inscricaoService.ObterInscricaoPorIdAsync(matriculaId);
         if (inscricao == null)
         {
             return NotFound();
@@ -29,24 +41,51 @@ public class InscricaoController : ControllerBase
         return inscricao;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<CandidatoModel>>> ObterTodasInscricoesAsync()
+    /// <summary>
+    /// Obtém todas as inscrições pendentes.
+    /// </summary>
+    /// <returns>Objeto contendo informações do candidato.</returns>
+    [HttpGet("inscricao/pendentes")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(InscricaoResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<IEnumerable<CandidatoModel>>> ObterInscricoesPendentesAsync()
     {
-        var inscricoes = await _inscricaoService.ObterTodasInscricoesAsync();
+        var inscricoes = await _inscricaoService.ObterInscricoesPendentesAsync();
         return Ok(inscricoes);
     }
 
-    [HttpPost]
+    /// <summary>
+    /// Cadastra um novo curso.
+    /// </summary>
+    /// <param name="inscricao">Objeto contendo os dados do novo curso.</param>
+    /// <returns>Objeto contendo informações da inscrição cadastrada.</returns>
+    [HttpPost("inscricao/cadastrar")]
+    [Authorize(Roles = nameof(Role.Administrador))]
+    [ProducesResponseType(typeof(InscricaoResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult> AdicionarInscricaoAsync([FromBody] CandidatoModel inscricao)
     {
         await _inscricaoService.AdicionarInscricaoAsync(inscricao);
         return CreatedAtAction(nameof(ObterInscricaoPorIdAsync), new { id = inscricao.Id }, inscricao);
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> AtualizarInscricaoAsync(int id, [FromBody] CandidatoModel inscricao)
+    /// <summary>
+    /// Atualiza uma inscrição existente.
+    /// </summary>
+    /// <param name="inscricao">Objeto contendo a inscrição atualizada.</param>
+    /// <param name="inscricaoId">Id da inscrição atualizada</param>
+    /// <returns>Objeto contendo informações da disciplina atualizada.</returns>
+    [HttpPut("disciplina/atualizar")]
+    [Authorize(Roles = nameof(Role.Administrador))]
+    [ProducesResponseType(typeof(InscricaoResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> AtualizarInscricaoAsync(int inscricaoId, [FromBody] CandidatoModel inscricao)
     {
-        if (id != inscricao.Id)
+        if (inscricaoId != inscricao.Id)
         {
             return BadRequest();
         }
@@ -55,16 +94,25 @@ public class InscricaoController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> CancelarInscricaoAsync(int id)
+    /// <summary>
+    /// Cancela uma inscricão.
+    /// </summary>
+    /// <param name="inscricaoId">ID da inscrição a ser cancelada.</param>
+    /// <returns>Resposta de inscrição cancelada.</returns>
+    [HttpDelete("cancelar/{id:int}")]
+    [Authorize(Roles = nameof(Role.Administrador))]
+    [ProducesResponseType(typeof(bool), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> CancelarInscricaoAsync(int inscricaoId)
     {
-        var inscricao = await _inscricaoService.ObterInscricaoPorIdAsync(id);
+        var inscricao = await _inscricaoService.ObterInscricaoPorIdAsync(inscricaoId);
         if (inscricao == null)
         {
             return NotFound();
         }
 
-        await _inscricaoService.CancelarInscricaoAsync(id);
+        await _inscricaoService.CancelarInscricaoAsync(inscricaoId);
         return NoContent();
     }
 }

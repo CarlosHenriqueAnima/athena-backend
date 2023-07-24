@@ -18,7 +18,7 @@ public class InscricaoService : IInscricaoService
         return await _inscricaoRepository.ObterInscricaoPorIdAsync(id);
     }
 
-    public async Task<IEnumerable<CandidatoModel>> ObterTodasInscricoesAsync()
+    public async Task<IEnumerable<CandidatoModel>> ObterInscricoesPendentesAsync()
     {
         return await _inscricaoRepository.ObterTodasInscricoesAsync();
     }
