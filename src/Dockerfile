@@ -10,7 +10,7 @@ RUN dotnet restore AthenasAcademy.Services.API/AthenasAcademy.Services.API.cspro
 
 COPY . .
 
-RUN MKDIR /app
+RUN mkdir /app
 
 RUN chmod 777 -R /app
 
