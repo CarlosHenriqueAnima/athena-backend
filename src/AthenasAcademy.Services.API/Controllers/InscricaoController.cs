@@ -23,16 +23,16 @@ public class InscricaoController : ControllerBase
     /// <summary>
     /// Obtém uma inscrição por ID.
     /// </summary>
-    /// <param name="matriculaId">ID da inscrição a ser buscada.</param>
+    /// <param name="inscricaoId">ID da inscrição a ser buscada.</param>
     /// <returns>Objeto contendo informações do candidato.</returns>
     [HttpGet("inscricao/{id:int}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(InscricaoResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<CandidatoModel>> ObterInscricaoPorIdAsync(int matriculaId)
+    public async Task<ActionResult<CandidatoModel>> ObterInscricaoPorIdAsync(int inscricaoId)
     {
-        var inscricao = await _inscricaoService.ObterInscricaoPorIdAsync(matriculaId);
+        var inscricao = await _inscricaoService.ObterInscricaoPorIdAsync(inscricaoId);
         if (inscricao == null)
         {
             return NotFound();
