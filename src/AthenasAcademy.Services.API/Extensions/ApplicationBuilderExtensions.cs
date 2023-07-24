@@ -5,16 +5,12 @@ namespace AthenasAcademy.Services.API.Extensions;
 
 public static class ApplicationBuilderExtensions
 {
-    public static IApplicationBuilder UseSwaggerUIDoc(this IApplicationBuilder builder, IServiceProvider services)
+    public static IApplicationBuilder UseSwaggerUIDoc(this IApplicationBuilder builder, string apiTitulo)
     {
         builder.UseSwaggerUI(options =>
         {
             options.DefaultModelsExpandDepth(-1);
-            foreach (var description in services.GetRequiredService<IApiVersionDescriptionProvider>().ApiVersionDescriptions)
-            {
-                options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
-                    description.GroupName.ToUpperInvariant());
-            }
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", apiTitulo);
         });
 
         return builder;

@@ -1,4 +1,5 @@
 ﻿using AthenasAcademy.Services.Core.Arguments;
+using AthenasAcademy.Services.Core.Configurations.Mappers;
 using AthenasAcademy.Services.Core.Exceptions;
 using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Core.Repositories.Interfaces;
@@ -14,94 +15,83 @@ namespace AthenasAcademy.Services.Core.Services;
 
 public class AutorizaUsuarioService : IAutorizaUsuarioService
 {
-    readonly HttpContext _httpContext;
-    readonly ITokenService _tokenService;
-    readonly IUsuarioRepository _usuarioRepository;
+    private readonly HttpContext _httpContext;
+    private readonly ITokenService _tokenService;
+    private readonly IUsuarioRepository _usuarioRepository;
+    private readonly IObjectConverter _mapper;
 
-    public AutorizaUsuarioService(IHttpContextAccessor httpContextAccessor, ITokenService tokenService, IUsuarioRepository usuarioRepository)
+    public AutorizaUsuarioService(
+        IHttpContextAccessor httpContextAccessor,
+        ITokenService tokenService,
+        IUsuarioRepository usuarioRepository,
+        IObjectConverter objectConverter)
     {
         _httpContext = httpContextAccessor.HttpContext;
         _tokenService = tokenService;
         _usuarioRepository = usuarioRepository;
-        
+        _mapper = objectConverter;
     }
 
+    #region Métodos Públicos
     public async Task<NovoUsuarioResponse> CadastrarUsuario(NovoUsuarioRequest novoUsuario)
     {
-        // Validar se usuario-email já existe
-        if (_usuarioRepository.BuscarUsuario(
-            new() { Email = novoUsuario.Email.Trim().ToLower() }) is null)
+        try
         {
-            throw new APICustomException(
-                message: $"O e-mail {novoUsuario.Email} já está sendo utilizado por outro usuário.",
-                responseType: ExceptionResponseType.Warning,
-                statusCode: HttpStatusCode.BadRequest);
+            await ValidarUsuarioExistenteCadastro(novoUsuario.Email);
+
+            NovoUsuarioArgument argument = _mapper.Map<NovoUsuarioArgument>(novoUsuario);
+            argument.Usuario = novoUsuario.Email.Trim().ToLower();
+            argument.Senha = GerarHashDeSenhaSHA256(novoUsuario.Senha);
+            argument.Ativo = true;
+            argument.DataCadastro = DateTime.Now;
+            argument.DataAlteracao = null;
+
+            UsuarioModel usuario = await _usuarioRepository.CadastrarUsuario(argument);
+
+            TokenModel token = await ObterTokenNovoUsuario(usuario);
+
+            NovoUsuarioResponse response = new()
+            {
+                Usuario = usuario.Usuario,
+                Token = _mapper.Map<TokenResponse>(token)
+            };
+
+            return response;
         }
-
-        // Cria um novo usuário
-        NovoUsuarioArgument usuarioArgument = new()
-        {
-            Usuario = novoUsuario.Email.Trim().ToLower(),
-            Email = novoUsuario.Email.Trim().ToLower(),
-            Senha = GerarHashDeSenhaSHA256(novoUsuario.Senha),
-
-            Ativo = true,
-            DataCadastro = DateTime.Now,
-            DataAlteracao = DateTime.Now
-        };
-        bool result = await _usuarioRepository.CadastrarUsuario(usuarioArgument) != null;
-
-        // Verifica se a criação do usuário foi bem-sucedida
-        if (!result)
+        catch (Exception ex)
         {
             throw new APICustomException(
-                message: "Não foi possível efetivar cadastro do usuário.",
+                message: string.Format("Não foi possível efetivar cadastro do usuário. {0}", ex.Message),
                 responseType: ExceptionResponseType.Warning,
                 statusCode: HttpStatusCode.InternalServerError);
-        }
-        else
-        {
-            _httpContext.Response.StatusCode = (int)HttpStatusCode.Created;
-            return new NovoUsuarioResponse()
-            {
-                Resultado = result,
-                Token = await _tokenService.GerarTokenAsync(
-                    new() { Usuario = novoUsuario.Email.Trim().ToLower() })
-            };
         }
     }
 
     public async Task<LoginUsuarioResponse> LoginUsuario(LoginUsuarioRequest loginUsuario)
     {
-        UsuarioModel usuario = await _usuarioRepository.BuscarUsuario(new() { Email = loginUsuario.Email.Trim().ToLower() });
+        UsuarioModel usuario = await ValidarUsuarioExistenteLogin(loginUsuario.Usuario);
 
-        // Validar se usuario-email existe
-        if (usuario is null)
-        {
-            throw new APICustomException(
-                message: $"O usuário {loginUsuario.Email} não foi localizado.",
-                responseType: ExceptionResponseType.Warning,
-                statusCode: HttpStatusCode.Unauthorized);
-        }
+        ValidarHashDeSenhaSHA256(usuario.Senha, loginUsuario.Senha, true);
 
-        // Verifica credenciais
-        if (!ValidarHashDeSenhaSHA256(usuario.Senha, loginUsuario.Senha))
-        {
-            throw new APICustomException(
-                message: "Login inválido!",
-                responseType: ExceptionResponseType.Warning,
-                statusCode: HttpStatusCode.Unauthorized);
-        }
+        TokenModel token = await ObterTokenNovoUsuario(usuario);
 
-        // Retorna sucesso no login
-        return await Task.FromResult(new LoginUsuarioResponse
+        LoginUsuarioResponse response = new()
         {
             Resultado = true,
-            Token = await _tokenService.GerarTokenAsync(
-                user: new UsuarioModel { Usuario = loginUsuario.Email })
-        });
+            Token = _mapper.Map<TokenResponse>(token)
+        };
+
+        return response;
     }
 
+    public async Task<IEnumerable<UsuarioResponse>> ObterUsuarios()
+    {
+        IEnumerable<UsuarioModel> usuarios = await _usuarioRepository.BuscarUsuarios();
+        return _mapper.Map<IEnumerable<UsuarioResponse>>(usuarios);
+    }
+    #endregion
+
+    #region Métodos Privados
     private string GerarHashDeSenhaSHA256(string senha)
     {
         using (SHA256 sha256 = SHA256.Create())
@@ -119,9 +109,56 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
         }
     }
 
-    private bool ValidarHashDeSenhaSHA256(string senhaHashBanco, string senhaHashLogin)
+    private bool ValidarHashDeSenhaSHA256(string senhaHashBanco, string senhaHashLogin, bool lancarException)
     {
         string senhaHashLoginCalculado = GerarHashDeSenhaSHA256(senhaHashLogin);
-        return senhaHashBanco == senhaHashLoginCalculado;
+        bool senhaConfere = senhaHashBanco == senhaHashLoginCalculado;
+
+        if (!senhaConfere && lancarException)
+            throw new APICustomException(
+                message: "Login inválido!",
+                responseType: ExceptionResponseType.Warning,
+                statusCode: HttpStatusCode.Unauthorized);
+
+        return senhaConfere;
     }
+
+    private async Task<UsuarioModel> ValidarUsuarioExistenteCadastro(string usuario)
+    {
+        UsuarioModel usuarioBanco = await _usuarioRepository.BuscarUsuario(new() { Email = usuario.Trim().ToLower() });
+
+        if (usuarioBanco is not null)
+            throw new APICustomException(
+                message: string.Format("O e-mail {0} não está disponível para cadastro.", usuario),
+                responseType: ExceptionResponseType.Warning,
+                statusCode: HttpStatusCode.BadRequest);
+
+        return usuarioBanco;
+    }
+
+    private async Task<UsuarioModel> ValidarUsuarioExistenteLogin(string usuario)
+    {
+        UsuarioModel usuarioBanco = await _usuarioRepository.BuscarUsuario(new() { Email = usuario.Trim().ToLower() });
+
+        if (usuarioBanco is null)
+            throw new APICustomException(
+                message: string.Format("O usuário '{0}' não foi localizado.", usuario),
+                responseType: ExceptionResponseType.Warning,
+                statusCode: HttpStatusCode.Unauthorized);
+
+        return usuarioBanco;
+    }
+
+    private async Task<TokenModel> ObterTokenNovoUsuario(UsuarioModel usuario)
+    {
+        UsuarioTokenModel usuarioToken = new()
+        {
+            Usuario = usuario.Usuario.Trim().ToLower(),
+            Perfil = (int)usuario.Perfil
+        };
+
+        return await _tokenService.GerarTokenUsuario(usuarioToken);
+    }
+    #endregion
+
 }

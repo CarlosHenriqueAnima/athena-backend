@@ -22,4 +22,9 @@ public class APICustomException : Exception
         ResponseType = responseType;
         StatusCode = statusCode;
     }
+
+    public APICustomException(string message,Exception innerException) : base(message, innerException)
+    {
+
+    }
 }

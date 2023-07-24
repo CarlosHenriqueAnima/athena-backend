@@ -35,7 +35,7 @@ public interface ICursoService
     /// </summary>
     /// <param name="request">Objeto contendo os novos dados do curso.</param>
     /// <returns>Objeto contendo informações do curso atualizado.</returns>
-    Task<CursoResponse> AtualizarCurso(NovoCursoRequest request);
+    Task<CursoResponse> AtualizarCurso(CursoRequest request);
 
     /// <summary>
     /// Desativa um curso existente.

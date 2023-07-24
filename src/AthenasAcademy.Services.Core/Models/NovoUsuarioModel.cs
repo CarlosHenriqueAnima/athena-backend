@@ -1,8 +1,8 @@
-﻿namespace AthenasAcademy.Services.Core.Models;
+﻿using AthenasAcademy.Services.Core.Configurations.Enums;
 
-public class NovoUsuarioModel
+namespace AthenasAcademy.Services.Core.Models;
+
+public class NovoUsuarioModel : UsuarioModel
 {
-    public string Usuario { get; set; }
 
-    public string Senha { get; set; }
 }

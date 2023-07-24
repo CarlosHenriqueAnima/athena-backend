@@ -1,4 +1,5 @@
-﻿using AthenasAcademy.Services.Core.Models;
+﻿using AthenasAcademy.Services.Core.Arguments;
+using AthenasAcademy.Services.Core.Models;
 
 namespace AthenasAcademy.Services.Core.Repositories.Interfaces;
 
@@ -59,6 +60,12 @@ public interface ICursoRepository
     /// </summary>
     /// <returns>Enumerable de DisciplinaModel contendo as disciplinas encontradas.</returns>
     Task<IEnumerable<DisciplinaModel>> ObterDisciplinas();
+
+    /// <summary>
+    /// Obtém todas as disciplinas cadastradas.
+    /// </summary>
+    /// <returns>Enumerable de DisciplinaModel contendo as disciplinas encontradas.</returns>
+    Task<IEnumerable<DisciplinaModel>> ObterDisciplinasDoCurso(int idCurso);
 
     /// <summary>
     /// Cadastra uma nova disciplina.
