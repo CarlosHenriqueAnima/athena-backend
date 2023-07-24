@@ -1,5 +1,9 @@
-﻿using AthenasAcademy.Services.Core.Models;
+﻿using AthenasAcademy.Services.Core.Configurations.Enums;
+using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Core.Services;
+using AthenasAcademy.Services.Core.Services.Interfaces;
+using AthenasAcademy.Services.Domain.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,10 +21,19 @@ public class MatriculaController : ControllerBase
         _matriculaService = matriculaService;
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<AlunoDetalhesModel>> ObterMatriculaPorId(int id)
+    /// <summary>
+    /// Obtém uma matrícula por ID.
+    /// </summary>
+    /// <param name="matriculaId">ID da matrícula a ser buscada.</param>
+    /// <returns>Objeto contendo informações do candidato.</returns>
+    [HttpGet("matricula/{id:int}")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(MatriculaResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<AlunoDetalhesModel>> ObterMatriculaPorId(int matriculaId)
     {
-        var matricula = await _matriculaService.ObterMatriculaPorId(id);
+        var matricula = await _matriculaService.ObterMatriculaPorId(matriculaId);
         if (matricula == null)
         {
             return NotFound();
@@ -29,24 +42,51 @@ public class MatriculaController : ControllerBase
         return matricula;
     }
 
-    [HttpGet]
+    /// <summary>
+    /// Obtém todas as matrículas.
+    /// </summary>
+    /// <returns>Lista de objetos contendo informações das matrículas.</returns>
+    [HttpGet("matricula/todas")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(MatriculaResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<IEnumerable<AlunoDetalhesModel>>> ObterTodasMatriculas()
     {
         var matriculas = await _matriculaService.ObterTodasMatriculas();
         return Ok(matriculas);
     }
 
-    [HttpPost]
+    /// <summary>
+    /// Cadastra uma matrícula.
+    /// </summary>
+    /// <param name="matricula">Objeto contendo os dados de matrícula.</param>
+    /// <returns>Objeto contendo informações da matrícula cadastrada.</returns>
+    [HttpPost("matricula/cadastrar")]
+    [Authorize(Roles = nameof(Role.Administrador))]
+    [ProducesResponseType(typeof(MatriculaResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult> AdicionarMatricula([FromBody] AlunoDetalhesModel matricula)
     {
         await _matriculaService.AdicionarMatricula(matricula);
         return CreatedAtAction(nameof(ObterMatriculaPorId), new { id = matricula.Id }, matricula);
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> AtualizarMatricula(int id, [FromBody] AlunoDetalhesModel matricula)
+    /// <summary>
+    /// Atualiza uma inscrição existente.
+    /// </summary>
+    /// <param name="matricula">Objeto contendo a inscrição atualizada.</param>
+    /// <param name="matriculaId">Id da inscrição atualizada</param>
+    /// <returns>Objeto contendo informações da inscrição atualizada.</returns>
+    [HttpPut("matricula/atualizar")]
+    [Authorize(Roles = nameof(Role.Administrador))]
+    [ProducesResponseType(typeof(MatriculaResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> AtualizarMatricula(int matriculaId, [FromBody] AlunoDetalhesModel matricula)
     {
-        if (id != matricula.Id)
+        if (matriculaId != matricula.Id)
         {
             return BadRequest();
         }
@@ -55,16 +95,25 @@ public class MatriculaController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> CancelarMatricula(int id)
+    /// <summary>
+    /// Cancela uma inscricão.
+    /// </summary>
+    /// <param name="matriculaId">ID da inscrição a ser cancelada.</param>
+    /// <returns>Confirmação de inscrição cancelada.</returns>
+    [HttpDelete("matricula/cancelar/{id:int}")]
+    [Authorize(Roles = nameof(Role.Administrador))]
+    [ProducesResponseType(typeof(bool), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> CancelarMatricula(int matriculaId)
     {
-        var matricula = await _matriculaService.ObterMatriculaPorId(id);
+        var matricula = await _matriculaService.ObterMatriculaPorId(matriculaId);
         if (matricula == null)
         {
             return NotFound();
         }
 
-        await _matriculaService.CancelarMatricula(id);
+        await _matriculaService.CancelarMatricula(matriculaId);
         return NoContent();
     }
 }
