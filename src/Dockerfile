@@ -14,7 +14,7 @@ RUN mkdir /app
 
 RUN chmod 777 -R /app
 
-RUN dotnet publish AthenasAcademy.Services.API/AthenasAcademy.Services.API.csproj -c Release -o /app
+RUN dotnet publish /src/AthenasAcademy.Services.API/AthenasAcademy.Services.API.csproj -c Release -o /app
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS final
 #RUN mkdir /app
