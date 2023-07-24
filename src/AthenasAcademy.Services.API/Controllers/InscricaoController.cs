@@ -57,9 +57,9 @@ public class InscricaoController : ControllerBase
     }
 
     /// <summary>
-    /// Cadastra um novo curso.
+    /// Cadastra uma nova inscrição.
     /// </summary>
-    /// <param name="inscricao">Objeto contendo os dados do novo curso.</param>
+    /// <param name="inscricao">Objeto contendo os dados da nova inscrição.</param>
     /// <returns>Objeto contendo informações da inscrição cadastrada.</returns>
     [HttpPost("inscricao/cadastrar")]
     [Authorize(Roles = nameof(Role.Administrador))]
