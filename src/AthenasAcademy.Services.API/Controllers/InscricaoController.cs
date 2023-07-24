@@ -25,7 +25,7 @@ public class InscricaoController : ControllerBase
     /// </summary>
     /// <param name="matriculaId">ID da inscrição a ser buscada.</param>
     /// <returns>Objeto contendo informações do candidato.</returns>
-    [HttpGet("buscar/{id:int}")]
+    [HttpGet("inscricao/{id:int}")]
     [AllowAnonymous]
     [ProducesResponseType(typeof(InscricaoResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
@@ -77,8 +77,8 @@ public class InscricaoController : ControllerBase
     /// </summary>
     /// <param name="inscricao">Objeto contendo a inscrição atualizada.</param>
     /// <param name="inscricaoId">Id da inscrição atualizada</param>
-    /// <returns>Objeto contendo informações da disciplina atualizada.</returns>
-    [HttpPut("disciplina/atualizar")]
+    /// <returns>Objeto contendo informações da inscrição atualizada.</returns>
+    [HttpPut("inscricao/atualizar")]
     [Authorize(Roles = nameof(Role.Administrador))]
     [ProducesResponseType(typeof(InscricaoResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
@@ -98,8 +98,8 @@ public class InscricaoController : ControllerBase
     /// Cancela uma inscricão.
     /// </summary>
     /// <param name="inscricaoId">ID da inscrição a ser cancelada.</param>
-    /// <returns>Resposta de inscrição cancelada.</returns>
-    [HttpDelete("cancelar/{id:int}")]
+    /// <returns>Confirmação de inscrição cancelada.</returns>
+    [HttpDelete("inscricao/cancelar/{id:int}")]
     [Authorize(Roles = nameof(Role.Administrador))]
     [ProducesResponseType(typeof(bool), StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
