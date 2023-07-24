@@ -18,20 +18,19 @@ public class BaseRepository
 
     protected IDbConnection GetConnection(Database database)
     {
-        if (_connection is null)
+        try
         {
-            try
-            {
-                string connectionString = _configuration.GetConnectionString(database.ToString());
-                _connection = new NpgsqlConnection(connectionString);
-                _connection.Open();
-            }
-            catch (Exception ex)
-            {
-                throw new DatabaseCustomException("Erro ao tentar se conectar com a base de dados.", ExceptionResponseType.Error, ex);
-            }
+            //if (_connection is null)
+            //    _connection = new NpgsqlConnection(_configuration.GetConnectionString(database.ToString()));
+            _connection = new NpgsqlConnection(_configuration.GetConnectionString(database.ToString()));
+
+        }
+        catch (Exception ex)
+        {
+            throw new DatabaseCustomException("Erro ao tentar se conectar com a base de dados.", ExceptionResponseType.Error, ex);
         }
 
+        _connection.Open();
         return _connection;
     }
 }

@@ -2,7 +2,8 @@
 
 namespace AthenasAcademy.Services.Core.Models;
 
-public class UsuarioTokenModel : TokenDTO
+public class UsuarioTokenModel
 {
-
+    public string Usuario { get; set; }
+    public int Perfil { get; set; }
 }

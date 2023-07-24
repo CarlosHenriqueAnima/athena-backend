@@ -11,6 +11,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Filters\**" />
+	  <Content Remove="Filters\**" />
+	  <EmbeddedResource Remove="Filters\**" />
+	  <None Remove="Filters\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
@@ -20,10 +27,6 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\AthenasAcademy.Services.Core\AthenasAcademy.Services.Core.csproj" />
 	  <ProjectReference Include="..\AthenasAcademy.Services.Domain\AthenasAcademy.Services.Domain.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Configurations\Enums\" />
 	</ItemGroup>
 
 </Project>

@@ -4,17 +4,18 @@ using Microsoft.OpenApi.Models;
 using System.Reflection;
 using AthenasAcademy.Services.Core.Services.Interfaces;
 using AthenasAcademy.Services.Core.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Core.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using AthenasAcademy.Services.Core.Configurations.Mappers;
 
 namespace AthenasAcademy.Services.API.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddServicosScoped(this IServiceCollection services)
+    public static IServiceCollection AddAthenasServicesDI(this IServiceCollection services)
     {
         services.AddScoped<IAlunoService, AlunoService>();
         services.AddScoped<ICertificadoService, CertificadoService>();
@@ -28,7 +29,7 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddRepositoriosSingleton(this IServiceCollection services)
+    public static IServiceCollection AddAthenasRepositoriesDI(this IServiceCollection services)
     {
         services.AddSingleton<IUsuarioRepository, UsuarioRepository>();
         services.AddSingleton<IAlunoRepository, AlunoRepository>();
@@ -93,23 +94,27 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddAutenticacaoJwtBearer(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(options =>
-                    {
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateIssuer = true,
-                            ValidateAudience = true,
-                            ValidateLifetime = true,
-                            ValidateIssuerSigningKey = true,
-                            ValidIssuer = configuration["TokenConfiguration:Issue"],
-                            ValidAudience = configuration["TokenConfiguration:Audience"],
-                            IssuerSigningKey = new SymmetricSecurityKey(
-                                Encoding.UTF8.GetBytes(configuration["Jwt:key"]))
-                        };
-                    });
+        var key = Encoding.UTF8.GetBytes(configuration["Jwt:key"]);
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.RequireHttpsMetadata = false;
+            options.SaveToken = true;
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = false,
+                ValidateAudience = false,
+            };
+        });
 
         return services;
     }
@@ -123,11 +128,15 @@ public static class ServiceCollectionExtensions
             // Define o esquema de segurança Bearer
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                Name = "Authorization",
-                Type = SecuritySchemeType.ApiKey,
-                Scheme = "Bearer",
+                //Name = "Authorization",
+                //Type = SecuritySchemeType.ApiKey,
+                //Scheme = "Bearer",
+                //BearerFormat = "JWT",
+                //In = ParameterLocation.Header,
+
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
                 BearerFormat = "JWT",
-                In = ParameterLocation.Header,
                 Description = "Header de autenticação JWT - Schema Bearer.\r\n\r\nInforme 'Bearer <token>'.\r\n\r\n"
             });
 
@@ -161,4 +170,16 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    public static IServiceCollection AddPoliciesCors(this IServiceCollection services)
+    {
+        services.AddCors(options =>
+        {
+            options.AddPolicy("api-cors", builder =>
+            {
+                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            });
+        });
+
+        return services;
+    }
 }

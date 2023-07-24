@@ -15,4 +15,7 @@ public class DisciplinaRequest
 
     [Range(1, int.MaxValue, ErrorMessage = "A Carga Horária deve ser um valor positivo.")]
     public int CargaHoraria { get; set; }
+
+    [Required(ErrorMessage = "O ID do Curso é obrigatório.")]
+    public int IdCurso { get; set; }
 }

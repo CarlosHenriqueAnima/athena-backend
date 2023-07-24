@@ -8,9 +8,9 @@ public class NovoUsuarioArgument
 
     public string Senha { get; set; }
 
-    public bool Ativo { get; set; } = true;
+    public bool Ativo { get; set; }
 
-    public DateTime DataCadastro { get; set; } = DateTime.Now;
+    public DateTime DataCadastro { get; set; }
 
-    public DateTime DataAlteracao { get; set; } = DateTime.Now;
+    public DateTime? DataAlteracao { get; set; }
 }
