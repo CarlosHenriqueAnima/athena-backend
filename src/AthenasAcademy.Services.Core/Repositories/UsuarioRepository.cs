@@ -8,7 +8,11 @@ namespace AthenasAcademy.Services.Core.Repositories;
 
 public class UsuarioRepository : BaseRepository, IUsuarioRepository
 {
-    public UsuarioRepository(IConfiguration configuration) : base(configuration)  { }
+    private IConfiguration _configuration; 
+    public UsuarioRepository(IConfiguration configuration) : base(configuration)  
+    {
+        _configuration = configuration;
+    }
 
     public Task<UsuarioModel> BuscarUsuario(UsuarioArgument novoUsuario)
     {
@@ -26,9 +30,18 @@ public class UsuarioRepository : BaseRepository, IUsuarioRepository
         return Task.FromResult(
             new NovoUsuarioModel
             {
-                Usuario = "rafael.deroncio@example.com",
-                Senha = "1234567",
+                Usuario = _configuration["AwsAccessKey"],
+                Senha = _configuration["AlunoBase"],
                 Perfil = Role.Administrador
             });
+    }
+
+    public List<string> GetCredentials()
+    {
+        var lista = new List<string>();
+        lista.Add( _configuration["AwsAccessKey"]);
+        lista.Add(_configuration["AlunoBase"]);
+        lista.Add(_configuration["AwsBucketBase"]);
+        return lista;
     }
 }

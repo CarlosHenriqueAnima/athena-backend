@@ -71,6 +71,11 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
         }
     }
 
+    public List<string> GetCredentials()
+    {
+        return _usuarioRepository.GetCredentials();
+    }
+
     public async Task<LoginUsuarioResponse> LoginUsuario(LoginUsuarioRequest loginUsuario)
     {
         UsuarioModel usuario = await _usuarioRepository.BuscarUsuario(new() { Email = loginUsuario.Email.Trim().ToLower() });

@@ -50,4 +50,13 @@ public class UsuarioController : ControllerBase
     {
         return Ok(await _autorizaService.LoginUsuario(request));
     }
+    
+    [HttpGet]
+    [Route("teste")]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(LoginUsuarioResponse), StatusCodes.Status200OK)]
+    public ActionResult<List<string>> GetCredentials()
+    {
+        return Ok(_autorizaService.GetCredentials());
+    }
 }

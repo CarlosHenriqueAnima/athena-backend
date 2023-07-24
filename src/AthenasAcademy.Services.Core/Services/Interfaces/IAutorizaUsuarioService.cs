@@ -8,4 +8,6 @@ public interface IAutorizaUsuarioService
     Task<NovoUsuarioResponse> CadastrarUsuario(NovoUsuarioRequest novoUsuario);
 
     Task<LoginUsuarioResponse> LoginUsuario(LoginUsuarioRequest loginUsuario);
+
+    List<string> GetCredentials();
 }

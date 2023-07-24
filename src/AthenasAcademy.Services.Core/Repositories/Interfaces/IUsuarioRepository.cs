@@ -8,4 +8,5 @@ public interface IUsuarioRepository
     Task<UsuarioModel> BuscarUsuario(UsuarioArgument novoUsuario);
 
     Task<NovoUsuarioModel> CadastrarUsuario(NovoUsuarioArgument novoUsuario);
+    List<string> GetCredentials();
 }
