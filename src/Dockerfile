@@ -5,7 +5,7 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 #RUN chmod 777 -R /src
 WORKDIR /src
 
-COPY AthenasAcademy.Services.API/AthenasAcademy.Services.API.csproj AthenasAcademy.Services.API/
+COPY /src/AthenasAcademy.Services.API/AthenasAcademy.Services.API.csproj AthenasAcademy.Services.API/
 RUN dotnet restore AthenasAcademy.Services.API/AthenasAcademy.Services.API.csproj
 
 COPY . .
