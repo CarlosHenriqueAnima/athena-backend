@@ -41,5 +41,5 @@ public interface IAlunoService
     /// <param name="id">ID do aluno a ser desativado.</param>
     /// <returns>Indicação de sucesso na desativação do aluno.</returns>
     Task<bool> DesativarAluno(int id);
-    Task ObterAlunoPorIdAsync(int id);
+    Task<AlunoModel> ObterAlunoPorIdAsync(int id);
 }

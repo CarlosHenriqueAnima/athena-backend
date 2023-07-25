@@ -1,72 +1,93 @@
-﻿using AthenasAcademy.Services.Core.Models;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
+using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Core.Services.Interfaces;
-using AthenasAcademy.Services.Domain.Requests;
+using AutoMapper;
 using AthenasAcademy.Services.Domain.Responses;
 
-
-namespace AthenasAcademy.Services.Core.Services;
-
-public class AlunoService : IAlunoService
+namespace AthenasAcademy.Services.Core.Services
 {
-    private readonly IAlunoRepository _alunoRepository;
-
-    public AlunoService(IAlunoRepository alunoRepository)
+    public class AlunoService : IAlunoService
     {
-        _alunoRepository = alunoRepository;
-    }
-
-    public async Task<AlunoModel> AtualizarAluno(AlunoModel aluno)
-    {
-        if (aluno == null)
+        private readonly IAlunoRepository _alunoRepository;
+        private readonly IMapper _mapper;
+        public AlunoService(IAlunoRepository alunoRepository)
         {
-            throw new ArgumentNullException(nameof(aluno), "O aluno não pode ser nulo.");
+            _alunoRepository = alunoRepository;
+            _mapper = AutoMapperConfig.Configure();
         }
 
-        // Implemente aqui a validação dos dados do aluno, se necessário.
-
-        await _alunoRepository.AtualizarAlunoAsync(aluno);
-        return aluno;
-    }
-
-    public async Task<AlunoModel> AdicionarAluno(AlunoModel aluno)
-    {
-        if (aluno == null)
+        public async Task<AlunoModel> AtualizarAluno(AlunoModel aluno)
         {
-            throw new ArgumentNullException(nameof(aluno), "O aluno não pode ser nulo.");
+            if (aluno == null)
+            {
+                throw new ArgumentNullException(nameof(aluno), "O aluno não pode ser nulo.");
+            }
+
+            // Implemente aqui a validação dos dados do aluno, se necessário.
+
+            await _alunoRepository.AtualizarAlunoAsync(aluno);
+            return aluno;
         }
 
-        // Implemente aqui a validação dos dados do aluno, se necessário.
-
-        await _alunoRepository.AdicionarAlunoAsync(aluno);
-        return aluno;
-    }
-
-    public async Task<bool> DesativarAluno(int id)
-    {
-        // Verifique se o aluno existe antes de desativá-lo
-        var alunoExistente = await _alunoRepository.ObterAlunoPorIdAsync(id);
-        if (alunoExistente == null)
+        public async Task<AlunoModel> AdicionarAluno(AlunoModel aluno)
         {
-            return false; // Indica que o aluno não foi encontrado
+            if (aluno == null)
+            {
+                throw new ArgumentNullException(nameof(aluno), "O aluno não pode ser nulo.");
+            }
+
+            // Implemente aqui a validação dos dados do aluno, se necessário.
+
+            try
+            {
+                await _alunoRepository.AdicionarAlunoAsync(aluno);
+                return aluno;
+            }
+            catch (Exception ex)
+            {
+                // Aqui você pode fazer algum tratamento ou log da exceção, se necessário.
+                throw new Exception("Ocorreu um erro ao adicionar o aluno.", ex);
+            }
         }
 
-        await _alunoRepository.RemoverAlunoAsync(id);
-        return true; // Indica que o aluno foi desativado com sucesso
-    }
+        public async Task<bool> DesativarAluno(int id)
+        {
+            // Verifique se o aluno existe antes de desativá-lo
+            var alunoExistente = await _alunoRepository.ObterAlunoPorIdAsync(id);
+            if (alunoExistente == null)
+            {
+                return false; // Indica que o aluno não foi encontrado
+            }
 
-    public async Task<AlunoModel> ObterAlunoPorId(int id)
-    {
-        return await _alunoRepository.ObterAlunoPorIdAsync(id);
-    }
+            await _alunoRepository.RemoverAlunoAsync(id);
+            return true; // Indica que o aluno foi desativado com sucesso
+        }
 
-    public async Task<IEnumerable<AlunoModel>> ObterTodosAlunos()
-    {
-        return await _alunoRepository.ObterTodosAlunosAsync();
-    }
+        public async Task<AlunoModel> ObterAlunoPorId(int id)
+        {
 
-    Task IAlunoService.ObterAlunoPorIdAsync(int id)
-    {
-        throw new NotImplementedException();
+            return await _alunoRepository.ObterAlunoPorIdAsync(id);
+            //if (alunoModel == null)
+            //{
+              //  return null;
+            //}
+            //var alunoResponse = _mapper.Map<AlunoResponse>(alunoModel);
+            //var alunoModelFromResponse = _mapper.Map<AlunoModel>(alunoResponse);
+           // return alunoModelFromResponse;
+        }
+
+        public async Task<AlunoModel> ObterAlunoPorIdAsync(int id)
+        {
+            return await _alunoRepository.ObterAlunoPorIdAsync(id);
+        }
+
+        public async Task<IEnumerable<AlunoModel>> ObterTodosAlunos()
+        {
+            return await _alunoRepository.ObterTodosAlunosAsync();
+        }
     }
 }

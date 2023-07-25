@@ -6,14 +6,17 @@ using System.Threading.Tasks;
 
 namespace AthenasAcademy.Services.Core.Services.Interfaces
 {
-    public interface IMatriculaService
-    {
+    
+        // Métodos relacionados a matrículas
+        public interface IMatriculaService
+        {
         Task<MatriculaResponse> ObterMatricula(int id);
         Task<IEnumerable<MatriculaResponse>> ObterTodasMatriculas();
-        Task<NovaMatriculaResponse> CadastrarMatricula(NovaMatriculaRequest request);
-        Task<MatriculaResponse> AtualizarMatricula(NovaMatriculaRequest request);
+        Task<NovaMatriculaResponse> CadastrarMatricula(MatriculaModel matricula);
+        Task<MatriculaResponse> AtualizarMatricula(MatriculaModel matricula);
         Task<bool> DesativarMatricula(int id);
-        Task CadastrarMatricula(MatriculaModel matricula);
-        Task AtualizarMatricula(MatriculaModel matricula);
     }
-}
+
+     
+    }
+

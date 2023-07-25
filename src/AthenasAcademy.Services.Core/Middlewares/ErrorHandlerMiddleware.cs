@@ -36,8 +36,12 @@ public class ExceptionHandlerMiddleware
 
             await context.Response.WriteAsync(jsonResponse);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            // Registrar a exceção original para fins de depuração
+            Console.WriteLine($"Exceção não tratada: {ex}");
+
+            // Retornar uma resposta genérica para o cliente
             ExceptionResponse errorResponse = new()
             {
                 ResponseType = ExceptionResponseType.Error,

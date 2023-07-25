@@ -8,7 +8,7 @@ namespace AthenasAcademy.Services.Domain.Responses
 {
     public class NovaMatriculaResponse
     {
-        public int Id { get; set; }
+        public int Id { get; set; } 
         public int AlunoId { get; set; }
         public DateTime DataMatricula { get; set; }
         public string Curso { get; set; }
