@@ -12,7 +12,7 @@ namespace AthenasAcademy.Services.API.Controllers;
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
 [ApiController]
-//[Authorize]
+[Authorize]
 public class CertificadoController : ControllerBase
 {
     private readonly ICertificadoService _certificadoService;
@@ -47,7 +47,7 @@ public class CertificadoController : ControllerBase
     /// <param name="matricula">Número da matricula para o qual o certificado será obtido.</param>
     /// <returns>Retorna um IActionResult que contém o certificado em formato PDF.</returns>
     [HttpPost("obter/{matricula}")]
-    //[Authorize(Roles = "Aluno, Admnistrador")]
+    [Authorize(Roles = "Aluno, Admnistrador")]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterCertificado(string matricula)

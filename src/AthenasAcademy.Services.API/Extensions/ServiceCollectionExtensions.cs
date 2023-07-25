@@ -235,7 +235,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddCors(options =>
         {
-            options.AddPolicy("api-cors", builder =>
+            options.AddDefaultPolicy(builder =>
             {
                 builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
             });
@@ -287,4 +287,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IAwsS3Repository, AwsS3Repository>();
         return services;
     }
+
+    
 }

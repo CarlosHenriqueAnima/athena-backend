@@ -5,6 +5,8 @@ using Microsoft.Extensions.WebEncoders.Testing;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddReadCredentials();
+
 builder.Services.AddControllers();
 
 builder.Services.AddAthenasServicesDI();// Adicionando Services
@@ -36,21 +38,6 @@ builder.Services.AddAuthentication(builder.Configuration); // Adicionando config
 builder.Services.AddAuthorization(); // Adicionando policies de admin e usuario
 
 builder.Services.AddHttpContextAccessor();
-
-var credenciais = ReadCredentials.GetCredentials();
-
-builder.Configuration.AddInMemoryCollection(new Dictionary<string, string>
-{
-    {"AwsAccessKey", credenciais.AwsAccessKey},
-    {"AwsSecretKey", credenciais.AwsSecretKey},
-    {"AwsBucketBase", credenciais.AwsBucketBase},
-    {"InscricaoBase", credenciais.StringConnectionBaseInscricao},
-    {"AlunoBase", credenciais.StringConnectionBaseAluno},
-    {"MatriculaBase", credenciais.StringConnectionBaseMatricula},
-    {"PagamentoBase", credenciais.StringConnectionBasePagamento},
-    {"CursoBase", credenciais.StringConnectionBaseCurso},
-    {"CertificadoBase", credenciais.StringConnectionBaseCertificado}
-});
 
 WebApplication app = builder.Build();
 
