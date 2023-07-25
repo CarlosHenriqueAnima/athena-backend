@@ -80,7 +80,7 @@ public class CertificadoService : ICertificadoService
 
     public async Task<MemoryStream> ObterCertificado(string matricula)
     {
-        var certificado = await _certificadoRepository.ObterCertificado(matricula);
+        CertificadoModel certificado = await _certificadoRepository.ObterCertificado(matricula);
 
         if (certificado is null)
             throw new APICustomException(
