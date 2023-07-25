@@ -9,6 +9,8 @@ builder.Services.AddAthenasServicesDI();// Adicionando Services
 
 builder.Services.AddAthenasRepositoriesDI();// Adicionando Repositories
 
+builder.Services.AddAWSBucketS3(builder.Configuration);
+
 builder.Services.AddSingleton<IObjectConverter, ObjectConverter>();
 
 builder.Services.AddPoliciesCors(); // Aciciona as políticas de CORS
@@ -21,9 +23,11 @@ builder.Services.AddSwaggerGenDoc("API Athenas Academy", "1.0");// Adicionando s
 
 builder.Services.AddSwaggerAutenticacaoJwtBearer(); // Adicionando configuração JWT Tokens no swagger
 
+builder.Services.AddConfiguracaoRestClient(builder.Configuration); // Adiciona Client 
+
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddConfigureLowerCaseRoutes();
+builder.Services.AddRotasLowerCase();
 
 builder.Services.AddAuthentication(builder.Configuration); // Adicionando configuração JWT Tokens
 

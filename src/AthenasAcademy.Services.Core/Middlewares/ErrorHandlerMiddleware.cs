@@ -36,7 +36,7 @@ public class ExceptionHandlerMiddleware
 
             await context.Response.WriteAsync(jsonResponse);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             ExceptionResponse errorResponse = new()
             {

@@ -1,6 +1,6 @@
-﻿namespace AthenasAcademy.Services.Core.Models;
+﻿namespace AthenasAcademy.Services.Core.Arguments;
 
-public class CertificadoModel
+public class NovoCertificadoArgument
 {
     public int Id { get; set; }
 

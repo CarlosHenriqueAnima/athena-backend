@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace AthenasAcademy.Services.Core.Services;
@@ -22,10 +23,10 @@ public class TokenService : ITokenService
 
     public async Task<TokenModel> GerarTokenUsuario(UsuarioTokenModel usuario)
     {
-        (string token, DateTime validade) = GerarToken(usuario);
+        (string token, DateTime validade) = GerarTokenJwt(usuario);
 
         return await Task.FromResult<TokenModel>(
-            new ()
+            new()
             {
                 Menssagem = "Token OK",
                 Token = token,
@@ -33,7 +34,26 @@ public class TokenService : ITokenService
             });
     }
 
-    public (string, DateTime) GerarToken(UsuarioTokenModel usuario)
+    public async Task<string> GerarTokenRequestClient()
+    {
+        var key = _configuration.GetValue<string>("Clients:Tokken:Key");
+
+        using (SHA256 sha256 = SHA256.Create())
+        {
+            byte[] passwordBytes = Encoding.UTF8.GetBytes(key);
+            byte[] hashedBytes = sha256.ComputeHash(passwordBytes);
+
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in hashedBytes)
+            {
+                sb.Append(b.ToString("x2"));
+            }
+
+            return await Task.FromResult(sb.ToString());
+        }
+    }
+
+    private (string, DateTime) GerarTokenJwt(UsuarioTokenModel usuario)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var tokenExpires = GerarTokenExpires();
@@ -104,4 +124,6 @@ public class TokenService : ITokenService
             SigningCredentials = tokenCredentials
         };
     }
+
+
 }
