@@ -41,11 +41,9 @@ namespace AthenasAcademy.Services.API.Controllers
         [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> ObterTodosAlunosAsync()
-<<<<<<< HEAD
+
          {
-=======
-        {
->>>>>>> 7f24942145c284dece18f132624604ac986811b1
+
             var alunos = await _alunoService.ObterTodosAlunos();
             return Ok(alunos);
         }
