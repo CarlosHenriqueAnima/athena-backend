@@ -9,7 +9,13 @@ namespace AthenasAcademy.Services.API.Controllers;
 public class MatriculaController : ControllerBase
 {
     [HttpGet]
-    public IActionResult Teste()
+    public IActionResult GerarContrato()
+    {
+        return Ok();
+    }
+
+    [HttpGet]
+    public IActionResult ValidarContrato()
     {
         return Ok();
     }
