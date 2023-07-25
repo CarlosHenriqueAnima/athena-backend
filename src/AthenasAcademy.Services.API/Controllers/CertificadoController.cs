@@ -31,12 +31,12 @@ public class CertificadoController : ControllerBase
     /// </summary>
     /// <param name="matricula">Número da matricula para o qual o certificado será gerado.</param>
     /// <returns>Retorna um IActionResult que contém o certificado gerado.</returns>
-    [HttpGet("gerar")]
-    //[Authorize(Roles = "Aluno, Admnistrador")]
-    //[ProducesResponseType(typeof(NovoCertificadoResponse), StatusCodes.Status201Created)]
-    //[ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
-    //[ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GerarCertificado()
+    [HttpGet("gerar/{matricula}")]
+    [Authorize(Roles = "Aluno, Admnistrador")]
+    [ProducesResponseType(typeof(NovoCertificadoResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GerarCertificado(string matricula)
     {
         return Ok(await _certificadoService.GerarCertificado(string.Empty));
     }
@@ -47,7 +47,7 @@ public class CertificadoController : ControllerBase
     /// <param name="matricula">Número da matricula para o qual o certificado será obtido.</param>
     /// <returns>Retorna um IActionResult que contém o certificado em formato PDF.</returns>
     [HttpPost("obter/{matricula}")]
-    //[Authorize(Roles = "Aluno, Admnistrador")]
+    Authorize(Roles = "Aluno, Admnistrador")]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterCertificado(string matricula)
