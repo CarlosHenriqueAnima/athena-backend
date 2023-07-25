@@ -4,9 +4,9 @@ namespace AthenasAcademy.Services.Core.Services.Interfaces;
 
 public interface IMatriculaService
 {
-    Task<AlunoDetalhesModel> ObterMatriculaPorId(int id);
-    Task<IEnumerable<AlunoDetalhesModel>> ObterTodasMatriculas();
-    Task AdicionarMatricula(AlunoDetalhesModel matricula);
-    Task AtualizarMatricula(AlunoDetalhesModel matricula);
-    Task CancelarMatricula(int id);
+    Task<AlunoDetalhesModel> ObterMatriculaPorIdAsync(int id);
+    Task<IEnumerable<AlunoDetalhesModel>> ObterTodasMatriculasAsync();
+    Task AdicionarMatriculaAsync(AlunoDetalhesModel matricula);
+    Task AtualizarMatriculaAsync(AlunoDetalhesModel matricula);
+    Task CancelarMatriculaAsync(int id);
 }

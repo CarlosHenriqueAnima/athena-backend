@@ -1,10 +1,8 @@
 ﻿using AthenasAcademy.Services.Core.Configurations.Enums;
 using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Core.Services;
-using AthenasAcademy.Services.Core.Services.Interfaces;
 using AthenasAcademy.Services.Domain.Responses;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AthenasAcademy.Services.API.Controllers;
