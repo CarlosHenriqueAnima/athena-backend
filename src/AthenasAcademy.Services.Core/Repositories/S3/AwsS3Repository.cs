@@ -47,8 +47,8 @@ public class AwsS3Repository : IAwsS3Repository
     {
         try
         {
-            string accessKey = _configuration.GetValue<string>("AWS:S3:AccessKey");
-            string secretKey = _configuration.GetValue<string>("AWS:S3:SecretKey");
+            string accessKey = _configuration["AwsAccessKey"];
+            string secretKey = _configuration["AwsSecretKey"];
 
             BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
 

@@ -22,15 +22,45 @@ public class BaseRepository
         {
             //if (_connection is null)
             //    _connection = new NpgsqlConnection(_configuration.GetConnectionString(database.ToString()));
-            _connection = new NpgsqlConnection(_configuration.GetConnectionString(database.ToString()));
+            _connection = new NpgsqlConnection(GetConnectionString(database));
 
         }
         catch (Exception ex)
         {
-            throw new DatabaseCustomException("Erro ao tentar se conectar com a base de dados.", ExceptionResponseType.Error, ex);
+            throw new DatabaseCustomException($"Erro ao tentar se conectar com a base de dados. {ex.Message}", ExceptionResponseType.Error, ex);
         }
 
         _connection.Open();
         return _connection;
+    }
+
+    private string GetConnectionString(Database database) 
+    {
+        switch (database)
+        {
+            case Database.Usuario:
+                return _configuration["UsuarioBase"];
+
+            case Database.Inscricao:
+                return _configuration["InscricaoBase"];
+
+            case Database.Aluno:
+                return _configuration["AlunoBase"];
+
+            case Database.Matricula:
+                return _configuration["MatriculaBase"];
+
+            case Database.Pagamento:
+                return _configuration["PagamentoBase"];
+
+            case Database.Curso:
+                return _configuration["CursoBase"];
+
+            case Database.Certificado:
+                return _configuration["CertificadoBase"];
+
+            default:
+                throw new NotImplementedException($"Database {database} não implementado.");
+        }
     }
 }

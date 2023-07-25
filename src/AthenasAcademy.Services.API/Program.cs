@@ -1,7 +1,5 @@
 using AthenasAcademy.Services.API.Extensions;
-using AthenasAcademy.Services.Core.Configurations.Credentials;
 using AthenasAcademy.Services.Core.Configurations.Mappers;
-using Microsoft.Extensions.WebEncoders.Testing;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +11,7 @@ builder.Services.AddAthenasServicesDI();// Adicionando Services
 
 builder.Services.AddAthenasRepositoriesDI();// Adicionando Repositories
 
-builder.Services.AddAWSBucketS3(builder.Configuration);
+builder.Services.AddAWSBucketS3();
 
 builder.Services.AddSingleton<IObjectConverter, ObjectConverter>();
 

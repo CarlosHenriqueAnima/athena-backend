@@ -6,7 +6,7 @@ namespace AthenasAcademy.Services.Core.Repositories.Clients;
 
 public interface IGeradorCertificadoRepository
 {
-    [Post("")]
+    [Post("/gerar-certificado")]
     Task<ApiResponse<NovoCertificadoPDFResponse>> GerarCertificadoPDF(
         [Body] NovoCertificadoRequest body,
         [Query] string token);

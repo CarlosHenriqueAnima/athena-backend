@@ -53,7 +53,7 @@ public class CertificadoService : ICertificadoService
 
         ApiResponse<NovoCertificadoPDFResponse> response = await _geradorCertificadoClient.GerarCertificadoPDF(request, token);
 
-        if (response.StatusCode is not System.Net.HttpStatusCode.OK)
+        if (response.StatusCode is not System.Net.HttpStatusCode.OK &&  response.Content is null)
             throw new APICustomException(
                 message: "Erro ao gerar o certificado.",
                 responseType: ExceptionResponseType.Error,
@@ -80,15 +80,17 @@ public class CertificadoService : ICertificadoService
 
     public async Task<MemoryStream> ObterCertificado(string matricula)
     {
-        CertificadoModel certificado = await _certificadoRepository.ObterCertificado(matricula);
+        //CertificadoModel certificado = await _certificadoRepository.ObterCertificado(matricula);
 
-        if (certificado is null)
-            throw new APICustomException(
-                message: string.Format("Certificado não localizado para a matrícula {0}.", matricula),
-                responseType: ExceptionResponseType.Error,
-                statusCode: System.Net.HttpStatusCode.BadRequest);
+        //if (certificado is null)
+        //    throw new APICustomException(
+        //        message: string.Format("Certificado não localizado para a matrícula {0}.", matricula),
+        //        responseType: ExceptionResponseType.Error,
+        //        statusCode: System.Net.HttpStatusCode.BadRequest);
 
-        return await _awsS3Repository.ObterPDFAsync(certificado.CaminhoCertificadoPdf);
+        //return await _awsS3Repository.ObterPDFAsync(certificado.CaminhoCertificadoPdf);
+
+        return await _awsS3Repository.ObterPDFAsync("certificados/PDF/CERTIFICADO_0000000004.pdf");
     }
 
     private async Task<NovoCertificadoRequest> MontarRequestNovoCertificado(string matricula)

@@ -36,7 +36,7 @@ public class TokenService : ITokenService
 
     public async Task<string> GerarTokenRequestClient()
     {
-        var key = _configuration.GetValue<string>("Clients:Tokken:Key");
+        var key = _configuration["LegadoAwsSecretKeyBase"];
 
         using (SHA256 sha256 = SHA256.Create())
         {

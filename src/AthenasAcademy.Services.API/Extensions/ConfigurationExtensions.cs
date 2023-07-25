@@ -1,4 +1,5 @@
-﻿using AthenasAcademy.Services.Core.Configurations.Credentials;
+﻿using Amazon.Runtime.Internal.Transform;
+using AthenasAcademy.Services.Core.Configurations.Credentials;
 
 namespace AthenasAcademy.Services.API.Extensions;
 
@@ -14,15 +15,16 @@ public static class ConfigurationExtensions
     /// <returns>O construtor da configuração com as credenciais adicionadas.</returns>
     public static IConfigurationBuilder AddReadCredentials(this IConfigurationBuilder configuration)
     {
-        // Lê as credenciais do arquivo de configuração
         var credenciais = ReadCredentials.GetCredentials();
 
-        // Adiciona as credenciais à coleção de configuração em memória
         configuration.AddInMemoryCollection(new Dictionary<string, string>
         {
             {"AwsAccessKey", credenciais.AwsAccessKey},
             {"AwsSecretKey", credenciais.AwsSecretKey},
             {"AwsBucketBase", credenciais.AwsBucketBase},
+            {"LegadoAwsSecretKeyBase", credenciais.ClientLegadoAwsSecretKey},
+            {"JwtKeyBase", credenciais.JwtSecretKey},
+            {"UsuarioBase", credenciais.StringConnectionBaseUsuario },
             {"InscricaoBase", credenciais.StringConnectionBaseInscricao},
             {"AlunoBase", credenciais.StringConnectionBaseAluno},
             {"MatriculaBase", credenciais.StringConnectionBaseMatricula},
@@ -31,7 +33,6 @@ public static class ConfigurationExtensions
             {"CertificadoBase", credenciais.StringConnectionBaseCertificado}
         });
 
-        // Retorna o construtor da configuração com as credenciais adicionadas
         return configuration;
     }
 }

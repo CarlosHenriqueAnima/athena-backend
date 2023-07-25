@@ -1,18 +1,12 @@
-﻿using Amazon.Extensions.NETCore.Setup;
-using Amazon.Runtime;
-using Amazon.S3;
-using AthenasAcademy.Services.Core.Configurations;
-using AthenasAcademy.Services.Core.Repositories;
+﻿using AthenasAcademy.Services.Core.Repositories;
 using AthenasAcademy.Services.Core.Repositories.Clients;
 using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Core.Repositories.S3;
 using AthenasAcademy.Services.Core.Services;
 using AthenasAcademy.Services.Core.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
@@ -142,7 +136,7 @@ public static class ServiceCollectionExtensions
     /// <returns>A coleção de serviços atualizada.</returns>
     public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        var key = Encoding.UTF8.GetBytes(configuration["Jwt:key"]);
+        var key = Encoding.UTF8.GetBytes(configuration["JwtKeyBase"]);
 
         services.AddAuthentication(options =>
         {
@@ -274,19 +268,17 @@ public static class ServiceCollectionExtensions
     /// Configura as configurações do AWSS3.
     /// </summary>
     /// <param name="services">A coleção de serviços.</param>
-    /// <param name="configuration">A configuração da aplicação.</param>
     /// <returns>A coleção de serviços atualizada.</returns>
-    public static IServiceCollection AddAWSBucketS3(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddAWSBucketS3(this IServiceCollection services)
     {
-        //services.Configure<ParametrosS3>(configuration.GetSection("AWS:S3"));
-        //AWSOptions optionsAws = configuration.GetAWSOptions();
         //optionsAws.Credentials = new BasicAWSCredentials(configuration["AWS:S3:AccessKey"], configuration["AWS:S3:SecretKey"]);
         //services.AddDefaultAWSOptions(configuration.GetAWSOptions());
         //services.AddAWSService<IAmazonS3>();
 
         services.AddSingleton<IAwsS3Repository, AwsS3Repository>();
+
         return services;
     }
 
-    
+
 }
