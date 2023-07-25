@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: athena-back
+  labels:
+    app: athena-back
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: athena-back
+  template:
+    metadata:
+      labels:
+        app: athena-back
+    spec:
+      containers:
+        - name: athena-back
+          image: gabriel7cd/athena-back:latest
+          ports:
+            - containerPort: 80
+              name: port-back
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app
+      volumes:
+        - name: config-volume
+          secret:
+            secretName: athena-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: athena-back-service
+spec:
+  selector:
+    app: athena-back
+  ports:
+    - protocol: TCP
+      port: 88
+      targetPort: port-back
+  type: NodePort
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: athena-back-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: localhost
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: athena-back-service
+            port:
+              number: 88

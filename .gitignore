@@ -10,6 +10,9 @@
 /src/AthenasAcademy.GeradorCertificado.API/Files/*.png
 /.vscode
 
+*.yaml
+*.yml
+
 # User-specific files
 *.rsuser
 *.suo

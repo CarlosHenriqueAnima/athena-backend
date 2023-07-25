@@ -12,7 +12,11 @@ namespace AthenasAcademy.Services.Core.Repositories;
 
 public class UsuarioRepository : BaseRepository, IUsuarioRepository
 {
-    public UsuarioRepository(IConfiguration configuration) : base(configuration)  { }
+    private IConfiguration _configuration; 
+    public UsuarioRepository(IConfiguration configuration) : base(configuration)  
+    {
+        _configuration = configuration;
+    }
 
     public async Task<UsuarioModel> BuscarUsuario(UsuarioArgument novoUsuario)
     {
