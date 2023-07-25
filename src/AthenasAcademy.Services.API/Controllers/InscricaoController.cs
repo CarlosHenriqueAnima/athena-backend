@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AthenasAcademy.Services.Core.Services.Interfaces;
+using AthenasAcademy.Services.Domain.Responses;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AthenasAcademy.Services.API.Controllers;
 
@@ -7,7 +9,18 @@ namespace AthenasAcademy.Services.API.Controllers;
 [ApiController]
 public class InscricaoController : ControllerBase
 {
-    public async Task<IActionResult> Get()
+    private readonly IInscricaoService _inscricaoService;
+
+    public InscricaoController(IInscricaoService inscricaoService)
+    {
+        _inscricaoService = inscricaoService;
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
+    public IActionResult GetInscricao()
     {
         return Ok();
     }

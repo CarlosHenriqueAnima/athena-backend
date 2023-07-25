@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AthenasAcademy.Services.Core.Services.Interfaces;
+using AthenasAcademy.Services.Domain.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AthenasAcademy.Services.API.Controllers;
@@ -8,14 +9,18 @@ namespace AthenasAcademy.Services.API.Controllers;
 [ApiController]
 public class MatriculaController : ControllerBase
 {
-    [HttpGet]
-    public IActionResult GerarContrato()
+    private readonly IMatriculaService _matriculaService;
+
+    public MatriculaController(IMatriculaService matriculaService)
     {
-        return Ok();
+        _matriculaService = matriculaService;
     }
 
     [HttpGet]
-    public IActionResult ValidarContrato()
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
+    public IActionResult GetMatricula()
     {
         return Ok();
     }
