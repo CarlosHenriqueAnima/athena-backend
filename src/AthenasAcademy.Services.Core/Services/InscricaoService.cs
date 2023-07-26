@@ -110,9 +110,9 @@ public class InscricaoService : IInscricaoService
         return await Task.FromResult(new NovoDetalheAlunoArgument()
         {
             IdAluno = id,
-            CodigoInscricao = inscricao.CodigoInscricao.ToString(),
+            CodigoInscricao = inscricao.CodigoInscricao,
             DataInscricao = inscricao.DataInscricao,
-            CodigoUsuario = usuario.Id.ToString(),
+            CodigoUsuario = usuario.Id,
             DataUsuario = usuario.DataCadastro
         });
     }
@@ -172,7 +172,7 @@ public class InscricaoService : IInscricaoService
 
     private async Task<UsuarioModel> ValidarUsuarioExistente(NovaInscricaoCandidatoRequest request)
     {
-        UsuarioModel usuario = await _usuarioService.ObterUsuario(request.Email.Trim().ToLower());
+        UsuarioModel usuario = await _usuarioService.ObterUsuario(request.Email.Trim().ToLower(), false);
 
         if (usuario is null)
             throw new APICustomException(

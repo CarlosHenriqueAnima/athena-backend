@@ -18,7 +18,6 @@ public class CertificadoService : ICertificadoService
     private readonly IAwsS3Repository _awsS3Repository;
     private readonly IGeradorCertificadoRepository _geradorCertificadoClient;
     private readonly ITokenService _tokenService;
-    private readonly IMatriculaService _matriculaService;
     private readonly IAlunoService _alunoService;
     private readonly ICursoService _cursoService;
 
@@ -27,7 +26,6 @@ public class CertificadoService : ICertificadoService
         ICertificadoRepository certificadoRepository,
         IGeradorCertificadoRepository geradorCertificadoClient,
         ITokenService tokenService,
-        IMatriculaService matriculaService,
         IAlunoService alunoService,
         ICursoService cursoService)
     {
@@ -35,7 +33,6 @@ public class CertificadoService : ICertificadoService
         _certificadoRepository = certificadoRepository;
         _geradorCertificadoClient = geradorCertificadoClient;
         _tokenService = tokenService;
-        _matriculaService = matriculaService;
         _alunoService = alunoService;
         _cursoService = cursoService;
     }

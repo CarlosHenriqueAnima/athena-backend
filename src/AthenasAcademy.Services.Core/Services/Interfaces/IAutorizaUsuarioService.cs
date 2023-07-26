@@ -10,7 +10,5 @@ public interface IAutorizaUsuarioService
 
     Task<LoginUsuarioResponse> LoginUsuario(LoginUsuarioRequest loginUsuario);
 
-    Task<UsuarioModel> ObterUsuario(string usuario);
-
-    Task<IEnumerable<UsuarioResponse>> ObterUsuarios();
+    Task<UsuarioModel> ObterUsuario(string usuario, bool exception);
 }

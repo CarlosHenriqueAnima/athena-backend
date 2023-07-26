@@ -13,18 +13,15 @@ public class MatriculaService : IMatriculaService
 {
     private readonly IQueueProducerService _queueProducerService;
     private readonly IAlunoService _alunoService;
-    private readonly IInscricaoService _inscricaoService;
     private readonly IMatriculaRepository _matriculaRepository;
 
     public MatriculaService(
         IQueueProducerService queueProducerService,
         IAlunoService alunoService,
-        IInscricaoService inscricaoService,
         IMatriculaRepository matriculaRepository)
     {
         _queueProducerService = queueProducerService;
         _alunoService = alunoService;
-        _inscricaoService = inscricaoService;
         _matriculaRepository = matriculaRepository;
     }
 
@@ -60,20 +57,20 @@ public class MatriculaService : IMatriculaService
 
     private async Task ValidarProcessoMatricula(int inscricao)
     {
-        // buscar inscricao
-        InscricaoCandidatoModel inscricaoAluno = await _inscricaoService.ObterInscricao(inscricao);
+        //// buscar inscricao
+        //InscricaoCandidatoModel inscricaoAluno = await _inscricaoService.ObterInscricao(inscricao);
 
-        if (inscricaoAluno is null)
-            throw new APICustomException(
-                message: $"Inscrição {inscricao} não localizada.",
-                responseType: Domain.Configurations.Enums.ExceptionResponseType.Error,
-                statusCode: HttpStatusCode.BadRequest);
+        //if (inscricaoAluno is null)
+        //    throw new APICustomException(
+        //        message: $"Inscrição {inscricao} não localizada.",
+        //        responseType: Domain.Configurations.Enums.ExceptionResponseType.Error,
+        //        statusCode: HttpStatusCode.BadRequest);
 
-        if (!inscricaoAluno.BoletoPago)
-            throw new APICustomException(
-                message: $"Boleto da  inscrição {inscricao} ainda foi não pago.",
-                responseType: Domain.Configurations.Enums.ExceptionResponseType.Error,
-                statusCode: HttpStatusCode.BadRequest);
+        //if (!inscricaoAluno.BoletoPago)
+        //    throw new APICustomException(
+        //        message: $"Boleto da  inscrição {inscricao} ainda foi não pago.",
+        //        responseType: Domain.Configurations.Enums.ExceptionResponseType.Error,
+        //        statusCode: HttpStatusCode.BadRequest);
 
         // buscar matricula
         MatriculaModel matriculaAluno = await _matriculaRepository.ObterMatricula(inscricao);

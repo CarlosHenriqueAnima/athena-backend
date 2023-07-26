@@ -1,8 +1,11 @@
-﻿using AthenasAcademy.Services.Core.Configurations.Enums;
+﻿using AthenasAcademy.Services.Core.Arguments;
+using AthenasAcademy.Services.Core.Configurations.Enums;
 using AthenasAcademy.Services.Core.Exceptions;
+using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Domain.Configurations.Enums;
 using Npgsql;
 using System.Data;
+using System.Data.Common;
 
 namespace AthenasAcademy.Services.Core.Repositories.Interfaces.Base;
 
@@ -16,22 +19,26 @@ public class BaseRepository
         _configuration = configuration;
     }
 
-    protected IDbConnection GetConnection(Database database)
+    protected async Task<IDbConnection> GetConnectionAsync(Database database)
     {
         try
         {
-            //if (_connection is null)
-            //    _connection = new NpgsqlConnection(_configuration.GetConnectionString(database.ToString()));
-            _connection = new NpgsqlConnection(GetConnectionString(database));
+            NpgsqlConnectionStringBuilder builder = new(GetConnectionString(database));
 
+            builder.MaxPoolSize = 100;
+            builder.MinPoolSize = 1;
+            builder.ConnectionIdleLifetime = 500;
+            builder.Pooling = true;
+
+            _connection = new NpgsqlConnection(builder.ConnectionString);
+
+            await _connection.OpenAsync();
+            return _connection;
         }
         catch (Exception ex)
         {
             throw new DatabaseCustomException($"Erro ao tentar se conectar com a base de dados. {ex.Message}", ExceptionResponseType.Error, ex);
         }
-
-        _connection.Open();
-        return _connection;
     }
 
     private string GetConnectionString(Database database) 

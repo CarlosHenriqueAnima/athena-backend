@@ -20,7 +20,7 @@ public class AlunoRepository : BaseRepository, IAlunoRepository
     {
         try
         {
-            using IDbConnection connection = GetConnection(Database.Aluno);
+            using IDbConnection connection = await GetConnectionAsync(Database.Aluno);
             string query = @"
                     INSERT INTO aluno (nome, sobrenome, cpf, sexo, data_nascimento, email, ativo, data_cadastro)
                     VALUES (@Nome, @Sobrenome, @CPF, @Sexo, @DataNascimento, @Email, @Ativo, @DataCadastro)
@@ -38,7 +38,7 @@ public class AlunoRepository : BaseRepository, IAlunoRepository
     {
         try
         {
-            using IDbConnection connection = GetConnection(Database.Aluno);
+            using IDbConnection connection = await GetConnectionAsync(Database.Aluno);
             string query = @"
                     INSERT INTO detalhe (id_aluno, codigo_usuario, data_usuario, codigo_inscricao, data_inscricao, codigo_matricula, data_matricula, data_contrato, codigo_contrato)
                     VALUES (@IdAluno, @CodigoUsuario, @DataUsuario, @CodigoInscricao, @DataInscricao, @CodigoMatricula, @DataMatricula, @DataContrato, @CodigoContrato)
@@ -56,7 +56,7 @@ public class AlunoRepository : BaseRepository, IAlunoRepository
     {
         try
         {
-            using IDbConnection connection = GetConnection(Database.Aluno);
+            using IDbConnection connection = await GetConnectionAsync(Database.Aluno);
             string query = @"
                     INSERT INTO endereco (id_aluno, logradouro, numero, complemento, bairro, localidade, uf, cep, ativo, data_cadastro)
                     VALUES (@IdAluno, @Logradouro, @Numero, @Complemento, @Bairro, @Localidade, @UF, @CEP, @Ativo, @DataCadastro)
@@ -74,7 +74,7 @@ public class AlunoRepository : BaseRepository, IAlunoRepository
     {
         try
         {
-            using IDbConnection connection = GetConnection(Database.Aluno);
+            using IDbConnection connection = await GetConnectionAsync(Database.Aluno);
             string query = @"
                     INSERT INTO telefone (id_aluno, telefone_residencial, telefone_celular, telefone_recado)
                     VALUES (@IdAluno, @TelefoneResidencial, @TelefoneCelular, @TelefoneRecado)
@@ -92,7 +92,7 @@ public class AlunoRepository : BaseRepository, IAlunoRepository
     {
         try
         {
-            using IDbConnection connection = GetConnection(Database.Aluno);
+            using IDbConnection connection = await GetConnectionAsync(Database.Aluno);
             string query = @"
                     SELECT * FROM aluno WHERE id = @Id;";
 
@@ -131,7 +131,7 @@ public class AlunoRepository : BaseRepository, IAlunoRepository
 
             builder.Where(argumento + " = @Valor", new { Valor = valor });
 
-            using IDbConnection connection = GetConnection(Database.Aluno);
+            using IDbConnection connection = await GetConnectionAsync(Database.Aluno);
             return await connection.QueryFirstAsync<DetalheAlunoArgumentoModel>(query.RawSql, query.Parameters);
         }
         catch (Exception ex)
@@ -144,7 +144,7 @@ public class AlunoRepository : BaseRepository, IAlunoRepository
     {
         try
         {
-            using IDbConnection connection = GetConnection(Database.Aluno);
+            using IDbConnection connection = await GetConnectionAsync(Database.Aluno);
 
             string queryAluno = "SELECT * FROM aluno WHERE id = (SELECT id_aluno FROM detalhe WHERE codigo_inscricao = @Inscricao)";
 

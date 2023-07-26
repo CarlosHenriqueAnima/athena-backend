@@ -18,7 +18,7 @@ public class InscricaoRepository : BaseRepository, IInscricaoRepository
     {
         try
         {
-            using IDbConnection connection = GetConnection(Database.Inscricao);
+            using IDbConnection connection = await GetConnectionAsync(Database.Inscricao);
             string query = @"
                 INSERT INTO inscricao_candidato 
                 (nome, email, telefone, codigo_curso, nome_curso, boleto_pago, data_inscricao) 
@@ -39,7 +39,7 @@ public class InscricaoRepository : BaseRepository, IInscricaoRepository
         {
             string query = "SELECT * FROM inscricao_candidato WHERE codigo_inscricao = @CodigoInscricao";
 
-            using IDbConnection connection = GetConnection(Database.Inscricao);
+            using IDbConnection connection = await GetConnectionAsync(Database.Inscricao);
             var inscricaoCandidato = await connection.QueryFirstOrDefaultAsync<InscricaoCandidatoModel>(query, new { CodigoInscricao = inscricao });
 
             return inscricaoCandidato;
