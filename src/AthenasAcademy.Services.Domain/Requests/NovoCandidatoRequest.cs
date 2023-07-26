@@ -24,12 +24,6 @@ public class NovoCandidatoRequest
     [EmailAddress(ErrorMessage = "O campo Email deve ser um endereço de email válido.")]
     public string Email { get; set; }
 
-    [Required(ErrorMessage = "O campo CodigoCurso é obrigatório.")]
-    public int CodigoCurso { get; set; }
-
-    [Required(ErrorMessage = "O campo NomeCurso é obrigatório.")]
-    public string NomeCurso { get; set; }
-
     [JsonIgnore]
     public DateTime DataInscricao => DateTime.Now;
 
@@ -41,4 +35,16 @@ public class NovoCandidatoRequest
 
     [Required(ErrorMessage = "O campo Telefone é obrigatório.")]
     public NovoTelefoneRequest Telefone { get; set; }
+
+    [Required(ErrorMessage = "O campo OpcaoCurso é obrigatório.")]
+    public OpcaoCursoRequest Curso { get; set; }
+}
+
+public class OpcaoCursoRequest
+{
+    [Required(ErrorMessage = "O campo CodigoCurso é obrigatório.")]
+    public int CodigoCurso { get; set; }
+
+    [Required(ErrorMessage = "O campo NomeCurso é obrigatório.")]
+    public string NomeCurso { get; set; }
 }

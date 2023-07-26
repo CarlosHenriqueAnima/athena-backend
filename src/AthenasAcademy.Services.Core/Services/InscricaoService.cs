@@ -15,15 +15,18 @@ public class InscricaoService : IInscricaoService
 {
     private readonly IInscricaoRepository _inscricaoRepository;
     private readonly IAutorizaUsuarioService _usuarioService;
+    private readonly ICursoService _cursoService;
     private readonly IAlunoService _alunoService;
 
     public InscricaoService(
         IInscricaoRepository inscricaoRepository,
         IAutorizaUsuarioService usuarioService,
+        ICursoService cursoService,
         IAlunoService alunoService)
     {
         _inscricaoRepository = inscricaoRepository;
         _usuarioService = usuarioService;
+        _cursoService = cursoService;
         _alunoService = alunoService;
 
     }
@@ -32,12 +35,20 @@ public class InscricaoService : IInscricaoService
     {
         UsuarioModel usuario = await ValidarUsuarioExistente(request);
 
+        await ValidarOpcaoCursoExistente(request.Curso);
+
         InscricaoCandidatoModel inscricao = await RegistrarNovaInscricaoCandidato(request);
 
         AlunoModel aluno = await RegistrarAluno(request, usuario, inscricao);
 
 
+
         return new CandidatoResponse();
+    }
+
+    private async Task<object> ValidarOpcaoCursoExistente(OpcaoCursoRequest curso)
+    {
+        return await _cursoService.ObterCurso(curso.CodigoCurso) ?? null;
     }
 
     private async Task<AlunoModel> RegistrarAluno(NovoCandidatoRequest request, UsuarioModel usuario, InscricaoCandidatoModel inscricao)
