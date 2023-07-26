@@ -2,7 +2,7 @@
 
 public interface ICertificadoService
 {
-    Task<string> GerarCertificado(string matricula);
+    Task<string> GerarCertificado(int matricula);
 
-    Task<MemoryStream> ObterCertificado(string matricula);
+    Task<MemoryStream> ObterCertificado(int matricula);
 }

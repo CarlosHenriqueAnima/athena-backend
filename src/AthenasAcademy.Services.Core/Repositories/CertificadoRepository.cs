@@ -52,7 +52,7 @@ public class CertificadoRepository : BaseRepository, ICertificadoRepository
         }
     }
 
-    public async Task<CertificadoModel> ObterCertificado(string matricula)
+    public async Task<CertificadoModel> ObterCertificado(int matricula)
     {
         try
         {
@@ -73,7 +73,7 @@ public class CertificadoRepository : BaseRepository, ICertificadoRepository
                     FROM certificado
                     WHERE matricula = @Matricula";
 
-            return await connection.QueryFirstOrDefaultAsync<CertificadoModel>(query, new { Matricula = matricula });
+            return await connection.QueryFirstOrDefaultAsync<CertificadoModel>(query, new { Matricula = matricula.ToString() });
         }
         catch (Exception)
         {

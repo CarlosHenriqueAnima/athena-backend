@@ -6,7 +6,7 @@ public class NovoCertificadoArgument
 
     public string NomeAluno { get; set; }
 
-    public string Matricula { get; set; }
+    public int Matricula { get; set; }
 
     public string NomeCurso { get; set; }
 

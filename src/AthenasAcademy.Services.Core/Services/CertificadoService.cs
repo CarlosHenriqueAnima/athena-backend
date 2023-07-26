@@ -1,5 +1,4 @@
 ﻿using AthenasAcademy.Services.Core.Arguments;
-using AthenasAcademy.Services.Core.Configurations.Mappers;
 using AthenasAcademy.Services.Core.Exceptions;
 using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Core.Repositories.Clients;
@@ -10,7 +9,6 @@ using AthenasAcademy.Services.Core.Services.Interfaces;
 using AthenasAcademy.Services.Domain.Configurations.Enums;
 using AthenasAcademy.Services.Domain.Responses;
 using Refit;
-using System.Reflection.Metadata.Ecma335;
 
 namespace AthenasAcademy.Services.Core.Services;
 
@@ -42,7 +40,7 @@ public class CertificadoService : ICertificadoService
         _cursoService = cursoService;
     }
 
-    public async Task<string> GerarCertificado(string matricula)
+    public async Task<string> GerarCertificado(int matricula)
     {
         NovoCertificadoRequest request = await MontarRequestNovoCertificado(matricula);
 
@@ -50,7 +48,7 @@ public class CertificadoService : ICertificadoService
 
         ApiResponse<NovoCertificadoPDFResponse> response = await _geradorCertificadoClient.GerarCertificadoPDF(request, token);
 
-        if (response.StatusCode is not System.Net.HttpStatusCode.OK &&  response.Content is null)
+        if (response.StatusCode is not System.Net.HttpStatusCode.OK && response.Content is null)
             throw new APICustomException(
                 message: "Erro ao gerar o certificado.",
                 responseType: ExceptionResponseType.Error,
@@ -70,33 +68,31 @@ public class CertificadoService : ICertificadoService
             CaminhoCertificadoPdf = response.Content.CaminhoArquivo
         };
 
-        CertificadoModel model = await _certificadoRepository.GerarCertificado(argument);
+        await _certificadoRepository.GerarCertificado(argument);
 
         return response.Content.UriDownload;
     }
 
-    public async Task<MemoryStream> ObterCertificado(string matricula)
+    public async Task<MemoryStream> ObterCertificado(int matricula)
     {
-        //CertificadoModel certificado = await _certificadoRepository.ObterCertificado(matricula);
+        CertificadoModel certificado = await _certificadoRepository.ObterCertificado(matricula);
 
-        //if (certificado is null)
-        //    throw new APICustomException(
-        //        message: string.Format("Certificado não localizado para a matrícula {0}.", matricula),
-        //        responseType: ExceptionResponseType.Error,
-        //        statusCode: System.Net.HttpStatusCode.BadRequest);
+        if (certificado is null)
+            throw new APICustomException(
+                message: string.Format("Certificado não localizado para a matrícula {0}.", matricula),
+                responseType: ExceptionResponseType.Error,
+                statusCode: System.Net.HttpStatusCode.BadRequest);
 
-        //return await _awsS3Repository.ObterPDFAsync(certificado.CaminhoCertificadoPdf);
-
-        return await _awsS3Repository.ObterPDFAsync("certificados/PDF/CERTIFICADO_0000000004.pdf");
+        return await _awsS3Repository.ObterPDFAsync(certificado.CaminhoCertificadoPdf);
     }
 
-    private async Task<NovoCertificadoRequest> MontarRequestNovoCertificado(string matricula)
+    private async Task<NovoCertificadoRequest> MontarRequestNovoCertificado(int matricula)
     {
         // recuperar detalhes matricula
-        //var detalhesContrato = await _matriculaService.ObterDetalhesMatricula(matricula);
+        DetalheMatriculaAlunoModel detalhesContrato = await _matriculaService.ObterDetalhesMatricula(matricula);
 
         // recuperar detalhes aluno
-        //var aluno = await _alunoService.ObterAluno(detalhesContrato.IdAluno);
+        var aluno = await _alunoService.ObterAluno(detalhesContrato.IdAluno);
 
         // recuperar detalhes curso //(detalhesContrato.IdCurso);
         var curso = await _cursoService.ObterCurso(1);
