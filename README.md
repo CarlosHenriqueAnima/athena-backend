@@ -6,39 +6,38 @@ A API API Athenas Academy fornece acesso a um sistema educacional que gerencia i
 ## Recursos Disponíveis
 
 ### A API oferece os seguintes recursos principais:
-Alunos
-    Listar todos os alunos cadastrados.
-    Cadastrar um novo aluno.
+
+**Alunos**
+- [x] Listar todos os alunos cadastrados.
+- [x] Cadastrar um novo aluno.
  
-Cursos
+**Cursos**
+- [x] Listar todos os cursos disponíveis.
+- [x] Listar todos os cursos disponíveis.
+- [x] Cadastrar um novo curso.
+- [x] Consultar detalhes de um curso específico.
+- [x] Atualizar informações de um curso existente.
+- [x] Excluir um curso do sistema.
 
-    Listar todos os cursos disponíveis.
-    Cadastrar um novo curso.
-    Consultar detalhes de um curso específico.
-    Atualizar informações de um curso existente.
-    Excluir um curso do sistema.
+**Certificado**
 
-Certificados
+- [x] Listar todos os certificados emitidos.
+- [x] Emitir um novo certificado para um aluno e um curso específico.
+- [x] Consultar detalhes de um certificado emitido.
+- [x] Revogar um certificado previamente emitido.
 
-    Listar todos os certificados emitidos.
-    Emitir um novo certificado para um aluno e um curso específico.
-    Consultar detalhes de um certificado emitido.
-    Revogar um certificado previamente emitido.
+**Disciplina**
+- [x] Listar todas as disciplinas cadastradas.
+- [x] Cadastrar uma nova disciplina.
+- [x] Consultar detalhes de uma disciplina específica.
+- [x] Atualizar informações de uma disciplina existente.
+- [x] Excluir uma disciplina do sistema.
 
-Disciplinas
-
-    Listar todas as disciplinas cadastradas.
-    Cadastrar uma nova disciplina.
-    Consultar detalhes de uma disciplina específica.
-    Atualizar informações de uma disciplina existente.
-    Excluir uma disciplina do sistema.
-
-Autenticação
-
+**Autenticação**
 Para acessar os endpoints da API, é necessário autenticar-se usando Header de autenticação JWT - Schema Bearer. 
 
 Endpoints
-A seguir estão os endpoints principais da API
+A seguir endpoints principais da API
 
 
 ➡️ Alunos
@@ -49,35 +48,35 @@ A seguir estão os endpoints principais da API
 
 ➡️ Cursos
 
-GET/api/v1/curso/{id} Obtém um curso pelo seu ID.
+- GET/api/v1/curso/{id}                                          _Obtém um curso pelo seu ID._
 
-GET/api/v1/curso/todos Obtém todos os cursos cadastrados.
+- GET/api/v1/curso/todos                                         _Obtém todos os cursos cadastrados._
 
-POST/api/v1/curso/registrar Cadastra um novo curso.
+- POST/api/v1/curso/registrar                                    _Cadastra um novo curso._
 
-PUT /api/v1/curso/atualizar Atualiza os dados de um curso existente.
+- PUT /api/v1/curso/atualizar                                    _Atualiza os dados de um curso existente._
 
-DELETE /api/v1/curso/desativar/{id} Desativa um curso existente.
+- DELETE /api/v1/curso/desativar/{id}                            _Desativa um curso existente._
 
-GET /api/v1/curso/disciplina/{id}Obtém uma disciplina pelo seu ID.
+- GET /api/v1/curso/disciplina/{id}                               _Obtém uma disciplina pelo seu ID._
 
-DELETE /api/v1/curso/disciplina/{id} Desativa uma disciplina existente.
+- DELETE /api/v1/curso/disciplina/{id}                            _Desativa uma disciplina existente._
 
-GET /api/v1/curso/disciplina/todos Obtém todas as disciplinas cadastradas.
+- GET /api/v1/curso/disciplina/todos                              _Obtém todas as disciplinas cadastradas._
 
-POST /api/v1/curso/disciplina/registrar Cadastra uma nova disciplina.
+- POST /api/v1/curso/disciplina/registrar                         _Cadastra uma nova disciplina._
 
-PUT /api/v1/curso/disciplina/atualizar Atualiza os dados de uma disciplina existente.
+- PUT /api/v1/curso/disciplina/atualizar                          _Atualiza os dados de uma disciplina existente._
 
-GET /api/v1/curso/area-conhecimento/{id} Obtém uma área de conhecimento pelo seu ID.
+- GET /api/v1/curso/area-conhecimento/{id}                        _Obtém uma área de conhecimento pelo seu ID._
 
-GET /api/v1/curso/area-conhecimento/todos Obtém todas as áreas de conhecimento cadastradas.
+- GET /api/v1/curso/area-conhecimento/todos                       _Obtém todas as áreas de conhecimento cadastradas._
 
-POST /api/v1/curso/area-conhecimento/registrar Cadastra uma nova área de conhecimento.
+- POST /api/v1/curso/area-conhecimento/registrar                  _Cadastra uma nova área de conhecimento._
 
-PUT /api/v1/curso/area-conhecimento/atualizar Atualiza os dados de uma área de conhecimento existente.
+- PUT /api/v1/curso/area-conhecimento/atualizar                   _Atualiza os dados de uma área de conhecimento existente._
 
-DELETE /api/v1/curso/area-conhecimento/desativar/{id} Desativa uma área de conhecimento existente.
+- DELETE /api/v1/curso/area-conhecimento/desativar/{id}           _Desativa uma área de conhecimento existente._
 
 ➡️ Certificado
 
@@ -102,7 +101,7 @@ POST /api/v1/usuario/loginRealiza o login de um usuário.
 GET /api/v1/usuario/todosObtém informações de todos os usuários.
 
 
-Exemplos de Requisições
+# Exemplos de Requisições
 
 Aqui estão alguns exemplos de como fazer solicitações para os endpoints da API usando diferentes métodos HTTP (GET, POST, PUT, DELETE) e parâmetros.
 Respostas da API
@@ -121,7 +120,7 @@ Código 200 - Sucesso
 
 
 
-Uso da API
+# Uso da API
 
 [Inserir instruções ou exemplos de como integrar e usar a API em diferentes tecnologias e linguagens de programação.]
 Limitações e Considerações
