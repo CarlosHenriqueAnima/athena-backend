@@ -1,4 +1,5 @@
-﻿using AthenasAcademy.Services.Core.Models;
+﻿using AthenasAcademy.Services.Core.CrossCutting;
+using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Domain.Responses;
 
 namespace AthenasAcademy.Services.Core.Services.Interfaces;
@@ -15,5 +16,5 @@ public interface IMatriculaService
     /// <returns>Um objeto contendo o status da matrícula do aluno.</returns>
     Task<MatriculaStatusResponse> MatricularAluno(int inscricao);
 
-    Task<DetalheMatriculaAlunoModel> ObterDetalhesMatricula(int matricula);
+    Task RegistrarPreMatricula(FichaAluno fichaAluno);
 }

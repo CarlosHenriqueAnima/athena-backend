@@ -1,8 +1,8 @@
 ﻿using AthenasAcademy.Services.Core.Arguments;
+using AthenasAcademy.Services.Core.CrossCutting;
 using AthenasAcademy.Services.Core.Exceptions;
 using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Core.Repositories.Interfaces;
-using AthenasAcademy.Services.Core.Services.Interfaces;
 using AthenasAcademy.Services.Domain.Configurations.Enums;
 
 namespace AthenasAcademy.Services.Core.Services;
@@ -86,6 +86,47 @@ public class AlunoService : IAlunoService
         {
             throw new APICustomException(
                 message: $"Erro ao obter o aluno. {ex.Message}",
+                responseType: ExceptionResponseType.Error,
+                statusCode: System.Net.HttpStatusCode.InternalServerError);
+        }
+    }
+
+    public async Task<DetalheAlunoArgumentoModel> ObterDetalheAluno(int? aluno = null, int? inscricao = null, int? matricula = null)
+    {
+        try
+        {
+            string argumento = aluno.HasValue ? "id_aluno = " + aluno :
+                               inscricao.HasValue ? "codigo_inscricao" :
+                               matricula.HasValue ? "codigo_matricula" :
+                               throw new ArgumentException("É necessário fornecer apenas um dos critérios de busca: ID, inscrição ou matrícula.");
+
+            int id = aluno.HasValue ? aluno.Value :
+                   inscricao.HasValue ? inscricao.Value :
+                   matricula.HasValue ? matricula.Value :
+                   throw new ArgumentException("É necessário fornecer apenas um dos critérios de busca: ID, inscrição ou matrícula.");
+
+
+            return await _alunoRepository.ObterDetalheAluno(argumento, id);
+        }
+        catch (Exception ex)
+        {
+            throw new APICustomException(
+                message: $"Erro ao obter detalhes do aluno. {ex.Message}",
+                responseType: ExceptionResponseType.Error,
+                statusCode: System.Net.HttpStatusCode.InternalServerError);
+        }
+    }
+
+    public async Task<FichaAluno> ObterFichaAluno(int inscricao)
+    {
+        try
+        {
+            return await _alunoRepository.ObterFichaAluno(inscricao);
+        }
+        catch (Exception ex)
+        {
+            throw new APICustomException(
+                message: $"Erro ao obter a ficha do aluno. {ex.Message}",
                 responseType: ExceptionResponseType.Error,
                 statusCode: System.Net.HttpStatusCode.InternalServerError);
         }

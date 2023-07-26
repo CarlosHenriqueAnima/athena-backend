@@ -5,6 +5,7 @@ using AthenasAcademy.Services.Core.Extensions;
 using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Core.Services.Interfaces;
+using AthenasAcademy.Services.Core.Services.SQSProducer;
 using AthenasAcademy.Services.Domain.Requests;
 using AthenasAcademy.Services.Domain.Responses;
 
@@ -16,18 +17,20 @@ public class InscricaoService : IInscricaoService
     private readonly IAutorizaUsuarioService _usuarioService;
     private readonly ICursoService _cursoService;
     private readonly IAlunoService _alunoService;
+    private readonly IMatriculaService _matriculaService;
 
     public InscricaoService(
         IInscricaoRepository inscricaoRepository,
         IAutorizaUsuarioService usuarioService,
         ICursoService cursoService,
-        IAlunoService alunoService)
+        IAlunoService alunoService,
+        IMatriculaService matriculaService)
     {
         _inscricaoRepository = inscricaoRepository;
         _usuarioService = usuarioService;
         _cursoService = cursoService;
         _alunoService = alunoService;
-
+        _matriculaService = matriculaService;
     }
 
     public async Task<InscricaoCandidatoResponse> CadastrarCandidato(NovaInscricaoCandidatoRequest request)
@@ -38,11 +41,12 @@ public class InscricaoService : IInscricaoService
 
         InscricaoCandidatoModel inscricao = await RegistrarNovaInscricaoCandidato(request);
 
-        FichaAluno fichaAluno = await RegistrarAluno(request, usuario, inscricao);
+        FichaAluno fichaAluno = await RegistrarFichaAluno(request, usuario, inscricao);
 
-        // await _servicoGeracaoContrato.Gerar(fichaAluno, opcaoCurso);
+        fichaAluno.OpcaoCurso = opcaoCurso;
 
-        // await _servicoGeracaoBoleto.Gerar(fichaAluno, opcaoCurso);
+        // liberar contrato boleto e contrato
+        await _matriculaService.RegistrarPreMatricula(fichaAluno);
 
         return new InscricaoCandidatoResponse
         {
@@ -74,7 +78,7 @@ public class InscricaoService : IInscricaoService
         };
     }
 
-    private async Task<FichaAluno> RegistrarAluno(NovaInscricaoCandidatoRequest request, UsuarioModel usuario, InscricaoCandidatoModel inscricao)
+    private async Task<FichaAluno> RegistrarFichaAluno(NovaInscricaoCandidatoRequest request, UsuarioModel usuario, InscricaoCandidatoModel inscricao)
     {
         // cadastrar aluno
         NovoAlunoArgument alunoArgument = await MontarNovoRegistroAluno(request);
