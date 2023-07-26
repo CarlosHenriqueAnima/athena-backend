@@ -1,13 +1,11 @@
 ﻿using AthenasAcademy.Services.Core.Arguments;
-using AthenasAcademy.Services.Core.Configurations.Mappers;
+using AthenasAcademy.Services.Core.CrossCutting;
 using AthenasAcademy.Services.Core.Exceptions;
 using AthenasAcademy.Services.Core.Extensions;
 using AthenasAcademy.Services.Core.Models;
-using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Core.Services.Interfaces;
 using AthenasAcademy.Services.Domain.Requests;
 using AthenasAcademy.Services.Domain.Responses;
-using System.Reflection;
 
 namespace AthenasAcademy.Services.Core.Services;
 
@@ -31,27 +29,51 @@ public class InscricaoService : IInscricaoService
 
     }
 
-    public async Task<CandidatoResponse> CadastrarCandidato(NovoCandidatoRequest request)
+    public async Task<InscricaoCandidatoResponse> CadastrarCandidato(NovaInscricaoCandidatoRequest request)
     {
         UsuarioModel usuario = await ValidarUsuarioExistente(request);
 
-        await ValidarOpcaoCursoExistente(request.Curso);
+        OpcaoCurso opcaoCurso = await ValidarOpcaoCursoAluno(request.Curso);
 
         InscricaoCandidatoModel inscricao = await RegistrarNovaInscricaoCandidato(request);
 
-        AlunoModel aluno = await RegistrarAluno(request, usuario, inscricao);
+        FichaAluno fichaAluno = await RegistrarAluno(request, usuario, inscricao);
 
+        // await _servicoGeracaoContrato.Gerar(fichaAluno, opcaoCurso);
 
+        // await _servicoGeracaoBoleto.Gerar(fichaAluno, opcaoCurso);
 
-        return new CandidatoResponse();
+        return new InscricaoCandidatoResponse
+        {
+            Inscricao = inscricao.CodigoInscricao
+        };
     }
 
-    private async Task<object> ValidarOpcaoCursoExistente(OpcaoCursoRequest curso)
+    private async Task<OpcaoCurso> ValidarOpcaoCursoAluno(OpcaoCursoRequest curso)
     {
-        return await _cursoService.ObterCurso(curso.CodigoCurso) ?? null;
+        var opcao = await _cursoService.ObterCurso(curso.CodigoCurso);
+
+        return new OpcaoCurso
+        {
+            Id = opcao.Id,
+            Nome = opcao.Nome,
+            Descricao = opcao.Descricao,
+            CargaHoraria = opcao.Disciplinas.Sum(disciplina => disciplina.CargaHoraria),
+            AreaConhecimento = $"{opcao.AreaConhecimento.Id} - {opcao.AreaConhecimento.Nome}",
+            Disciplinas = opcao.Disciplinas.Select(disciplina =>
+            {
+                return new Disciplina
+                {
+                    Id = disciplina.Id,
+                    Nome = disciplina.Nome.FormatarTextoCamelCase(),
+                    Descricao = disciplina.Descricao,
+                    CargaHoraria = disciplina.CargaHoraria
+                };
+            }).ToList(),
+        };
     }
 
-    private async Task<AlunoModel> RegistrarAluno(NovoCandidatoRequest request, UsuarioModel usuario, InscricaoCandidatoModel inscricao)
+    private async Task<FichaAluno> RegistrarAluno(NovaInscricaoCandidatoRequest request, UsuarioModel usuario, InscricaoCandidatoModel inscricao)
     {
         // cadastrar aluno
         NovoAlunoArgument alunoArgument = await MontarNovoRegistroAluno(request);
@@ -67,11 +89,18 @@ public class InscricaoService : IInscricaoService
 
         // cadastrar detalhes
         NovoDetalheAlunoArgument detalheAlunoArgument = await MontarNovoRegistroDetalheAluno(aluno.Id, request, usuario, inscricao);
-        DetalheAlunoModel detalhetelefoneAluno = await _alunoService.CadastrarDetalheAluno(detalheAlunoArgument);
-        return aluno;
+        DetalheAlunoModel detalheAluno = await _alunoService.CadastrarDetalheAluno(detalheAlunoArgument);
+
+        return new FichaAluno()
+        {
+            Aluno = aluno,
+            Endereco = enderecoAluno,
+            Telefone = telefoneAluno,
+            DetalhesFicha = detalheAluno
+        };
     }
 
-    private async Task<NovoDetalheAlunoArgument> MontarNovoRegistroDetalheAluno(int id, NovoCandidatoRequest request, UsuarioModel usuario, InscricaoCandidatoModel inscricao)
+    private async Task<NovoDetalheAlunoArgument> MontarNovoRegistroDetalheAluno(int id, NovaInscricaoCandidatoRequest request, UsuarioModel usuario, InscricaoCandidatoModel inscricao)
     {
         return await Task.FromResult(new NovoDetalheAlunoArgument()
         {
@@ -83,7 +112,7 @@ public class InscricaoService : IInscricaoService
         });
     }
 
-    private async Task<NovoTelefoneAlunoArgument> MontarNovoRegistroTelefoneAluno(int id, NovoCandidatoRequest request)
+    private async Task<NovoTelefoneAlunoArgument> MontarNovoRegistroTelefoneAluno(int id, NovaInscricaoCandidatoRequest request)
     {
         return await Task.FromResult(new NovoTelefoneAlunoArgument()
         {
@@ -94,7 +123,7 @@ public class InscricaoService : IInscricaoService
         });
     }
 
-    private async Task<NovoEnderecoAlunoArgument> MontarNovoRegistroEnderecoAluno(int id, NovoCandidatoRequest request)
+    private async Task<NovoEnderecoAlunoArgument> MontarNovoRegistroEnderecoAluno(int id, NovaInscricaoCandidatoRequest request)
     {
         return await Task.FromResult(new NovoEnderecoAlunoArgument()
         {
@@ -109,7 +138,7 @@ public class InscricaoService : IInscricaoService
         });
     }
 
-    private async Task<NovoAlunoArgument> MontarNovoRegistroAluno(NovoCandidatoRequest request)
+    private async Task<NovoAlunoArgument> MontarNovoRegistroAluno(NovaInscricaoCandidatoRequest request)
     {
         return await Task.FromResult(new NovoAlunoArgument()
         {
@@ -122,21 +151,21 @@ public class InscricaoService : IInscricaoService
         });
     }
 
-    private async Task<InscricaoCandidatoModel> RegistrarNovaInscricaoCandidato(NovoCandidatoRequest request)
+    private async Task<InscricaoCandidatoModel> RegistrarNovaInscricaoCandidato(NovaInscricaoCandidatoRequest request)
     {
         InscricaoCandidatoArgument argument = new()
         {
             Nome = request.NomeCompleto.FormatarTextoCamelCase(),
             Email = request.Email.Trim().ToLower(),
             Telefone = request.Telefone.TelefoneCelular ?? request.Telefone.TelefoneResidencial ?? request.Telefone.TelefoneRecado,
-            CodigoCurso = request.CodigoCurso,
-            NomeCurso = request.NomeCurso
+            CodigoCurso = request.Curso.CodigoCurso,
+            NomeCurso = request.Curso.CodigoCurso.ToString()
         };
 
         return await _inscricaoRepository.RegistrarNovaInscricao(argument);
     }
 
-    private async Task<UsuarioModel> ValidarUsuarioExistente(NovoCandidatoRequest request)
+    private async Task<UsuarioModel> ValidarUsuarioExistente(NovaInscricaoCandidatoRequest request)
     {
         UsuarioModel usuario = await _usuarioService.ObterUsuario(request.Email.Trim().ToLower());
 

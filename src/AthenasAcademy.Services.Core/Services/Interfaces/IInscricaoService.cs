@@ -13,5 +13,5 @@ public interface IInscricaoService
     /// </summary>
     /// <param name="request">Os dados do novo candidato a ser cadastrado.</param>
     /// <returns>Uma tarefa que representa o cadastro do candidato.</returns>
-    Task<CandidatoResponse> CadastrarCandidato(NovoCandidatoRequest request);
+    Task<InscricaoCandidatoResponse> CadastrarCandidato(NovaInscricaoCandidatoRequest request);
 }

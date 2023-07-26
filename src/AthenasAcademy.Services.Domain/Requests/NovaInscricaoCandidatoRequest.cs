@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace AthenasAcademy.Services.Domain.Requests;
 
-public class NovoCandidatoRequest
+public class NovaInscricaoCandidatoRequest
 {
     [Required(ErrorMessage = "O campo NomeCompleto é obrigatório.")]
     public string NomeCompleto { get; set; }

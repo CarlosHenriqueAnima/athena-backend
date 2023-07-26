@@ -31,10 +31,10 @@ public class InscricaoController : ControllerBase
     /// <returns>Os dados do candidato cadastrado.</returns>
     [HttpPost("cadastrar-candidato")]
     [Authorize(Roles = "Usuario, Admnistrador")]
-    [ProducesResponseType(typeof(CandidatoResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(InscricaoCandidatoResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> CadastrarCandidato([FromBody] NovoCandidatoRequest request)
+    public async Task<IActionResult> CadastrarCandidato([FromBody] NovaInscricaoCandidatoRequest request)
     {
         return Ok(await _inscricaoService.CadastrarCandidato(request));
     }
