@@ -11,7 +11,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Npgsql;
 using Refit;
+using System.Data;
 using System.Reflection;
 using System.Text;
 
@@ -48,6 +50,7 @@ public static class ServiceCollectionExtensions
     /// <returns>A coleção de serviços atualizada.</returns>
     public static IServiceCollection AddAthenasRepositoriesDI(this IServiceCollection services)
     {
+        
         services.AddSingleton<IUsuarioRepository, UsuarioRepository>();
         services.AddSingleton<IAlunoRepository, AlunoRepository>();
         services.AddSingleton<ICertificadoRepository, CertificadoRepository>();
