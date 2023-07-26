@@ -40,8 +40,8 @@ public class AlunoRepository : BaseRepository, IAlunoRepository
         {
             using IDbConnection connection = await GetConnectionAsync(Database.Aluno);
             string query = @"
-                    INSERT INTO detalhe (id_aluno, codigo_usuario, data_usuario, codigo_inscricao, data_inscricao, codigo_matricula, data_matricula, data_contrato, codigo_contrato)
-                    VALUES (@IdAluno, @CodigoUsuario, @DataUsuario, @CodigoInscricao, @DataInscricao, @CodigoMatricula, @DataMatricula, @DataContrato, @CodigoContrato)
+                    INSERT INTO detalhe (id_aluno, codigo_usuario, data_usuario, codigo_inscricao, data_inscricao, codigo_curso, codigo_matricula, data_matricula, codigo_contrato, data_contrato)
+                    VALUES (@IdAluno, @CodigoUsuario, @DataUsuario, @CodigoInscricao, @DataInscricao, @CodigoCurso, @CodigoMatricula, @DataMatricula, @CodigoContrato, @DataContrato)
                     RETURNING *;";
 
             return await connection.QueryFirstAsync<DetalheAlunoModel>(query, detalhe);
@@ -51,6 +51,7 @@ public class AlunoRepository : BaseRepository, IAlunoRepository
             throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
         }
     }
+
 
     public async Task<EnderecoAlunoModel> CadastrarEnderecoAluno(NovoEnderecoAlunoArgument endereco)
     {
