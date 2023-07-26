@@ -89,6 +89,11 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
         IEnumerable<UsuarioModel> usuarios = await _usuarioRepository.BuscarUsuarios();
         return _mapper.Map<IEnumerable<UsuarioResponse>>(usuarios);
     }
+
+    public async Task<UsuarioModel> ObterUsuario(string usuario)
+    {
+        return await ValidarUsuarioExistenteCadastro(usuario);
+    }
     #endregion
 
     #region Métodos Privados

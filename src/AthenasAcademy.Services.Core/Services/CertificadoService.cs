@@ -96,32 +96,23 @@ public class CertificadoService : ICertificadoService
     private async Task<NovoCertificadoRequest> MontarRequestNovoCertificado(string matricula)
     {
         // recuperar detalhes matricula
-        // var detalhesContrato = await _matriculaService.ObterDetalhesMatricula(matricula);
+        //var detalhesContrato = await _matriculaService.ObterDetalhesMatricula(matricula);
 
         // recuperar detalhes aluno
-        // var aluno = await _alunoService.ObterAluno(detalhesContrato.IdAluno);
+        //var aluno = await _alunoService.ObterAluno(detalhesContrato.IdAluno);
 
         // recuperar detalhes curso //(detalhesContrato.IdCurso);
-        // var curso = await _cursoService.ObterCurso(1);
+        var curso = await _cursoService.ObterCurso(1);
 
         NovoCertificadoRequest certificadoRequest = new()
-        //{
-        //    NomeAluno = aluno.Nome,
-        //    Matricula = aluno.Id,
-        //    Aproveitamento = ObterRendimentoRandom(),
-        //    DataConclusao = DateTime.Now,
-        //    NomeCurso = curso.Nome,
-        //    CodigoCurso = curso.Id,
-        //    CargaHoraria = curso.CargaHoraria,
-        //};
         {
-            NomeAluno = "Rafael DERONCIO de Oliveira",
-            Matricula = 23,
+            //NomeAluno = aluno.Nome,
+            //Matricula = aluno.Id,
             Aproveitamento = ObterRendimentoRandom(),
             DataConclusao = DateTime.Now,
-            NomeCurso = "curso teste@ teste",
-            CodigoCurso = 123,
-            CargaHoraria = 120,
+            NomeCurso = curso.Nome,
+            CodigoCurso = curso.Id,
+            CargaHoraria = curso.CargaHoraria,
         };
 
         return certificadoRequest;

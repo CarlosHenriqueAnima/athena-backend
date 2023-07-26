@@ -1,61 +1,146 @@
-﻿using AthenasAcademy.Services.Core.Exceptions;
+﻿using AthenasAcademy.Services.Core.Arguments;
+using AthenasAcademy.Services.Core.Configurations.Mappers;
+using AthenasAcademy.Services.Core.Exceptions;
+using AthenasAcademy.Services.Core.Extensions;
 using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Core.Services.Interfaces;
-using AthenasAcademy.Services.Domain.Configurations.Enums;
-using System.Net;
+using AthenasAcademy.Services.Domain.Requests;
+using AthenasAcademy.Services.Domain.Responses;
+using System.Reflection;
 
 namespace AthenasAcademy.Services.Core.Services;
 
 public class InscricaoService : IInscricaoService
 {
     private readonly IInscricaoRepository _inscricaoRepository;
+    private readonly IAutorizaUsuarioService _usuarioService;
+    private readonly IAlunoService _alunoService;
 
-    public InscricaoService(IInscricaoRepository inscricaoRepository)
+    public InscricaoService(
+        IInscricaoRepository inscricaoRepository,
+        IAutorizaUsuarioService usuarioService,
+        IAlunoService alunoService)
     {
         _inscricaoRepository = inscricaoRepository;
+        _usuarioService = usuarioService;
+        _alunoService = alunoService;
+
     }
 
-    public async Task<CandidatoModel> ObterInscricaoPorIdAsync(int inscricaoId)
+    public async Task<CandidatoResponse> CadastrarCandidato(NovoCandidatoRequest request)
     {
-        return await _inscricaoRepository.ObterInscricaoPorIdAsync(inscricaoId);
+        UsuarioModel usuario = await ValidarUsuarioExistente(request);
+
+        InscricaoCandidatoModel inscricao = await RegistrarNovaInscricaoCandidato(request);
+
+        AlunoModel aluno = await RegistrarAluno(request, usuario, inscricao);
+
+
+        return new CandidatoResponse();
     }
 
-    public async Task<IEnumerable<CandidatoModel>> ObterInscricoesPendentesAsync()
+    private async Task<AlunoModel> RegistrarAluno(NovoCandidatoRequest request, UsuarioModel usuario, InscricaoCandidatoModel inscricao)
     {
-        return await _inscricaoRepository.ObterInscricoesPendentesAsync();
+        // cadastrar aluno
+        NovoAlunoArgument alunoArgument = await MontarNovoRegistroAluno(request);
+        AlunoModel aluno = await _alunoService.CadastrarAluno(alunoArgument);
+
+        // cadastrar endereco
+        NovoEnderecoAlunoArgument enderecoAlunoArgument = await MontarNovoRegistroEnderecoAluno(aluno.Id, request);
+        EnderecoAlunoModel enderecoAluno = await _alunoService.CadastrarEnderecoAluno(enderecoAlunoArgument);
+
+        // cadastrar telefone
+        NovoTelefoneAlunoArgument telefoneAlunoArgument = await MontarNovoRegistroTelefoneAluno(aluno.Id, request);
+        TelefoneAlunoModel telefoneAluno = await _alunoService.CadastrarTelefoneAluno(telefoneAlunoArgument);
+
+        // cadastrar detalhes
+        NovoDetalheAlunoArgument detalheAlunoArgument = await MontarNovoRegistroDetalheAluno(aluno.Id, request, usuario, inscricao);
+        DetalheAlunoModel detalhetelefoneAluno = await _alunoService.CadastrarDetalheAluno(detalheAlunoArgument);
+        return aluno;
     }
 
-    public async Task AdicionarInscricaoAsync(CandidatoModel inscricao)
+    private async Task<NovoDetalheAlunoArgument> MontarNovoRegistroDetalheAluno(int id, NovoCandidatoRequest request, UsuarioModel usuario, InscricaoCandidatoModel inscricao)
     {
-        if (inscricao == null)
-            throw new APICustomException(string.Format("Não há dados de inscrição."), ExceptionResponseType.Error, HttpStatusCode.BadRequest);
-
-        if (String.IsNullOrEmpty(inscricao.Email))
-            throw new APICustomException(string.Format("O candidato precisa ter um email."), ExceptionResponseType.Warning, HttpStatusCode.BadRequest);
-
-        if (String.IsNullOrEmpty(inscricao.Nome))
-            throw new APICustomException(string.Format("Nome do candidato não pode estar em branco."), ExceptionResponseType.Error, HttpStatusCode.BadRequest);
-
-        if (String.IsNullOrEmpty(inscricao.CursoInteresse))
-            throw new APICustomException(string.Format("Informe um curso de interesse."), ExceptionResponseType.Error, HttpStatusCode.BadRequest);
-
-        await _inscricaoRepository.AdicionarInscricaoAsync(inscricao);
+        return await Task.FromResult(new NovoDetalheAlunoArgument()
+        {
+            IdAluno = id,
+            CodigoInscricao = inscricao.CodigoInscricao.ToString(),
+            DataInscricao = inscricao.DataInscricao,
+            CodigoUsuario = usuario.Id.ToString(),
+            DataUsuario = usuario.DataCadastro
+        });
     }
 
-    public async Task AtualizarInscricaoAsync(CandidatoModel inscricao)
+    private async Task<NovoTelefoneAlunoArgument> MontarNovoRegistroTelefoneAluno(int id, NovoCandidatoRequest request)
     {
-        if (inscricao == null)
-            throw new APICustomException(string.Format("Não há dados de inscrição."), ExceptionResponseType.Error, HttpStatusCode.BadRequest);
-
-        if (String.IsNullOrEmpty(inscricao.Nome) || String.IsNullOrEmpty(inscricao.Email) || String.IsNullOrEmpty(inscricao.CodigoInscricao))
-            throw new APICustomException(string.Format("São necessários nome, email e código de inscrição."), ExceptionResponseType.Error, HttpStatusCode.BadRequest);
-
-        await _inscricaoRepository.AtualizarInscricaoAsync(inscricao);
+        return await Task.FromResult(new NovoTelefoneAlunoArgument()
+        {
+            IdAluno = id,
+            TelefoneCelular = request.Telefone.TelefoneCelular ?? string.Empty,
+            TelefoneRecado = request.Telefone.TelefoneRecado ?? string.Empty,
+            TelefoneResidencial = request.Telefone.TelefoneResidencial ?? string.Empty,
+        });
     }
 
-    public async Task CancelarInscricaoAsync(int id)
+    private async Task<NovoEnderecoAlunoArgument> MontarNovoRegistroEnderecoAluno(int id, NovoCandidatoRequest request)
     {
-        await _inscricaoRepository.CancelarInscricaoAsync(id);
+        return await Task.FromResult(new NovoEnderecoAlunoArgument()
+        {
+            IdAluno = id,
+            Logradouro = request.Endereco.Logradouro.ToUpper(),
+            Numero = request.Endereco.Numero,
+            Complemento = request.Endereco.Complemento.ToUpper(),
+            Bairro = request.Endereco.Bairro.ToUpper(),
+            Localidade = request.Endereco.Localidade.ToUpper(),
+            UF = request.Endereco.UF.ToUpper(),
+            CEP = request.Endereco.CEP.ToUpper()
+        });
+    }
+
+    private async Task<NovoAlunoArgument> MontarNovoRegistroAluno(NovoCandidatoRequest request)
+    {
+        return await Task.FromResult(new NovoAlunoArgument()
+        {
+            Nome = request.NomeCompleto.ObterPrimeiroNome(),
+            Sobrenome = request.NomeCompleto.ObterSobrenome(),
+            CPF = request.CPF.FormatarCPF(),
+            Sexo = request.Sexo,
+            DataNascimento = request.DataNascimento,
+            Email = request.Email.Trim().ToLower(),
+        });
+    }
+
+    private async Task<InscricaoCandidatoModel> RegistrarNovaInscricaoCandidato(NovoCandidatoRequest request)
+    {
+        InscricaoCandidatoArgument argument = new()
+        {
+            Nome = request.NomeCompleto.FormatarTextoCamelCase(),
+            Email = request.Email.Trim().ToLower(),
+            Telefone = request.Telefone.TelefoneCelular ?? request.Telefone.TelefoneResidencial ?? request.Telefone.TelefoneRecado,
+            CodigoCurso = request.CodigoCurso,
+            NomeCurso = request.NomeCurso
+        };
+
+        return await _inscricaoRepository.RegistrarNovaInscricao(argument);
+    }
+
+    private async Task<UsuarioModel> ValidarUsuarioExistente(NovoCandidatoRequest request)
+    {
+        UsuarioModel usuario = await _usuarioService.ObterUsuario(request.Email.Trim().ToLower());
+
+        if (usuario is null)
+            throw new APICustomException(
+                message: $"Usuário {usuario.Usuario} não existe.",
+                responseType: Domain.Configurations.Enums.ExceptionResponseType.Error,
+                statusCode: System.Net.HttpStatusCode.BadRequest);
+
+        if (!usuario.Ativo)
+            throw new APICustomException(
+                message: $"Usuário {usuario.Usuario} está inativo.",
+                responseType: Domain.Configurations.Enums.ExceptionResponseType.Error,
+                statusCode: System.Net.HttpStatusCode.BadRequest);
+
+        return usuario;
     }
 }

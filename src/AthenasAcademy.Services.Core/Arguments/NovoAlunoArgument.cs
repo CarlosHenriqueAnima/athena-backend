@@ -1,13 +1,13 @@
-﻿namespace AthenasAcademy.Services.Core.Models;
+﻿namespace AthenasAcademy.Services.Core.Arguments;
 
-public class AlunoModel
+public class NovoAlunoArgument
 {
-    public int Id { get; set; }
     public string Nome { get; set; }
     public string Sobrenome { get; set; }
     public string CPF { get; set; }
     public char Sexo { get; set; }
     public DateTime DataNascimento { get; set; }
     public string Email { get; set; }
-    public bool Ativo { get; set; }
+    public bool Ativo => true;
+    public DateTime DataCadastro => DateTime.Now;
 }

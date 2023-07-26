@@ -1,12 +1,12 @@
 ﻿using AthenasAcademy.Services.Core.Models;
+using AthenasAcademy.Services.Domain.Requests;
+using AthenasAcademy.Services.Domain.Responses;
 
 namespace AthenasAcademy.Services.Core.Services.Interfaces;
 
 public interface IInscricaoService
 {
-    Task<CandidatoModel> ObterInscricaoPorIdAsync(int id);
-    Task<IEnumerable<CandidatoModel>> ObterInscricoesPendentesAsync();
-    Task AdicionarInscricaoAsync(CandidatoModel inscricao);
-    Task AtualizarInscricaoAsync(CandidatoModel inscricao);
-    Task CancelarInscricaoAsync(int id);
+    Task<CandidatoResponse> CadastrarCandidato(NovoCandidatoRequest request);
 }
+
+
