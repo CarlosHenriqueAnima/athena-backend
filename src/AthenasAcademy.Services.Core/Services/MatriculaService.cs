@@ -1,5 +1,4 @@
 ﻿using AthenasAcademy.Services.Core.CrossCutting;
-using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Core.Services.Interfaces;
 using AthenasAcademy.Services.Core.Services.SQSProducer;
@@ -14,7 +13,7 @@ public class MatriculaService : IMatriculaService
     private readonly IMatriculaRepository _matriculaRepository;
 
     public MatriculaService(
-        IQueueProducerService queueProducerService, 
+        IQueueProducerService queueProducerService,
         IAlunoService alunoService,
         IMatriculaRepository matriculaRepository)
     {
@@ -45,7 +44,7 @@ public class MatriculaService : IMatriculaService
 
         return await Task.FromResult(new MatriculaStatusResponse
         {
-            Matricula  = matricula.Matricula,
+            Matricula = matricula.Matricula,
             Contrato = matricula.CodigoContrato,
             BoletoPago = true,
             ContratoAssinado = true,

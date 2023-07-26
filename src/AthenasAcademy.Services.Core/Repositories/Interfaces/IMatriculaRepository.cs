@@ -5,9 +5,9 @@ namespace AthenasAcademy.Services.Core.Repositories.Interfaces;
 
 public interface IMatriculaRepository
 {
-    Task<MatriculaAlunoModel> GerarPreMatricula(FichaAluno fichaAluno);
+    Task<MatriculaModel> GerarPreMatricula(FichaAluno fichaAluno);
 
-    Task<MatriculaAlunoModel> AtivarMatricula(FichaAluno fichaAluno);
+    Task<MatriculaModel> AtivarMatricula(FichaAluno fichaAluno);
 
     Task<ContratoMatriculaAlunoModel> GerarContratoMatricula(FichaAluno fichaAluno);
 }

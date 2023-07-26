@@ -48,7 +48,6 @@ public static class ApplicationBuilderExtensions
     {
         builder.UseCors(builder =>
         {
-            builder.AllowCredentials();
             builder.AllowAnyHeader();
             builder.AllowAnyMethod();
             builder.AllowAnyOrigin();
