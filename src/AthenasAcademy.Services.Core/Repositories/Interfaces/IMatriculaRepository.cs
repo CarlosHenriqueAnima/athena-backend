@@ -9,5 +9,7 @@ public interface IMatriculaRepository
 
     Task<MatriculaModel> AtivarMatricula(FichaAluno fichaAluno);
 
-    Task<ContratoMatriculaAlunoModel> GerarContratoMatricula(FichaAluno fichaAluno);
+    Task<MatriculaModel> ObterMatricula(int matricula);
+
+    Task<ContratoMatriculaAlunoModel> AssinarContratoMatricula(FichaAluno fichaAluno);
 }

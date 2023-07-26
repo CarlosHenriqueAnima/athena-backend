@@ -1,4 +1,5 @@
-﻿using AthenasAcademy.Services.Domain.Requests;
+﻿using AthenasAcademy.Services.Core.Models;
+using AthenasAcademy.Services.Domain.Requests;
 using AthenasAcademy.Services.Domain.Responses;
 
 namespace AthenasAcademy.Services.Core.Services.Interfaces;
@@ -14,4 +15,6 @@ public interface IInscricaoService
     /// <param name="request">Os dados do novo candidato a ser cadastrado.</param>
     /// <returns>Uma tarefa que representa o cadastro do candidato.</returns>
     Task<InscricaoCandidatoResponse> CadastrarCandidato(NovaInscricaoCandidatoRequest request);
+
+    Task<InscricaoCandidatoModel> ObterInscricao(int inscricao);
 }

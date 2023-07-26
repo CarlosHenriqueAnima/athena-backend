@@ -1,8 +1,11 @@
 ﻿using AthenasAcademy.Services.Core.CrossCutting;
+using AthenasAcademy.Services.Core.Exceptions;
+using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Core.Services.Interfaces;
 using AthenasAcademy.Services.Core.Services.SQSProducer;
 using AthenasAcademy.Services.Domain.Responses;
+using System.Net;
 
 namespace AthenasAcademy.Services.Core.Services;
 
@@ -10,36 +13,29 @@ public class MatriculaService : IMatriculaService
 {
     private readonly IQueueProducerService _queueProducerService;
     private readonly IAlunoService _alunoService;
+    private readonly IInscricaoService _inscricaoService;
     private readonly IMatriculaRepository _matriculaRepository;
 
     public MatriculaService(
         IQueueProducerService queueProducerService,
         IAlunoService alunoService,
+        IInscricaoService inscricaoService,
         IMatriculaRepository matriculaRepository)
     {
         _queueProducerService = queueProducerService;
         _alunoService = alunoService;
+        _inscricaoService = inscricaoService;
         _matriculaRepository = matriculaRepository;
     }
 
     public async Task<MatriculaStatusResponse> MatricularAluno(int inscricao)
     {
-        // validar se inscricao existe
-        await ValidarInscricao(inscricao);
+        await ValidarProcessoMatricula(inscricao);
 
-        // validar se boleto foi pago
-        await ValidarPagamentoBoleto(inscricao);
-
-        // validar se contrato foi assinado
-        await ValidarContratoAssinado(inscricao);
-
-        // obter ficha aluno
         var fichaAluno = await _alunoService.ObterFichaAluno(inscricao);
-
 
         var matricula = await _matriculaRepository.AtivarMatricula(fichaAluno);
 
-        // liberar certificado
         await _queueProducerService.Certificado(fichaAluno).Send();
 
         return await Task.FromResult(new MatriculaStatusResponse
@@ -53,30 +49,59 @@ public class MatriculaService : IMatriculaService
 
     public async Task RegistrarPreMatricula(FichaAluno fichaAluno)
     {
-        // cadastrar contrato
-        await _matriculaRepository.GerarPreMatricula(fichaAluno);
+        MatriculaModel matricula = await _matriculaRepository.GerarPreMatricula(fichaAluno);
 
-        // cadastrar pré-contrato
-        await _matriculaRepository.GerarContratoMatricula(fichaAluno);
+        fichaAluno.Contrato.Matricula = matricula.Matricula;
+        fichaAluno.Contrato.NumeroContrato = matricula.CodigoContrato;
 
         await _queueProducerService.Contrato(fichaAluno).Send();
         await _queueProducerService.Boleto(fichaAluno).Send();
-
-        throw new NotImplementedException();
     }
 
-    private Task ValidarContratoAssinado(int inscricao)
+    private async Task ValidarProcessoMatricula(int inscricao)
     {
-        throw new NotImplementedException();
-    }
+        // buscar inscricao
+        InscricaoCandidatoModel inscricaoAluno = await _inscricaoService.ObterInscricao(inscricao);
 
-    private Task ValidarPagamentoBoleto(int inscricao)
-    {
-        throw new NotImplementedException();
-    }
+        if (inscricaoAluno is null)
+            throw new APICustomException(
+                message: $"Inscrição {inscricao} não localizada.",
+                responseType: Domain.Configurations.Enums.ExceptionResponseType.Error,
+                statusCode: HttpStatusCode.BadRequest);
 
-    private Task ValidarInscricao(int inscricao)
-    {
+        if (!inscricaoAluno.BoletoPago)
+            throw new APICustomException(
+                message: $"Boleto da  inscrição {inscricao} ainda foi não pago.",
+                responseType: Domain.Configurations.Enums.ExceptionResponseType.Error,
+                statusCode: HttpStatusCode.BadRequest);
+
+        // buscar matricula
+        MatriculaModel matriculaAluno = await _matriculaRepository.ObterMatricula(inscricao);
+
+        if (matriculaAluno is null)
+            throw new APICustomException(
+                message: $"Não constam matrículas para inscrição {inscricao}.",
+                responseType: Domain.Configurations.Enums.ExceptionResponseType.Error,
+                statusCode: HttpStatusCode.BadRequest);
+
+        if (!matriculaAluno.Ativa)
+            throw new APICustomException(
+                message: $"Matrícula {matriculaAluno.Matricula} ainda foi não ativada.",
+                responseType: Domain.Configurations.Enums.ExceptionResponseType.Error,
+                statusCode: HttpStatusCode.BadRequest);
+
+        if (!matriculaAluno.Assinado)
+            throw new APICustomException(
+                message: $"Contrato de matrícula ainda foi não assinado.",
+                responseType: Domain.Configurations.Enums.ExceptionResponseType.Error,
+                statusCode: HttpStatusCode.BadRequest);
+
+        if (matriculaAluno.Assinado && matriculaAluno.Ativa)
+            throw new APICustomException(
+                message: $"Aluno já matriculado.",
+                responseType: Domain.Configurations.Enums.ExceptionResponseType.Error,
+                statusCode: HttpStatusCode.BadRequest);
+
         throw new NotImplementedException();
     }
 }

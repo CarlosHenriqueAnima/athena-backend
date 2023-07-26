@@ -188,4 +188,9 @@ public class InscricaoService : IInscricaoService
 
         return usuario;
     }
+
+    public async Task<InscricaoCandidatoModel> ObterInscricao(int inscricao)
+    {
+        return await _inscricaoRepository.ObterInscricao(inscricao);
+    }
 }

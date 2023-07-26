@@ -32,4 +32,21 @@ public class InscricaoRepository : BaseRepository, IInscricaoRepository
             throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
         }
     }
+
+    public async Task<InscricaoCandidatoModel> ObterInscricao(int inscricao)
+    {
+        try
+        {
+            string query = "SELECT * FROM inscricao_candidato WHERE codigo_inscricao = @CodigoInscricao";
+
+            using IDbConnection connection = GetConnection(Database.Inscricao);
+            var inscricaoCandidato = await connection.QueryFirstOrDefaultAsync<InscricaoCandidatoModel>(query, new { CodigoInscricao = inscricao });
+
+            return inscricaoCandidato;
+        }
+        catch (Exception ex)
+        {
+            throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
+        }
+    }
 }
