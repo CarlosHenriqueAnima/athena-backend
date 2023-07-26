@@ -19,6 +19,7 @@ A API API Athenas Academy fornece acesso a um sistema educacional que gerencia i
 - [x] Atualizar informações de um curso existente.
 - [x] Excluir um curso do sistema.
 
+
 **Certificado**
 
 - [x] Listar todos os certificados emitidos.
@@ -36,14 +37,12 @@ A API API Athenas Academy fornece acesso a um sistema educacional que gerencia i
 **Autenticação**
 Para acessar os endpoints da API, é necessário autenticar-se usando Header de autenticação JWT - Schema Bearer. 
 
-Endpoints
-A seguir endpoints principais da API
 
+**Principais end-points da API**
 
 ➡️ Alunos
-    GET /api/v1/alunos: Obter a lista de todos os alunos.
-    
-    POST /api/v1/alunos: Cadastrar um novo aluno.
+- GET /api/v1/alunos:                                           _Obter a lista de todos os alunos._
+- POST /api/v1/alunos:                                          _Cadastrar um novo aluno._
    
 
 ➡️ Cursos
