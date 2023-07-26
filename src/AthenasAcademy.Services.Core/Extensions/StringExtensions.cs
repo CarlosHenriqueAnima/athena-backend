@@ -3,14 +3,14 @@ using System.Text.RegularExpressions;
 
 namespace AthenasAcademy.Services.Core.Extensions;
 
-public static class StringExtensions
+public static partial class StringExtensions
 {
     public static string FormatarTextoCamelCase(this string texto)
     {
         if (string.IsNullOrEmpty(texto))
             return texto;
 
-        texto = Regex.Replace(texto, @"[^a-zA-Z0-9]", " ");
+        texto = Regexx().Replace(texto, " ");
 
         string[] palavras = texto.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -57,4 +57,6 @@ public static class StringExtensions
         return cpf.Insert(3, ".").Insert(7, ".").Insert(11, "-");
     }
 
+    [GeneratedRegex("[^a-zA-Z0-9]")]
+    private static partial Regex Regexx();
 }

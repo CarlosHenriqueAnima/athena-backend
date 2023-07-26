@@ -15,18 +15,15 @@ namespace AthenasAcademy.Services.Core.Services;
 
 public class AutorizaUsuarioService : IAutorizaUsuarioService
 {
-    private readonly HttpContext _httpContext;
     private readonly ITokenService _tokenService;
     private readonly IUsuarioRepository _usuarioRepository;
     private readonly IObjectConverter _mapper;
 
     public AutorizaUsuarioService(
-        IHttpContextAccessor httpContextAccessor,
         ITokenService tokenService,
         IUsuarioRepository usuarioRepository,
         IObjectConverter objectConverter)
     {
-        _httpContext = httpContextAccessor.HttpContext;
         _tokenService = tokenService;
         _usuarioRepository = usuarioRepository;
         _mapper = objectConverter;
@@ -97,24 +94,22 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
     #endregion
 
     #region Métodos Privados
-    private string GerarHashDeSenhaSHA256(string senha)
+    private static string GerarHashDeSenhaSHA256(string senha)
     {
-        using (SHA256 sha256 = SHA256.Create())
+        using SHA256 sha256 = SHA256.Create();
+        byte[] passwordBytes = Encoding.UTF8.GetBytes(senha);
+        byte[] hashedBytes = sha256.ComputeHash(passwordBytes);
+
+        StringBuilder sb = new();
+        foreach (byte b in hashedBytes)
         {
-            byte[] passwordBytes = Encoding.UTF8.GetBytes(senha);
-            byte[] hashedBytes = sha256.ComputeHash(passwordBytes);
-
-            StringBuilder sb = new StringBuilder();
-            foreach (byte b in hashedBytes)
-            {
-                sb.Append(b.ToString("x2"));
-            }
-
-            return sb.ToString();
+            sb.Append(b.ToString("x2"));
         }
+
+        return sb.ToString();
     }
 
-    private bool ValidarHashDeSenhaSHA256(string senhaHashBanco, string senhaHashLogin, bool lancarException)
+    private static bool ValidarHashDeSenhaSHA256(string senhaHashBanco, string senhaHashLogin, bool lancarException)
     {
         string senhaHashLoginCalculado = GerarHashDeSenhaSHA256(senhaHashLogin);
         bool senhaConfere = senhaHashBanco == senhaHashLoginCalculado;
@@ -145,13 +140,12 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
     {
         UsuarioModel usuarioBanco = await _usuarioRepository.BuscarUsuario(new() { Email = usuario.Trim().ToLower() });
 
-        if (usuarioBanco is null)
-            throw new APICustomException(
+        return usuarioBanco is null
+            ? throw new APICustomException(
                 message: string.Format("O usuário '{0}' não foi localizado.", usuario),
                 responseType: ExceptionResponseType.Warning,
-                statusCode: HttpStatusCode.Unauthorized);
-
-        return usuarioBanco;
+                statusCode: HttpStatusCode.Unauthorized)
+            : usuarioBanco;
     }
 
     private async Task<TokenModel> ObterTokenNovoUsuario(UsuarioModel usuario)

@@ -25,11 +25,7 @@ public class CursoService : ICursoService
     #region Curso
     public async Task<CursoResponse> ObterCurso(int id)
     {
-        CursoModel curso = await _cursoRepository.ObterCurso(id);
-
-        if (curso is null)
-            throw new APICustomException(string.Format("Nenhum curso localizado para a o id {0}. Por favor, revise os detalhes da requisição.", id), ExceptionResponseType.Warning, HttpStatusCode.NotFound);
-
+        CursoModel curso = await _cursoRepository.ObterCurso(id) ?? throw new APICustomException(string.Format("Nenhum curso localizado para a o id {0}. Por favor, revise os detalhes da requisição.", id), ExceptionResponseType.Warning, HttpStatusCode.NotFound);
         CursoResponse response = _mapper.Map<CursoResponse>(curso);
 
         response.AreaConhecimento = _mapper.Map<AreaConhecimentoResponse>(
@@ -44,15 +40,15 @@ public class CursoService : ICursoService
     public async Task<IEnumerable<CursoResponse>> ObterCursos()
     {
         IEnumerable<CursoModel> cursos = await _cursoRepository.ObterCursos();
-        if (cursos.Count() == 0)
+        if (!cursos.Any())
             throw new APICustomException("Nenhum 'curso' cadastrado.", ExceptionResponseType.Warning, HttpStatusCode.NotFound);
 
         IEnumerable<DisciplinaModel> disciplinas = await _cursoRepository.ObterDisciplinas();
-        if (disciplinas.Count() == 0)
+        if (!disciplinas.Any())
             throw new APICustomException("Nenhuma 'disciplina' cadastrada.", ExceptionResponseType.Warning, HttpStatusCode.NotFound);
 
         IEnumerable<AreaConhecimentoModel> areasConecimento = await _cursoRepository.ObterAreasConhecimento();
-        if (areasConecimento.Count() == 0)
+        if (!areasConecimento.Any())
             throw new APICustomException("Nenhuma 'area do conecimento' cadastrada.", ExceptionResponseType.Warning, HttpStatusCode.NotFound);
 
         IEnumerable<CursoResponse> response = cursos.Select(curso => new CursoResponse
@@ -157,7 +153,7 @@ public class CursoService : ICursoService
     {
         IEnumerable<DisciplinaModel> disciplinas = await _cursoRepository.ObterDisciplinas();
 
-        if (disciplinas.Count() == 0)
+        if (!disciplinas.Any())
             throw new APICustomException("Nenhuma disciplina cadastrada.", ExceptionResponseType.Warning, HttpStatusCode.NotFound);
 
         return _mapper.Map<IEnumerable<DisciplinaResponse>>(disciplinas);
@@ -165,11 +161,7 @@ public class CursoService : ICursoService
 
     public async Task<NovaDisciplinaResponse> CadastrarDisciplina(NovaDisciplinaRequest request)
     {
-        var curso = await _cursoRepository.ObterCurso(request.IdCurso);
-
-        if (curso is null)
-            throw new APICustomException(string.Format("Nenhum curso localizado para a o id {0}. Por favor, revise os detalhes da requisição.", request.IdCurso), ExceptionResponseType.Warning, HttpStatusCode.NotFound);
-
+        _ = await _cursoRepository.ObterCurso(request.IdCurso) ?? throw new APICustomException(string.Format("Nenhum curso localizado para a o id {0}. Por favor, revise os detalhes da requisição.", request.IdCurso), ExceptionResponseType.Warning, HttpStatusCode.NotFound);
         DisciplinaArgument argument = _mapper.Map<DisciplinaArgument>(request);
         argument.Ativo = true;
         argument.DataCadastro = DateTime.Now;
@@ -221,22 +213,20 @@ public class CursoService : ICursoService
     {
         AreaConhecimentoModel areaConhecimento = await _cursoRepository.ObterAreaConhecimento(id);
 
-        if (areaConhecimento is null)
-            throw new APICustomException(string.Format("Nenhuma Área do Conhecimento localizada para o id {0}. Por favor, revise os detalhes da requisição.", id)
-                , ExceptionResponseType.Warning, HttpStatusCode.NotFound);
-
-        return _mapper.Map<AreaConhecimentoResponse>(areaConhecimento);
+        return areaConhecimento is null
+            ? throw new APICustomException(string.Format("Nenhuma Área do Conhecimento localizada para o id {0}. Por favor, revise os detalhes da requisição.", id)
+                , ExceptionResponseType.Warning, HttpStatusCode.NotFound)
+            : _mapper.Map<AreaConhecimentoResponse>(areaConhecimento);
     }
 
     public async Task<IEnumerable<AreaConhecimentoResponse>> ObterAreasConhecimento()
     {
         IEnumerable<AreaConhecimentoModel> areasConhecimento = await _cursoRepository.ObterAreasConhecimento();
 
-        if (areasConhecimento.Count() == 0)
-            throw new APICustomException("Nenhuma Area do Conhecimento cadastrada."
-                , ExceptionResponseType.Warning, HttpStatusCode.NotFound);
-
-        return _mapper.Map<IEnumerable<AreaConhecimentoResponse>>(areasConhecimento);
+        return !areasConhecimento.Any()
+            ? throw new APICustomException("Nenhuma Area do Conhecimento cadastrada."
+                , ExceptionResponseType.Warning, HttpStatusCode.NotFound)
+            : _mapper.Map<IEnumerable<AreaConhecimentoResponse>>(areasConhecimento);
     }
 
     public async Task<NovaAreaConhecimentoResponse> CadastrarAreaConhecimento(NovaAreaConhecimentoRequest request)
@@ -287,7 +277,9 @@ public class CursoService : ICursoService
         AreaConhecimentoResponse areaConhecimentoBanco = await ObterAreaConhecimento(id);
 
         if (!areaConhecimentoBanco.Ativo)
-            throw new APICustomException(string.Format("Área do Conhecimento com ID {0} está desativada."), ExceptionResponseType.Error, HttpStatusCode.BadRequest);
+            throw new APICustomException(message: "Área do Conhecimento com ID {0} está desativada.",
+                                         ExceptionResponseType.Error,
+                                         HttpStatusCode.BadRequest);
 
         return await _cursoRepository.DesativarAreaConhecimento(id);
     }
@@ -296,11 +288,7 @@ public class CursoService : ICursoService
     #region Métodos Privados
     private async Task<CursoModel> ObterCursoValidadoAsync(int id)
     {
-        CursoModel curso = await _cursoRepository.ObterCurso(id);
-
-        if (curso is null)
-            throw new APICustomException(string.Format("Nenhum curso localizado para a o id {0}. Por favor, revise os detalhes da requisição.", id), ExceptionResponseType.Warning, HttpStatusCode.NotFound);
-
+        CursoModel curso = await _cursoRepository.ObterCurso(id) ?? throw new APICustomException(string.Format("Nenhum curso localizado para a o id {0}. Por favor, revise os detalhes da requisição.", id), ExceptionResponseType.Warning, HttpStatusCode.NotFound);
         if (!curso.Ativo)
             throw new APICustomException(string.Format("O curso Id:{0} - {1} já foi desativado", id, curso.Nome), ExceptionResponseType.Warning, HttpStatusCode.NotFound);
 
@@ -311,7 +299,7 @@ public class CursoService : ICursoService
     {
         IEnumerable<DisciplinaModel> disciplinasDoCurso = await _cursoRepository.ObterDisciplinas();
 
-        if (disciplinas.Count() == 0 || disciplinas is null)
+        if (!disciplinas.Any() || disciplinas is null)
             return disciplinasDoCurso;
 
         IEnumerable<int> idsDisciplinasRequest = disciplinas.Select(disciplinaRequest => disciplinaRequest.Id);
@@ -345,11 +333,7 @@ public class CursoService : ICursoService
 
     private async Task<AreaConhecimentoModel> ObterAreaConhecimentoValidadaAsync(AreaConhecimentoRequest areaConhecimento)
     {
-        AreaConhecimentoModel areaConhecimentoBanco = await _cursoRepository.ObterAreaConhecimento(areaConhecimento.Id);
-
-        if (areaConhecimentoBanco is null)
-            throw new APICustomException(string.Format("Nenhuma Área do Conhecimento localizada para a o id {0}. Por favor, revise os detalhes da requisição.", areaConhecimento.Id), ExceptionResponseType.Warning, HttpStatusCode.NotFound);
-
+        AreaConhecimentoModel areaConhecimentoBanco = await _cursoRepository.ObterAreaConhecimento(areaConhecimento.Id) ?? throw new APICustomException(string.Format("Nenhuma Área do Conhecimento localizada para a o id {0}. Por favor, revise os detalhes da requisição.", areaConhecimento.Id), ExceptionResponseType.Warning, HttpStatusCode.NotFound);
         if (!areaConhecimento.Ativo)
             throw new APICustomException(string.Format("A Área do Conhecimento de Id:{0} - {1} já foi desativado", areaConhecimento.Id, areaConhecimento.Nome), ExceptionResponseType.Warning, HttpStatusCode.NotFound);
 
@@ -360,7 +344,7 @@ public class CursoService : ICursoService
     {
         IEnumerable<DisciplinaModel> disciplinas = await _cursoRepository.ObterDisciplinasDoCurso(idCurso);
 
-        if (disciplinas.Count() == 0)
+        if (!disciplinas.Any())
             throw new APICustomException(string.Format("Nenhum curso cadastrado para o ID {0}.", idCurso), ExceptionResponseType.Warning, HttpStatusCode.NotFound);
 
         return _mapper.Map<IEnumerable<DisciplinaResponse>>(disciplinas);

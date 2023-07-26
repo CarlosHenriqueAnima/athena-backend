@@ -3,6 +3,7 @@ using AthenasAcademy.Services.Core.CrossCutting;
 using AthenasAcademy.Services.Core.Exceptions;
 using AthenasAcademy.Services.Core.Extensions;
 using AthenasAcademy.Services.Core.Models;
+using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Core.Services.Interfaces;
 using AthenasAcademy.Services.Domain.Requests;
 using AthenasAcademy.Services.Domain.Responses;
@@ -88,10 +89,10 @@ public class InscricaoService : IInscricaoService
         TelefoneAlunoModel telefoneAluno = await _alunoService.CadastrarTelefoneAluno(telefoneAlunoArgument);
 
         // cadastrar detalhes
-        NovoDetalheAlunoArgument detalheAlunoArgument = await MontarNovoRegistroDetalheAluno(aluno.Id, request, usuario, inscricao);
+        NovoDetalheAlunoArgument detalheAlunoArgument = await MontarNovoRegistroDetalheAluno(aluno.Id, usuario, inscricao);
         DetalheAlunoModel detalheAluno = await _alunoService.CadastrarDetalheAluno(detalheAlunoArgument);
 
-        return new FichaAluno()
+        return new FichaAluno
         {
             Aluno = aluno,
             Endereco = enderecoAluno,
@@ -100,7 +101,7 @@ public class InscricaoService : IInscricaoService
         };
     }
 
-    private async Task<NovoDetalheAlunoArgument> MontarNovoRegistroDetalheAluno(int id, NovaInscricaoCandidatoRequest request, UsuarioModel usuario, InscricaoCandidatoModel inscricao)
+    private static async Task<NovoDetalheAlunoArgument> MontarNovoRegistroDetalheAluno(int id, UsuarioModel usuario, InscricaoCandidatoModel inscricao)
     {
         return await Task.FromResult(new NovoDetalheAlunoArgument()
         {
@@ -112,7 +113,7 @@ public class InscricaoService : IInscricaoService
         });
     }
 
-    private async Task<NovoTelefoneAlunoArgument> MontarNovoRegistroTelefoneAluno(int id, NovaInscricaoCandidatoRequest request)
+    private static async Task<NovoTelefoneAlunoArgument> MontarNovoRegistroTelefoneAluno(int id, NovaInscricaoCandidatoRequest request)
     {
         return await Task.FromResult(new NovoTelefoneAlunoArgument()
         {
@@ -123,7 +124,7 @@ public class InscricaoService : IInscricaoService
         });
     }
 
-    private async Task<NovoEnderecoAlunoArgument> MontarNovoRegistroEnderecoAluno(int id, NovaInscricaoCandidatoRequest request)
+    private static async Task<NovoEnderecoAlunoArgument> MontarNovoRegistroEnderecoAluno(int id, NovaInscricaoCandidatoRequest request)
     {
         return await Task.FromResult(new NovoEnderecoAlunoArgument()
         {
@@ -138,7 +139,7 @@ public class InscricaoService : IInscricaoService
         });
     }
 
-    private async Task<NovoAlunoArgument> MontarNovoRegistroAluno(NovaInscricaoCandidatoRequest request)
+    private static async Task<NovoAlunoArgument> MontarNovoRegistroAluno(NovaInscricaoCandidatoRequest request)
     {
         return await Task.FromResult(new NovoAlunoArgument()
         {

@@ -19,15 +19,13 @@ public class AlunoRepository : BaseRepository, IAlunoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Aluno))
-            {
-                string query = @"
+            using IDbConnection connection = GetConnection(Database.Aluno);
+            string query = @"
                     INSERT INTO aluno (nome, sobrenome, cpf, sexo, data_nascimento, email, ativo, data_cadastro)
                     VALUES (@Nome, @Sobrenome, @CPF, @Sexo, @DataNascimento, @Email, @Ativo, @DataCadastro)
                     RETURNING *;";
 
-                return await connection.QueryFirstAsync<AlunoModel>(query, aluno);
-            }
+            return await connection.QueryFirstAsync<AlunoModel>(query, aluno);
         }
         catch (Exception ex)
         {
@@ -39,15 +37,13 @@ public class AlunoRepository : BaseRepository, IAlunoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Aluno))
-            {
-                string query = @"
+            using IDbConnection connection = GetConnection(Database.Aluno);
+            string query = @"
                     INSERT INTO detalhe (id_aluno, codigo_usuario, data_usuario, codigo_inscricao, data_inscricao, codigo_matricula, data_matricula, data_contrato, codigo_contrato)
                     VALUES (@IdAluno, @CodigoUsuario, @DataUsuario, @CodigoInscricao, @DataInscricao, @CodigoMatricula, @DataMatricula, @DataContrato, @CodigoContrato)
                     RETURNING *;";
 
-                return await connection.QueryFirstAsync<DetalheAlunoModel>(query, detalhe);
-            }
+            return await connection.QueryFirstAsync<DetalheAlunoModel>(query, detalhe);
         }
         catch (Exception ex)
         {
@@ -59,15 +55,13 @@ public class AlunoRepository : BaseRepository, IAlunoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Aluno))
-            {
-                string query = @"
+            using IDbConnection connection = GetConnection(Database.Aluno);
+            string query = @"
                     INSERT INTO endereco (id_aluno, logradouro, numero, complemento, bairro, localidade, uf, cep, ativo, data_cadastro)
                     VALUES (@IdAluno, @Logradouro, @Numero, @Complemento, @Bairro, @Localidade, @UF, @CEP, @Ativo, @DataCadastro)
                     RETURNING *;";
 
-                return await connection.QueryFirstAsync<EnderecoAlunoModel>(query, endereco);
-            }
+            return await connection.QueryFirstAsync<EnderecoAlunoModel>(query, endereco);
         }
         catch (Exception ex)
         {
@@ -79,15 +73,13 @@ public class AlunoRepository : BaseRepository, IAlunoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Aluno))
-            {
-                string query = @"
+            using IDbConnection connection = GetConnection(Database.Aluno);
+            string query = @"
                     INSERT INTO telefone (id_aluno, telefone_residencial, telefone_celular, telefone_recado)
                     VALUES (@IdAluno, @TelefoneResidencial, @TelefoneCelular, @TelefoneRecado)
                     RETURNING *;";
 
-                return await connection.QueryFirstAsync<TelefoneAlunoModel>(query, telefone);
-            }
+            return await connection.QueryFirstAsync<TelefoneAlunoModel>(query, telefone);
         }
         catch (Exception ex)
         {
@@ -99,13 +91,11 @@ public class AlunoRepository : BaseRepository, IAlunoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Aluno))
-            {
-                string query = @"
+            using IDbConnection connection = GetConnection(Database.Aluno);
+            string query = @"
                     SELECT * FROM aluno WHERE id = @Id;";
 
-                return await connection.QueryFirstAsync<AlunoModel>(query, new { Id = id });
-            }
+            return await connection.QueryFirstAsync<AlunoModel>(query, new { Id = id });
         }
         catch (Exception ex)
         {

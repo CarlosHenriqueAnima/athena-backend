@@ -246,7 +246,7 @@ public static class ServiceCollectionExtensions
     /// <returns>A coleção de serviços atualizada.</returns>
     public static IServiceCollection AddConfiguracaoRestClient(this IServiceCollection services, IConfiguration configuration)
     {
-        RefitSettings config = new RefitSettings()
+        RefitSettings config = new()
         {
             ContentSerializer = new NewtonsoftJsonContentSerializer(
                 new JsonSerializerSettings

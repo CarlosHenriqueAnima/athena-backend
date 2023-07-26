@@ -21,19 +21,17 @@ public class AwsS3Repository : IAwsS3Repository
 
         try
         {
-            GetObjectRequest request = new GetObjectRequest
+            GetObjectRequest request = new()
             {
                 BucketName = bucket,
                 Key = recurso
             };
 
-            using (GetObjectResponse response = await GetClient().GetObjectAsync(request))
-            {
-                MemoryStream memoryStream = new MemoryStream();
-                await response.ResponseStream.CopyToAsync(memoryStream);
-                memoryStream.Position = 0;
-                return memoryStream;
-            }
+            using GetObjectResponse response = await GetClient().GetObjectAsync(request);
+            MemoryStream memoryStream = new();
+            await response.ResponseStream.CopyToAsync(memoryStream);
+            memoryStream.Position = 0;
+            return memoryStream;
         }
         catch (AmazonS3Exception ex)
         {
@@ -50,16 +48,16 @@ public class AwsS3Repository : IAwsS3Repository
             string accessKey = _configuration["AwsAccessKey"];
             string secretKey = _configuration["AwsSecretKey"];
 
-            BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
+            BasicAWSCredentials credentials = new(accessKey, secretKey);
 
-            AmazonS3Config config = new AmazonS3Config
+            AmazonS3Config config = new()
             {
                 RegionEndpoint = RegionEndpoint.USWest2
             };
 
             return new AmazonS3Client(credentials, config);
         }
-        catch (AmazonS3Exception ex)
+        catch (AmazonS3Exception)
         {
             throw;
         }

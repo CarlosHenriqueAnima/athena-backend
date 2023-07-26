@@ -11,10 +11,8 @@ namespace AthenasAcademy.Services.Core.Configurations.Credentials
 
             var deserializer = new DeserializerBuilder().Build();
 
-            using (var reader = new StreamReader(@"./Secrets.yaml"))
-            {
+                using var reader = new StreamReader(@"./Secrets.yaml");
                 return deserializer.Deserialize<Credentials>(reader);
-            }
             }
             catch(Exception ex) 
             {

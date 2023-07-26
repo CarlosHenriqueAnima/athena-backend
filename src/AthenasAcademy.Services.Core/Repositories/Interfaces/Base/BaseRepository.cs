@@ -36,31 +36,16 @@ public class BaseRepository
 
     private string GetConnectionString(Database database) 
     {
-        switch (database)
+        return database switch
         {
-            case Database.Usuario:
-                return _configuration["UsuarioBase"];
-
-            case Database.Inscricao:
-                return _configuration["InscricaoBase"];
-
-            case Database.Aluno:
-                return _configuration["AlunoBase"];
-
-            case Database.Matricula:
-                return _configuration["MatriculaBase"];
-
-            case Database.Pagamento:
-                return _configuration["PagamentoBase"];
-
-            case Database.Curso:
-                return _configuration["CursoBase"];
-
-            case Database.Certificado:
-                return _configuration["CertificadoBase"];
-
-            default:
-                throw new NotImplementedException($"Database {database} não implementado.");
-        }
+            Database.Usuario => _configuration["UsuarioBase"],
+            Database.Inscricao => _configuration["InscricaoBase"],
+            Database.Aluno => _configuration["AlunoBase"],
+            Database.Matricula => _configuration["MatriculaBase"],
+            Database.Pagamento => _configuration["PagamentoBase"],
+            Database.Curso => _configuration["CursoBase"],
+            Database.Certificado => _configuration["CertificadoBase"],
+            _ => throw new NotImplementedException($"Database {database} não implementado."),
+        };
     }
 }

@@ -33,7 +33,7 @@ public class CertificadoController : ControllerBase
     /// <returns>Retorna um IActionResult que contém o certificado gerado.</returns>
     [HttpPost("gerar/{matricula}")]
     [AllowAnonymous]
-    //[Authorize(Roles = "Aluno, Admnistrador")]
+    [Authorize(Roles = "Aluno, Admnistrador")]
     [ProducesResponseType(typeof(NovoCertificadoResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
@@ -48,7 +48,7 @@ public class CertificadoController : ControllerBase
     /// <param name="matricula">Número da matricula para o qual o certificado será obtido.</param>
     /// <returns>Retorna um IActionResult que contém o certificado em formato PDF.</returns>
     [HttpGet("obter/{matricula}")]
-    [AllowAnonymous]//[Authorize(Roles = "Aluno, Admnistrador")]
+    [Authorize(Roles = "Aluno, Admnistrador")]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterCertificado(string matricula)

@@ -27,5 +27,5 @@ public class NovoEnderecoRequest
     public string CEP { get; set; }
 
     [JsonIgnore]
-    public bool Ativo => true;
+    public static bool Ativo => true;
 }

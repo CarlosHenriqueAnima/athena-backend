@@ -1,6 +1,8 @@
 ﻿using AthenasAcademy.Services.Core.Arguments;
 using AthenasAcademy.Services.Core.Models;
 
+namespace AthenasAcademy.Services.Core.Repositories.Interfaces;
+
 /// <summary>
 /// Interface responsável por definir o repositório para o registro de inscrições de candidatos.
 /// </summary>

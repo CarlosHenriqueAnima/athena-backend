@@ -12,19 +12,14 @@ namespace AthenasAcademy.Services.Core.Repositories;
 
 public class UsuarioRepository : BaseRepository, IUsuarioRepository
 {
-    private IConfiguration _configuration; 
-    public UsuarioRepository(IConfiguration configuration) : base(configuration)  
-    {
-        _configuration = configuration;
-    }
+    public UsuarioRepository(IConfiguration configuration) : base(configuration) { }
 
     public async Task<UsuarioModel> BuscarUsuario(UsuarioArgument novoUsuario)
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Usuario))
-            {
-                string query = @"SELECT 
+            using IDbConnection connection = GetConnection(Database.Usuario);
+            string query = @"SELECT 
                                     id,
                                     usuario, 
                                     senha_hash AS Senha, 
@@ -32,8 +27,7 @@ public class UsuarioRepository : BaseRepository, IUsuarioRepository
                                 FROM usuario
                                 WHERE usuario = @Usuario OR email = @Usuario";
 
-                return await connection.QueryFirstOrDefaultAsync<UsuarioModel>(query, new { Usuario = novoUsuario.Email });
-            }
+            return await connection.QueryFirstOrDefaultAsync<UsuarioModel>(query, new { Usuario = novoUsuario.Email });
         }
         catch (Exception ex)
         {
@@ -45,9 +39,8 @@ public class UsuarioRepository : BaseRepository, IUsuarioRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Usuario))
-            {
-                string query = @"SELECT 
+            using IDbConnection connection = GetConnection(Database.Usuario);
+            string query = @"SELECT 
                                     id,
                                     usuario, 
                                     senha_hash AS Senha, 
@@ -56,8 +49,7 @@ public class UsuarioRepository : BaseRepository, IUsuarioRepository
                                     data_cadastro As DataCadastro
                                 FROM usuario";
 
-                return await connection.QueryAsync<UsuarioModel>(query);
-            }
+            return await connection.QueryAsync<UsuarioModel>(query);
         }
         catch (Exception ex)
         {
@@ -69,14 +61,12 @@ public class UsuarioRepository : BaseRepository, IUsuarioRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Usuario))
-            {
-                string query = @"INSERT INTO usuario (usuario, email, senha_hash, ativo, data_cadastro, data_alteracao, id_perfil)
+            using IDbConnection connection = GetConnection(Database.Usuario);
+            string query = @"INSERT INTO usuario (usuario, email, senha_hash, ativo, data_cadastro, data_alteracao, id_perfil)
                              VALUES (@Usuario, @Email, @Senha, @Ativo, @DataCadastro, @DataAlteracao, 2)
                              RETURNING id, usuario, senha_hash AS Senha, id_perfil AS Perfil";
 
-                return await connection.QueryFirstOrDefaultAsync<UsuarioModel>(query, novoUsuario);
-            }
+            return await connection.QueryFirstOrDefaultAsync<UsuarioModel>(query, novoUsuario);
         }
         catch (Exception ex)
         {

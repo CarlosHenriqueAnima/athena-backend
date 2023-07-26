@@ -20,9 +20,8 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Curso))
-            {
-                string query = @"SELECT 
+            using IDbConnection connection = GetConnection(Database.Curso);
+            string query = @"SELECT 
                                     id, 
                                     nome, 
                                     descricao, 
@@ -34,8 +33,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
                                     FROM curso
                                     WHERE id = @Id";
 
-                return await connection.QueryFirstAsync<CursoModel>(query, new { Id = id });
-            }
+            return await connection.QueryFirstAsync<CursoModel>(query, new { Id = id });
         }
         catch (Exception)
         {
@@ -47,9 +45,8 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Curso))
-            {
-                string query = @"SELECT 
+            using IDbConnection connection = GetConnection(Database.Curso);
+            string query = @"SELECT 
                                     id, 
                                     nome, 
                                     descricao, 
@@ -61,8 +58,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
                                     FROM curso
                                     WHERE ativo";
 
-                return await connection.QueryAsync<CursoModel>(query);
-            }
+            return await connection.QueryAsync<CursoModel>(query);
         }
         catch (Exception ex)
         {
@@ -74,16 +70,14 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Curso))
-            {
-                string query = @"
+            using IDbConnection connection = GetConnection(Database.Curso);
+            string query = @"
                 INSERT INTO curso (nome, descricao, carga_horaria, id_area_conhecimento, ativo, data_cadastro, data_alteracao)
                 VALUES (@Nome, @Descricao, @CargaHoraria, @IdAreaConhecimento, @Ativo, @DataCadastro, @DataAlteracao)
                 RETURNING id, nome, descricao, carga_horaria AS CargaHoraria, id_area_conhecimento AS IdAreaConhecimento, ativo, data_cadastro AS DataCadastro, data_alteracao AS DataAlteracao
             ";
 
-                return await connection.QueryFirstOrDefaultAsync<CursoModel>(query, argument);
-            }
+            return await connection.QueryFirstOrDefaultAsync<CursoModel>(query, argument);
         }
         catch (Exception ex)
         {
@@ -95,9 +89,8 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Curso))
-            {
-                string query = @"UPDATE curso
+            using IDbConnection connection = GetConnection(Database.Curso);
+            string query = @"UPDATE curso
                                  SET nome = @Nome,
                                      descricao = @Descricao,
                                      carga_horaria = @CargaHoraria,
@@ -106,10 +99,9 @@ public class CursoRepository : BaseRepository, ICursoRepository
                                      data_alteracao = @DataAlteracao
                                  WHERE id = @Id";
 
-                await connection.ExecuteAsync(query, argument);
+            await connection.ExecuteAsync(query, argument);
 
-                return await ObterCurso(argument.Id);
-            }
+            return await ObterCurso(argument.Id);
         }
         catch (Exception ex)
         {
@@ -121,16 +113,14 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Curso))
-            {
-                string query = @"UPDATE curso
+            using IDbConnection connection = GetConnection(Database.Curso);
+            string query = @"UPDATE curso
                                  SET ativo = false
                                  WHERE id = @Id";
 
-                int rowsAffected = await connection.ExecuteAsync(query, new { Id = id });
+            int rowsAffected = await connection.ExecuteAsync(query, new { Id = id });
 
-                return rowsAffected > 0;
-            }
+            return rowsAffected > 0;
         }
         catch (Exception ex)
         {
@@ -145,9 +135,8 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Curso))
-            {
-                string query = @"SELECT 
+            using IDbConnection connection = GetConnection(Database.Curso);
+            string query = @"SELECT 
                                     id, 
                                     nome, 
                                     descricao, 
@@ -159,8 +148,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
                                 FROM disciplina
                                 WHERE id = @Id";
 
-                return await connection.QueryFirstAsync<DisciplinaModel>(query, new { Id = id });
-            }
+            return await connection.QueryFirstAsync<DisciplinaModel>(query, new { Id = id });
         }
         catch (Exception)
         {
@@ -172,9 +160,8 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Curso))
-            {
-                string query = @"SELECT 
+            using IDbConnection connection = GetConnection(Database.Curso);
+            string query = @"SELECT 
                                     id, 
                                     nome, 
                                     descricao, 
@@ -185,8 +172,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
                                     data_alteracao DataAlteracao
                                 FROM disciplina";
 
-                return await connection.QueryAsync<DisciplinaModel>(query);
-            }
+            return await connection.QueryAsync<DisciplinaModel>(query);
         }
         catch (Exception ex)
         {
@@ -198,9 +184,8 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Curso))
-            {
-                string query = @"SELECT 
+            using IDbConnection connection = GetConnection(Database.Curso);
+            string query = @"SELECT 
                                 dis.id, 
                                 dis.nome, 
                                 dis.descricao, 
@@ -212,8 +197,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
                             FROM disciplina dis
                             WHERE id_curso = @IdCurso";
 
-                return await connection.QueryAsync<DisciplinaModel>(query, new { IdCurso = idCurso });
-            }
+            return await connection.QueryAsync<DisciplinaModel>(query, new { IdCurso = idCurso });
         }
         catch (Exception ex)
         {
@@ -225,16 +209,14 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Curso))
-            {
-                string query = @"INSERT INTO disciplina (nome, descricao, carga_horaria, id_curso, ativo, data_cadastro, data_alteracao)
+            using IDbConnection connection = GetConnection(Database.Curso);
+            string query = @"INSERT INTO disciplina (nome, descricao, carga_horaria, id_curso, ativo, data_cadastro, data_alteracao)
                                  VALUES (@Nome, @Descricao, @CargaHoraria, @IdCurso, @Ativo, @DataCadastro, @DataAlteracao)
                                  RETURNING id, nome, descricao, carga_horaria AS CargaHoraria, id_curso AS IdCurso, ativo, data_cadastro AS DataCadastro, data_alteracao AS DataAlteracao";
 
-                int id = await connection.QuerySingleOrDefaultAsync<int>(query, argument);
+            int id = await connection.QuerySingleOrDefaultAsync<int>(query, argument);
 
-                return await ObterDisciplina(id);
-            }
+            return await ObterDisciplina(id);
         }
         catch (Exception ex)
         {
@@ -246,9 +228,8 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Curso))
-            {
-                string query = @"UPDATE disciplina
+            using IDbConnection connection = GetConnection(Database.Curso);
+            string query = @"UPDATE disciplina
                                  SET nome = @Nome,
                                      descricao = @Descricao,
                                      carga_horaria = @CargaHoraria,
@@ -258,8 +239,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
                                  WHERE id = @Id
                                  RETURNING id, nome, descricao, carga_horaria AS CargaHoraria, id_curso AS IdCurso, ativo, data_cadastro AS DataCadastro, data_alteracao AS DataAlteracao";
 
-                return await connection.QueryFirstOrDefaultAsync<DisciplinaModel>(query, argument);
-            }
+            return await connection.QueryFirstOrDefaultAsync<DisciplinaModel>(query, argument);
         }
         catch (Exception ex)
         {
@@ -271,16 +251,14 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Curso))
-            {
-                string query = @"UPDATE disciplina
+            using IDbConnection connection = GetConnection(Database.Curso);
+            string query = @"UPDATE disciplina
                                  SET ativo = false
                                  WHERE id = @Id";
 
-                int rowsAffected = await connection.ExecuteAsync(query, new { Id = id });
+            int rowsAffected = await connection.ExecuteAsync(query, new { Id = id });
 
-                return rowsAffected > 0;
-            }
+            return rowsAffected > 0;
         }
         catch (Exception ex)
         {
@@ -295,9 +273,8 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Curso))
-            {
-                string query = @"SELECT 
+            using IDbConnection connection = GetConnection(Database.Curso);
+            string query = @"SELECT 
                                     id, 
                                     nome, 
                                     descricao, 
@@ -307,8 +284,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
                                 FROM area_conhecimento
                                 WHERE id = @Id";
 
-                return await connection.QueryFirstAsync<AreaConhecimentoModel>(query, new { Id = id });
-            }
+            return await connection.QueryFirstAsync<AreaConhecimentoModel>(query, new { Id = id });
         }
         catch (Exception)
         {
@@ -320,9 +296,8 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Curso))
-            {
-                string query = @"SELECT 
+            using IDbConnection connection = GetConnection(Database.Curso);
+            string query = @"SELECT 
                                     id, 
                                     nome, 
                                     descricao, 
@@ -331,8 +306,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
                                     data_alteracao DataAlteracao
                                 FROM area_conhecimento";
 
-                return await connection.QueryAsync<AreaConhecimentoModel>(query);
-            }
+            return await connection.QueryAsync<AreaConhecimentoModel>(query);
         }
         catch (Exception ex)
         {
@@ -344,15 +318,13 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Curso))
-            {
-                string query = @"
+            using IDbConnection connection = GetConnection(Database.Curso);
+            string query = @"
                 INSERT INTO area_conhecimento (nome, descricao, ativo, data_cadastro, data_alteracao)
                 VALUES (@Nome, @Descricao, @Ativo, @DataCadastro, @DataAlteracao)
                 RETURNING id, nome, descricao, ativo, data_cadastro AS DataCadastro, data_alteracao AS DataAlteracao";
 
-                return await connection.QueryFirstOrDefaultAsync<AreaConhecimentoModel>(query, argument);
-            }
+            return await connection.QueryFirstOrDefaultAsync<AreaConhecimentoModel>(query, argument);
         }
         catch (Exception ex)
         {
@@ -364,9 +336,8 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Curso))
-            {
-                string query = @"
+            using IDbConnection connection = GetConnection(Database.Curso);
+            string query = @"
                 UPDATE area_conhecimento
                 SET nome = @Nome,
                     descricao = @Descricao,
@@ -376,8 +347,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
                 RETURNING id, nome, descricao, ativo, data_cadastro AS DataCadastro, data_alteracao AS DataAlteracao
             ";
 
-                return await connection.QueryFirstOrDefaultAsync<AreaConhecimentoModel>(query, argument);
-            }
+            return await connection.QueryFirstOrDefaultAsync<AreaConhecimentoModel>(query, argument);
         }
         catch (Exception ex)
         {
@@ -389,19 +359,17 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Curso))
-            {
-                string query = @"
+            using IDbConnection connection = GetConnection(Database.Curso);
+            string query = @"
                 UPDATE area_conhecimento
                 SET ativo = false,
                     data_alteracao = @DataAlteracao
                 WHERE id = @Id
             ";
 
-                int rowsAffected = await connection.ExecuteAsync(query, new { Id = id, DataAlteracao = DateTime.Now });
+            int rowsAffected = await connection.ExecuteAsync(query, new { Id = id, DataAlteracao = DateTime.Now });
 
-                return rowsAffected > 0;
-            }
+            return rowsAffected > 0;
         }
         catch (Exception ex)
         {

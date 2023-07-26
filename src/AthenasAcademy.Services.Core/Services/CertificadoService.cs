@@ -16,7 +16,6 @@ namespace AthenasAcademy.Services.Core.Services;
 
 public class CertificadoService : ICertificadoService
 {
-    private readonly IObjectConverter _mapper;
     private readonly ICertificadoRepository _certificadoRepository;
     private readonly IAwsS3Repository _awsS3Repository;
     private readonly IGeradorCertificadoRepository _geradorCertificadoClient;
@@ -30,7 +29,6 @@ public class CertificadoService : ICertificadoService
         ICertificadoRepository certificadoRepository,
         IGeradorCertificadoRepository geradorCertificadoClient,
         ITokenService tokenService,
-        IObjectConverter mapper,
         IMatriculaService matriculaService,
         IAlunoService alunoService,
         ICursoService cursoService)
@@ -39,7 +37,6 @@ public class CertificadoService : ICertificadoService
         _certificadoRepository = certificadoRepository;
         _geradorCertificadoClient = geradorCertificadoClient;
         _tokenService = tokenService;
-        _mapper = mapper;
         _matriculaService = matriculaService;
         _alunoService = alunoService;
         _cursoService = cursoService;

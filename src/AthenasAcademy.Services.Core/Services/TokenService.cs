@@ -38,19 +38,17 @@ public class TokenService : ITokenService
     {
         var key = _configuration["LegadoAwsSecretKeyBase"];
 
-        using (SHA256 sha256 = SHA256.Create())
+        using SHA256 sha256 = SHA256.Create();
+        byte[] passwordBytes = Encoding.UTF8.GetBytes(key);
+        byte[] hashedBytes = sha256.ComputeHash(passwordBytes);
+
+        StringBuilder sb = new();
+        foreach (byte b in hashedBytes)
         {
-            byte[] passwordBytes = Encoding.UTF8.GetBytes(key);
-            byte[] hashedBytes = sha256.ComputeHash(passwordBytes);
-
-            StringBuilder sb = new StringBuilder();
-            foreach (byte b in hashedBytes)
-            {
-                sb.Append(b.ToString("x2"));
-            }
-
-            return await Task.FromResult(sb.ToString());
+            sb.Append(b.ToString("x2"));
         }
+
+        return await Task.FromResult(sb.ToString());
     }
 
     private (string, DateTime) GerarTokenJwt(UsuarioTokenModel usuario)
@@ -89,7 +87,7 @@ public class TokenService : ITokenService
         return DateTime.UtcNow.AddHours(expireHours);
     }
 
-    private ClaimsIdentity GerarClaims(UsuarioTokenModel usuario)
+    private static ClaimsIdentity GerarClaims(UsuarioTokenModel usuario)
     {
         try
         {
@@ -111,11 +109,11 @@ public class TokenService : ITokenService
     private SigningCredentials GerarTokenCredentials()
     {
         string key = _configuration["Jwt:Key"];
-        SymmetricSecurityKey symmetricKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+        SymmetricSecurityKey symmetricKey = new(Encoding.UTF8.GetBytes(key));
         return new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha256);
     }
 
-    private SecurityTokenDescriptor GerarTokenDescriptor(DateTime tokenExpires, SigningCredentials tokenCredentials, ClaimsIdentity tokenClaims)
+    private static SecurityTokenDescriptor GerarTokenDescriptor(DateTime tokenExpires, SigningCredentials tokenCredentials, ClaimsIdentity tokenClaims)
     {
         return new SecurityTokenDescriptor()
         {

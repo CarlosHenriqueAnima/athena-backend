@@ -16,9 +16,8 @@ public class CertificadoRepository : BaseRepository, ICertificadoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Certificado))
-            {
-                string query = @"
+            using IDbConnection connection = GetConnection(Database.Certificado);
+            string query = @"
                 INSERT INTO certificado (
                     nome_aluno,
                     matricula,
@@ -45,8 +44,7 @@ public class CertificadoRepository : BaseRepository, ICertificadoRepository
                 )
                 RETURNING *";
 
-                return await connection.QueryFirstOrDefaultAsync<CertificadoModel>(query, novoCertificado);
-            }
+            return await connection.QueryFirstOrDefaultAsync<CertificadoModel>(query, novoCertificado);
         }
         catch (Exception)
         {
@@ -58,9 +56,8 @@ public class CertificadoRepository : BaseRepository, ICertificadoRepository
     {
         try
         {
-            using (IDbConnection connection = GetConnection(Database.Certificado))
-            {
-                string query = @"
+            using IDbConnection connection = GetConnection(Database.Certificado);
+            string query = @"
                     SELECT 
                         id,
                         nome_aluno AS NomeAluno,
@@ -76,8 +73,7 @@ public class CertificadoRepository : BaseRepository, ICertificadoRepository
                     FROM certificado
                     WHERE matricula = @Matricula";
 
-                return await connection.QueryFirstOrDefaultAsync<CertificadoModel>(query, new { Matricula = matricula });
-            }
+            return await connection.QueryFirstOrDefaultAsync<CertificadoModel>(query, new { Matricula = matricula });
         }
         catch (Exception)
         {

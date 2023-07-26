@@ -25,10 +25,10 @@ public class NovaInscricaoCandidatoRequest
     public string Email { get; set; }
 
     [JsonIgnore]
-    public DateTime DataInscricao => DateTime.Now;
+    public static DateTime DataInscricao => DateTime.Now;
 
     [JsonIgnore]
-    public bool Ativo => true;
+    public static bool Ativo => true;
 
     [Required(ErrorMessage = "O campo Endereco é obrigatório.")]
     public NovoEnderecoRequest Endereco { get; set; }
