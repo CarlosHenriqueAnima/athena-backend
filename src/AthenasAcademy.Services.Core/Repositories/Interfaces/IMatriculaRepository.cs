@@ -1,19 +1,15 @@
-﻿using AthenasAcademy.Services.Core.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using AthenasAcademy.Services.Core.Models;
+namespace AthenasAcademy.Services.Core.Repositories.Interfaces;
+
 
 namespace AthenasAcademy.Services.Core.Repositories.Interfaces
 {
-    public interface IMatriculaRepository
-    {
 
-     
-         Task<MatriculaModel> ObterMatriculaPorIdAsync(int id);
-         Task<IEnumerable<MatriculaModel>> ObterTodasMatriculasAsync();
-         Task AdicionarMatriculaAsync(MatriculaModel matricula);
-         Task AtualizarMatriculaAsync(MatriculaModel matricula);
-         Task RemoverMatriculaAsync(int id);
-       
-
-    }
+    MatriculaModel GetMatriculaById(int id);
+    IEnumerable<MatriculaModel> GetAllMatriculas();
+    void CreateMatricula(MatriculaModel matricula);
+    void UpdateMatricula(MatriculaModel matricula);
+    void DeleteMatricula(int id);
 }
+

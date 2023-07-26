@@ -7,23 +7,29 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AthenasAcademy.Services.API.Controllers;
 
+/// <summary>
+/// Controlador responsável por gerenciar as operações relacionadas a usuários.
+/// </summary>
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
 [ApiController]
 public class UsuarioController : ControllerBase
 {
-    readonly IAutorizaUsuarioService _autorizaService;
+    private readonly IAutorizaUsuarioService _autorizaService;
 
+    /// <summary>
+    /// Controlador responsável por gerenciar as operações relacionadas a usuários.
+    /// </summary>
     public UsuarioController(IAutorizaUsuarioService autorizaService)
     {
         _autorizaService = autorizaService;
     }
 
     /// <summary>
-    /// Endpoint para cadastrar um novo usuário.
+    /// Registra um novo usuário.
     /// </summary>
     /// <param name="request">Objeto contendo os dados do novo usuário.</param>
-    /// <returns>Resposta com informações do usuário cadastrado.</returns>
+    /// <returns>Objeto contendo informações do usuário registrado.</returns>
     [HttpPost]
     [Route("registrar")]
     [AllowAnonymous]
@@ -36,10 +42,10 @@ public class UsuarioController : ControllerBase
     }
 
     /// <summary>
-    /// Endpoint para realizar o login de um usuário.
+    /// Realiza o login de um usuário.
     /// </summary>
     /// <param name="request">Objeto contendo as credenciais do usuário.</param>
-    /// <returns>Resposta com informações do usuário logado.</returns>
+    /// <returns>Objeto contendo informações do usuário logado.</returns>
     [HttpPost]
     [Route("login")]
     [AllowAnonymous]
@@ -49,5 +55,20 @@ public class UsuarioController : ControllerBase
     public async Task<ActionResult> LoginUsuario([FromBody] LoginUsuarioRequest request)
     {
         return Ok(await _autorizaService.LoginUsuario(request));
+    }
+
+    /// <summary>
+    /// Obtém informações de todos os usuários.
+    /// </summary>
+    /// <returns>Lista de objetos contendo informações de todos os usuários.</returns>
+    [HttpGet]
+    [Route("todos")]
+    [Authorize(Roles = "Administrador")]
+    [ProducesResponseType(typeof(IEnumerable<UsuarioResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult> LoginUsuario()
+    {
+        return Ok(await _autorizaService.ObterUsuarios());
     }
 }

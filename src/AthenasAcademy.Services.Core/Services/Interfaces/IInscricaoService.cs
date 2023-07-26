@@ -1,10 +1,16 @@
 ﻿using AthenasAcademy.Services.Core.Models;
+<<<<<<< HEAD
 using AthenasAcademy.Services.Domain.Requests;
 using AthenasAcademy.Services.Domain.Responses;
+=======
+
+namespace AthenasAcademy.Services.Core.Services.Interfaces;
+>>>>>>> dev
 
 
 namespace AthenasAcademy.Services.Core.Services.Interfaces
 {
+<<<<<<< HEAD
     public interface IInscricaoService
     {
         /// <summary>
@@ -43,4 +49,11 @@ namespace AthenasAcademy.Services.Core.Services.Interfaces
         Task CadastrarInscricao(InscricaoModel inscricao);
         Task AtualizarInscricao(InscricaoModel inscricao);
     }
+=======
+    Task<CandidatoModel> ObterInscricaoPorIdAsync(int id);
+    Task<IEnumerable<CandidatoModel>> ObterInscricoesPendentesAsync();
+    Task AdicionarInscricaoAsync(CandidatoModel inscricao);
+    Task AtualizarInscricaoAsync(CandidatoModel inscricao);
+    Task CancelarInscricaoAsync(int id);
+>>>>>>> dev
 }

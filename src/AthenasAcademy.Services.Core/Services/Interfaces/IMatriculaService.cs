@@ -1,22 +1,13 @@
-﻿using AthenasAcademy.Services.Core.Models;
-using AthenasAcademy.Services.Domain.Requests;
-using AthenasAcademy.Services.Domain.Responses;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using AthenasAcademy.Services.Core.Models;
 
 namespace AthenasAcademy.Services.Core.Services.Interfaces
 {
 
-    
-        // Métodos relacionados a matrículas
-        public interface IMatriculaService
-        {
-        Task<MatriculaResponse> ObterMatricula(int id);
-        Task<IEnumerable<MatriculaResponse>> ObterTodasMatriculas();
-        Task<NovaMatriculaResponse> CadastrarMatricula(MatriculaModel matricula);
-        Task<MatriculaResponse> AtualizarMatricula(MatriculaModel matricula);
-        Task<bool> DesativarMatricula(int id);
-    }
+    MatriculaModel CreateMatricula(int contratoId, int detalheContratoId, string codigoMatricula);
+    MatriculaModel GetMatriculaById(int id);
+    IEnumerable<MatriculaModel> GetAllMatriculas();
+    void UpdateMatricula(MatriculaModel matricula);
+    void DeleteMatricula(int id);
+}
 
-     
-    }

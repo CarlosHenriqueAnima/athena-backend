@@ -62,6 +62,12 @@ public interface ICursoRepository
     Task<IEnumerable<DisciplinaModel>> ObterDisciplinas();
 
     /// <summary>
+    /// Obtém todas as disciplinas cadastradas.
+    /// </summary>
+    /// <returns>Enumerable de DisciplinaModel contendo as disciplinas encontradas.</returns>
+    Task<IEnumerable<DisciplinaModel>> ObterDisciplinasDoCurso(int idCurso);
+
+    /// <summary>
     /// Cadastra uma nova disciplina.
     /// </summary>
     /// <param name="argument">Objeto DisciplinaArgument contendo os dados da nova disciplina a ser cadastrada.</param>

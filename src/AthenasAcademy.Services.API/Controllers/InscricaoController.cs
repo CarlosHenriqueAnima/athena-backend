@@ -1,18 +1,38 @@
+<<<<<<< HEAD
 ﻿using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Core.Services.Interfaces;
 using AthenasAcademy.Services.Domain.Responses;
 using Microsoft.AspNetCore.Http;
+=======
+﻿using AthenasAcademy.Services.Core.Services.Interfaces;
+using AthenasAcademy.Services.Domain.Responses;
+>>>>>>> dev
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace AthenasAcademy.Services.API.Controllers
 {
+<<<<<<< HEAD
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     [ApiController]
     //[Authorize]
     public class InscricaoController : ControllerBase
+=======
+    private readonly IInscricaoService _inscricaoService;
+
+    public InscricaoController(IInscricaoService inscricaoService)
+    {
+        _inscricaoService = inscricaoService;
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
+    public IActionResult GetInscricao()
+>>>>>>> dev
     {
         private readonly IInscricaoService _inscricaoService;
 

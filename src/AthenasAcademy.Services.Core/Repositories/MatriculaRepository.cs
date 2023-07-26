@@ -1,95 +1,142 @@
-
-﻿using AthenasAcademy.Services.Core.Configurations.Enums;
-using AthenasAcademy.Services.Core.Models;
-using AthenasAcademy.Services.Core.Repositories.Interfaces;
-using AthenasAcademy.Services.Core.Repositories.Interfaces.Base;
-using Dapper;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
-
 using System.Threading.Tasks;
+using Dapper;
+using AthenasAcademy.Services.Core.Models;
+using AthenasAcademy.Services.Core.Repositories.Interfaces;
+
 
 namespace AthenasAcademy.Services.Core.Repositories
 {
-
-    public class MatriculaRepository : BaseRepository, IMatriculaRepository
+    public class MatriculaRepository : IMatriculaRepository
     {
-        private readonly IAlunoRepository _alunoRepository;
-        private readonly IDbConnection _dbConnection;
+        private readonly IDbConnection _connection;
 
-        public MatriculaRepository(IConfiguration configuration, IAlunoRepository alunoRepository) : base(configuration)
+        public MatriculaRepository(IDbConnection connection)
         {
-            _alunoRepository = alunoRepository;
-            _dbConnection = GetConnection(Database.Matricula); // Corrigir para usar o banco de dados correto para matrículas
+            _connection = connection;
         }
 
-        #region Matricula
-
-        public async Task<MatriculaModel> ObterMatriculaPorIdAsync(int matriculaId)
-        {
-            // Implementar a lógica para obter a matrícula por ID usando o Dapper
-            var query = "SELECT * FROM Matricula WHERE Id = @MatriculaId";
-            return await _dbConnection.QueryFirstOrDefaultAsync<MatriculaModel>(query, new { MatriculaId = matriculaId });
-        }
-
-        public async Task<IEnumerable<MatriculaModel>> ObterTodasMatriculasAsync()
-        {
-            // Implementar a lógica para obter todas as matrículas usando o Dapper
-            var query = "SELECT * FROM Matricula";
-            return await _dbConnection.QueryAsync<MatriculaModel>(query);
-        }
-
-        public async Task AdicionarMatriculaAsync(MatriculaModel matricula)
+        public async Task<MatriculaModel> GetMatriculaById(int id)
         {
             try
             {
-                // Verificar se o aluno associado à matrícula existe
-                var alunoExistente = await _alunoRepository.ObterAlunoPorIdAsync(matricula.AlunoId);
-                if (alunoExistente == null)
-                {
-                    throw new ArgumentException("O aluno associado à matrícula não foi encontrado.");
-                }
 
-                // Implementar a lógica para adicionar a matrícula usando o Dapper
-                var query = "INSERT INTO Matricula (aluno_id, data_matricula, curso) VALUES (@AlunoId, @DataMatricula, @Curso)";
-                await _dbConnection.ExecuteAsync(query, matricula);
+                string query = @"SELECT 
+                                    id, 
+                                    contrato_id ContratoId,
+                                    id_detalhe_contrato DetalheContratoId,
+                                    ativo,
+                                    data_cadastro DataCadastro,
+                                    data_alteracao DataAlteracao,
+                                    codigo_matricula CodigoMatricula
+                                 FROM contrato
+                                 WHERE id = @Id";
+
+                return await _connection.QueryFirstOrDefaultAsync<MatriculaModel>(query, new { Id = id });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new Exception("Ocorreu um erro ao adicionar a matrícula.", ex);
+                return null;
             }
         }
 
-        public async Task AtualizarMatriculaAsync(MatriculaModel matricula)
+        public async Task<IEnumerable<MatriculaModel>> GetAllMatriculas()
         {
             try
             {
-                // Verificar se o aluno associado à matrícula existe
-                var alunoExistente = await _alunoRepository.ObterAlunoPorIdAsync(matricula.AlunoId);
-                if (alunoExistente == null)
-                {
-                    throw new ArgumentException("O aluno associado à matrícula não foi encontrado.");
-                }
+                string query = @"SELECT 
+                                    id, 
+                                    contrato_id ContratoId,
+                                    id_detalhe_contrato DetalheContratoId,
+                                    ativo,
+                                    data_cadastro DataCadastro,
+                                    data_alteracao DataAlteracao,
+                                    codigo_matricula CodigoMatricula
+                                 FROM contrato";
 
-                // Implementar a lógica para atualizar a matrícula usando o Dapper
-                var query = "UPDATE Matricula SET AlunoId = @AlunoId, DataMatricula = @DataMatricula, Curso = @Curso WHERE Id = @Id";
-                await _dbConnection.ExecuteAsync(query, matricula);
+                return await _connection.QueryAsync<MatriculaModel>(query);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new Exception("Ocorreu um erro ao atualizar a matrícula.", ex);
+                return new List<MatriculaModel>();
             }
         }
 
-        public async Task RemoverMatriculaAsync(int id)
+        public async Task CreateMatricula(MatriculaModel matricula)
         {
-            // Implementar a lógica para remover a matrícula usando o Dapper
-            var query = "DELETE FROM Matricula WHERE Id = @Id";
-            await _dbConnection.ExecuteAsync(query, new { Id = id });
+            try
+            {
+                string insertQuery = @"INSERT INTO contrato 
+                                        (contrato_id, id_detalhe_contrato, ativo, data_cadastro, data_alteracao, codigo_matricula)
+                                        VALUES (@ContratoId, @DetalheContratoId, @Ativo, @DataCadastro, @DataAlteracao, @CodigoMatricula)";
+
+                await _connection.ExecuteAsync(insertQuery, matricula);
+            }
+            catch (Exception)
+            {
+                // Lidar com exceção ou log de erro.
+            }
         }
 
-        #endregion
+        public async Task UpdateMatricula(MatriculaModel matricula)
+        {
+            try
+            {
+                string updateQuery = @"UPDATE contrato 
+                                        SET contrato_id = @ContratoId, 
+                                            id_detalhe_contrato = @DetalheContratoId,
+                                            ativo = @Ativo,
+                                            data_alteracao = @DataAlteracao,
+                                            codigo_matricula = @CodigoMatricula
+                                        WHERE id = @Id";
+
+                await _connection.ExecuteAsync(updateQuery, matricula);
+            }
+            catch (Exception)
+            {
+                // Lidar com exceção ou log de erro.
+            }
+        }
+
+        public async Task DeleteMatricula(int id)
+        {
+            try
+            {
+                string deleteQuery = "DELETE FROM contrato WHERE id = @Id";
+                await _connection.ExecuteAsync(deleteQuery, new { Id = id });
+            }
+            catch (Exception)
+            {
+                // Lidar com exceção ou log de erro.
+            }
+        }
+
+        MatriculaModel IMatriculaRepository.GetMatriculaById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerable<MatriculaModel> IMatriculaRepository.GetAllMatriculas()
+        {
+            throw new NotImplementedException();
+        }
+
+        void IMatriculaRepository.CreateMatricula(MatriculaModel matricula)
+        {
+            throw new NotImplementedException();
+        }
+
+        void IMatriculaRepository.UpdateMatricula(MatriculaModel matricula)
+        {
+            throw new NotImplementedException();
+        }
+
+        void IMatriculaRepository.DeleteMatricula(int id)
+        {
+            throw new NotImplementedException();
+        }
 
     }
 }

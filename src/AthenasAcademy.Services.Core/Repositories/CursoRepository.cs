@@ -1,8 +1,11 @@
 ﻿using AthenasAcademy.Services.Core.Arguments;
 using AthenasAcademy.Services.Core.Configurations.Enums;
+using AthenasAcademy.Services.Core.Exceptions;
 using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Core.Repositories.Interfaces.Base;
+using AthenasAcademy.Services.Domain.Configurations.Enums;
+using Dapper;
 using System.Data;
 
 namespace AthenasAcademy.Services.Core.Repositories;
@@ -13,165 +16,397 @@ public class CursoRepository : BaseRepository, ICursoRepository
 
     #region Curso
 
-    public Task<CursoModel> ObterCurso(int id)
+    public async Task<CursoModel> ObterCurso(int id)
     {
-        using (IDbConnection connection = GetConnection(Database.Curso))
+        try
         {
-            // Implementação para obter um curso por ID a partir do banco de dados
-        }
+            using (IDbConnection connection = GetConnection(Database.Curso))
+            {
+                string query = @"SELECT 
+                                    id, 
+                                    nome, 
+                                    descricao, 
+                                    carga_horaria CargaHoraria, 
+                                    id_area_conhecimento IdAreaConhecimento, 
+                                    ativo, 
+                                    data_cadastro DataCadastro, 
+                                    data_alteracao DataAlteracao
+                                    FROM curso
+                                    WHERE id = @Id";
 
-        throw new NotImplementedException();
+                return await connection.QueryFirstAsync<CursoModel>(query, new { Id = id });
+            }
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 
-    public Task<IEnumerable<CursoModel>> ObterCursos()
+    public async Task<IEnumerable<CursoModel>> ObterCursos()
     {
-        using (IDbConnection connection = GetConnection(Database.Curso))
+        try
         {
-            // Implementação para obter todos os cursos do banco de dados
-        }
+            using (IDbConnection connection = GetConnection(Database.Curso))
+            {
+                string query = @"SELECT 
+                                    id, 
+                                    nome, 
+                                    descricao, 
+                                    carga_horaria CargaHoraria, 
+                                    id_area_conhecimento IdAreaConhecimento, 
+                                    ativo, 
+                                    data_cadastro DataCadastro, 
+                                    data_alteracao DataAlteracao
+                                    FROM curso
+                                    WHERE ativo";
 
-        throw new NotImplementedException();
+                return await connection.QueryAsync<CursoModel>(query);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
+        }
     }
 
-    public Task<CursoModel> CadastrarCurso(CursoArgument argument)
+    public async Task<CursoModel> CadastrarCurso(CursoArgument argument)
     {
-        using (IDbConnection connection = GetConnection(Database.Curso))
+        try
         {
-            // Implementação para cadastrar um novo curso no banco de dados
-        }
+            using (IDbConnection connection = GetConnection(Database.Curso))
+            {
+                string query = @"
+                INSERT INTO curso (nome, descricao, carga_horaria, id_area_conhecimento, ativo, data_cadastro, data_alteracao)
+                VALUES (@Nome, @Descricao, @CargaHoraria, @IdAreaConhecimento, @Ativo, @DataCadastro, @DataAlteracao)
+                RETURNING id, nome, descricao, carga_horaria AS CargaHoraria, id_area_conhecimento AS IdAreaConhecimento, ativo, data_cadastro AS DataCadastro, data_alteracao AS DataAlteracao
+            ";
 
-        throw new NotImplementedException();
+                return await connection.QueryFirstOrDefaultAsync<CursoModel>(query, argument);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
+        }
     }
 
-    public Task<CursoModel> AtualizarCurso(CursoArgument argument)
+    public async Task<CursoModel> AtualizarCurso(CursoArgument argument)
     {
-        using (IDbConnection connection = GetConnection(Database.Curso))
+        try
         {
-            // Implementação para atualizar um curso no banco de dados
-        }
+            using (IDbConnection connection = GetConnection(Database.Curso))
+            {
+                string query = @"UPDATE curso
+                                 SET nome = @Nome,
+                                     descricao = @Descricao,
+                                     carga_horaria = @CargaHoraria,
+                                     id_area_conhecimento = @IdAreaConhecimento,
+                                     ativo = @Ativo,
+                                     data_alteracao = @DataAlteracao
+                                 WHERE id = @Id";
 
-        throw new NotImplementedException();
+                await connection.ExecuteAsync(query, argument);
+
+                return await ObterCurso(argument.Id);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
+        }
     }
 
-    public Task<bool> DesativarCurso(int id)
+    public async Task<bool> DesativarCurso(int id)
     {
-        using (IDbConnection connection = GetConnection(Database.Curso))
+        try
         {
-            // Implementação para desativar um curso no banco de dados
-        }
+            using (IDbConnection connection = GetConnection(Database.Curso))
+            {
+                string query = @"UPDATE curso
+                                 SET ativo = false
+                                 WHERE id = @Id";
 
-        throw new NotImplementedException();
+                int rowsAffected = await connection.ExecuteAsync(query, new { Id = id });
+
+                return rowsAffected > 0;
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
+        }
     }
 
     #endregion
 
     #region Disciplina
-
-    public Task<DisciplinaModel> ObterDisciplina(int id)
+    public async Task<DisciplinaModel> ObterDisciplina(int id)
     {
-        using (IDbConnection connection = GetConnection(Database.Curso))
+        try
         {
-            // Implementação para obter uma disciplina por ID a partir do banco de dados
-        }
+            using (IDbConnection connection = GetConnection(Database.Curso))
+            {
+                string query = @"SELECT 
+                                    id, 
+                                    nome, 
+                                    descricao, 
+                                    carga_horaria CargaHoraria, 
+                                    id_curso IdCurso, 
+                                    ativo, 
+                                    data_cadastro DataCadastro, 
+                                    data_alteracao DataAlteracao
+                                FROM disciplina
+                                WHERE id = @Id";
 
-        throw new NotImplementedException();
+                return await connection.QueryFirstAsync<DisciplinaModel>(query, new { Id = id });
+            }
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 
-    public Task<IEnumerable<DisciplinaModel>> ObterDisciplinas()
+    public async Task<IEnumerable<DisciplinaModel>> ObterDisciplinas()
     {
-        using (IDbConnection connection = GetConnection(Database.Curso))
+        try
         {
-            // Implementação para obter todas as disciplinas do banco de dados
-        }
+            using (IDbConnection connection = GetConnection(Database.Curso))
+            {
+                string query = @"SELECT 
+                                    id, 
+                                    nome, 
+                                    descricao, 
+                                    carga_horaria CargaHoraria, 
+                                    id_curso IdCurso, 
+                                    ativo, 
+                                    data_cadastro DataCadastro, 
+                                    data_alteracao DataAlteracao
+                                FROM disciplina";
 
-        throw new NotImplementedException();
+                return await connection.QueryAsync<DisciplinaModel>(query);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
+        }
     }
 
-    public Task<DisciplinaModel> CadastrarDisciplina(DisciplinaArgument argument)
+    public async Task<IEnumerable<DisciplinaModel>> ObterDisciplinasDoCurso(int idCurso)
     {
-        using (IDbConnection connection = GetConnection(Database.Curso))
+        try
         {
-            // Implementação para cadastrar uma nova disciplina no banco de dados
-        }
+            using (IDbConnection connection = GetConnection(Database.Curso))
+            {
+                string query = @"SELECT 
+                                dis.id, 
+                                dis.nome, 
+                                dis.descricao, 
+                                dis.carga_horaria CargaHoraria, 
+                                dis.id_curso IdCurso, 
+                                dis.ativo, 
+                                dis.data_cadastro DataCadastro, 
+                                dis.data_alteracao DataAlteracao
+                            FROM disciplina dis
+                            WHERE id_curso = @IdCurso";
 
-        throw new NotImplementedException();
+                return await connection.QueryAsync<DisciplinaModel>(query, new { IdCurso = idCurso });
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
+        }
     }
 
-    public Task<DisciplinaModel> AtualizarDisciplina(DisciplinaArgument argument)
+    public async Task<DisciplinaModel> CadastrarDisciplina(DisciplinaArgument argument)
     {
-        using (IDbConnection connection = GetConnection(Database.Curso))
+        try
         {
-            // Implementação para atualizar uma disciplina no banco de dados
-        }
+            using (IDbConnection connection = GetConnection(Database.Curso))
+            {
+                string query = @"INSERT INTO disciplina (nome, descricao, carga_horaria, id_curso, ativo, data_cadastro, data_alteracao)
+                                 VALUES (@Nome, @Descricao, @CargaHoraria, @IdCurso, @Ativo, @DataCadastro, @DataAlteracao)
+                                 RETURNING id, nome, descricao, carga_horaria AS CargaHoraria, id_curso AS IdCurso, ativo, data_cadastro AS DataCadastro, data_alteracao AS DataAlteracao";
 
-        throw new NotImplementedException();
+                int id = await connection.QuerySingleOrDefaultAsync<int>(query, argument);
+
+                return await ObterDisciplina(id);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
+        }
     }
 
-    public Task<bool> DesativarDisciplina(int id)
+    public async Task<DisciplinaModel> AtualizarDisciplina(DisciplinaArgument argument)
     {
-        using (IDbConnection connection = GetConnection(Database.Curso))
+        try
         {
-            // Implementação para desativar uma disciplina no banco de dados
-        }
+            using (IDbConnection connection = GetConnection(Database.Curso))
+            {
+                string query = @"UPDATE disciplina
+                                 SET nome = @Nome,
+                                     descricao = @Descricao,
+                                     carga_horaria = @CargaHoraria,
+                                     id_curso = @IdCurso,
+                                     ativo = @Ativo,
+                                     data_alteracao = @DataAlteracao
+                                 WHERE id = @Id
+                                 RETURNING id, nome, descricao, carga_horaria AS CargaHoraria, id_curso AS IdCurso, ativo, data_cadastro AS DataCadastro, data_alteracao AS DataAlteracao";
 
-        throw new NotImplementedException();
+                return await connection.QueryFirstOrDefaultAsync<DisciplinaModel>(query, argument);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
+        }
+    }
+
+    public async Task<bool> DesativarDisciplina(int id)
+    {
+        try
+        {
+            using (IDbConnection connection = GetConnection(Database.Curso))
+            {
+                string query = @"UPDATE disciplina
+                                 SET ativo = false
+                                 WHERE id = @Id";
+
+                int rowsAffected = await connection.ExecuteAsync(query, new { Id = id });
+
+                return rowsAffected > 0;
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
+        }
     }
 
     #endregion
 
     #region Área de Conhecimento
-
-    public Task<AreaConhecimentoModel> ObterAreaConhecimento(int id)
+    public async Task<AreaConhecimentoModel> ObterAreaConhecimento(int id)
     {
-        using (IDbConnection connection = GetConnection(Database.Curso))
+        try
         {
-            // Implementação para obter uma área de conhecimento por ID a partir do banco de dados
-        }
+            using (IDbConnection connection = GetConnection(Database.Curso))
+            {
+                string query = @"SELECT 
+                                    id, 
+                                    nome, 
+                                    descricao, 
+                                    ativo, 
+                                    data_cadastro DataCadastro, 
+                                    data_alteracao DataAlteracao
+                                FROM area_conhecimento
+                                WHERE id = @Id";
 
-        throw new NotImplementedException();
+                return await connection.QueryFirstAsync<AreaConhecimentoModel>(query, new { Id = id });
+            }
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 
-    public Task<IEnumerable<AreaConhecimentoModel>> ObterAreasConhecimento()
+    public async Task<IEnumerable<AreaConhecimentoModel>> ObterAreasConhecimento()
     {
-        using (IDbConnection connection = GetConnection(Database.Curso))
+        try
         {
-            // Implementação para obter todas as áreas de conhecimento do banco de dados
-        }
+            using (IDbConnection connection = GetConnection(Database.Curso))
+            {
+                string query = @"SELECT 
+                                    id, 
+                                    nome, 
+                                    descricao, 
+                                    ativo, 
+                                    data_cadastro DataCadastro, 
+                                    data_alteracao DataAlteracao
+                                FROM area_conhecimento";
 
-        throw new NotImplementedException();
+                return await connection.QueryAsync<AreaConhecimentoModel>(query);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
+        }
     }
 
-    public Task<AreaConhecimentoModel> CadastrarAreaConhecimento(AreaConhecimentoArgument argument)
+    public async Task<AreaConhecimentoModel> CadastrarAreaConhecimento(AreaConhecimentoArgument argument)
     {
-        using (IDbConnection connection = GetConnection(Database.Curso))
+        try
         {
-            // Implementação para cadastrar uma nova área de conhecimento no banco de dados
-        }
+            using (IDbConnection connection = GetConnection(Database.Curso))
+            {
+                string query = @"
+                INSERT INTO area_conhecimento (nome, descricao, ativo, data_cadastro, data_alteracao)
+                VALUES (@Nome, @Descricao, @Ativo, @DataCadastro, @DataAlteracao)
+                RETURNING id, nome, descricao, ativo, data_cadastro AS DataCadastro, data_alteracao AS DataAlteracao";
 
-        throw new NotImplementedException();
+                return await connection.QueryFirstOrDefaultAsync<AreaConhecimentoModel>(query, argument);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
+        }
     }
 
-    public Task<AreaConhecimentoModel> AtualizarAreaConhecimento(AreaConhecimentoArgument argument)
+    public async Task<AreaConhecimentoModel> AtualizarAreaConhecimento(AreaConhecimentoArgument argument)
     {
-        using (IDbConnection connection = GetConnection(Database.Curso))
+        try
         {
-            // Implementação para atualizar uma área de conhecimento no banco de dados
-        }
+            using (IDbConnection connection = GetConnection(Database.Curso))
+            {
+                string query = @"
+                UPDATE area_conhecimento
+                SET nome = @Nome,
+                    descricao = @Descricao,
+                    ativo = @Ativo,
+                    data_alteracao = @DataAlteracao
+                WHERE id = @Id
+                RETURNING id, nome, descricao, ativo, data_cadastro AS DataCadastro, data_alteracao AS DataAlteracao
+            ";
 
-        throw new NotImplementedException();
+                return await connection.QueryFirstOrDefaultAsync<AreaConhecimentoModel>(query, argument);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
+        }
     }
 
-    public Task<bool> DesativarAreaConhecimento(int id)
+    public async Task<bool> DesativarAreaConhecimento(int id)
     {
-        using (IDbConnection connection = GetConnection(Database.Curso))
+        try
         {
-            // Implementação para desativar uma área de conhecimento no banco de dados
+            using (IDbConnection connection = GetConnection(Database.Curso))
+            {
+                string query = @"
+                UPDATE area_conhecimento
+                SET ativo = false,
+                    data_alteracao = @DataAlteracao
+                WHERE id = @Id
+            ";
+
+                int rowsAffected = await connection.ExecuteAsync(query, new { Id = id, DataAlteracao = DateTime.Now });
+
+                return rowsAffected > 0;
+            }
         }
-
-        throw new NotImplementedException();
+        catch (Exception ex)
+        {
+            throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
+        }
     }
-
     #endregion
 }
-
-

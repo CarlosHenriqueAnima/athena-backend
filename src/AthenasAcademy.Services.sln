@@ -5,13 +5,13 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AthenasAcademy.Services.Core", "AthenasAcademy.Services.Core\AthenasAcademy.Services.Core.csproj", "{8F618C66-FE0C-4875-86E5-FC38A9008D83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AthenasAcademy.Services.API", "AthenasAcademy.Services.API\AthenasAcademy.Services.API.csproj", "{2239ECB1-F694-460A-9AF3-241FE62E6362}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AthenasAcademy.Services.API", "AthenasAcademy.Services.API\AthenasAcademy.Services.API.csproj", "{2239ECB1-F694-460A-9AF3-241FE62E6362}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AthenasAcademy.Services.Domain", "AthenasAcademy.Services.Domain\AthenasAcademy.Services.Domain.csproj", "{AD66B80F-A184-46CD-ACAC-E15AB3DF5BB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AthenasAcademy.Services.Test", "AthenasAcademy.Services.Test\AthenasAcademy.Services.Test.csproj", "{B21E5225-D4AB-456F-8486-8FEC18B74C40}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AthenasAcademy.Services.Test", "AthenasAcademy.Services.Test\AthenasAcademy.Services.Test.csproj", "{B21E5225-D4AB-456F-8486-8FEC18B74C40}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AthenasAcademy.Services.Handling", "AthenasAcademy.Services.Handling\AthenasAcademy.Services.Handling.csproj", "{4E536A8D-51BD-4DE1-88BD-173C0524FE46}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AthenasAcademy.Services.Handling", "AthenasAcademy.Services.Handling\AthenasAcademy.Services.Handling.csproj", "{4E536A8D-51BD-4DE1-88BD-173C0524FE46}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

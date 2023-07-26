@@ -1,20 +1,34 @@
-﻿using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Models;
-using System.Reflection;
-using AthenasAcademy.Services.Core.Services.Interfaces;
-using AthenasAcademy.Services.Core.Services;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+﻿using AthenasAcademy.Services.Core.Repositories;
+using AthenasAcademy.Services.Core.Repositories.Clients;
 using AthenasAcademy.Services.Core.Repositories.Interfaces;
-using AthenasAcademy.Services.Core.Repositories;
+using AthenasAcademy.Services.Core.Repositories.S3;
+using AthenasAcademy.Services.Core.Services;
+using AthenasAcademy.Services.Core.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using AthenasAcademy.Services.Core.Configurations.Mappers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Npgsql;
+using Refit;
+using System.Data;
+using System.Reflection;
+using System.Text;
 
 namespace AthenasAcademy.Services.API.Extensions;
 
+/// <summary>
+/// Classe com métodos de extensão para configurações relacionadas a serviços da aplicação.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Registra os serviços relacionados ao domínio da aplicação no contêiner de injeção de dependências.
+    /// </summary>
+    /// <param name="services">A coleção de serviços.</param>
+    /// <returns>A coleção de serviços atualizada.</returns>
     public static IServiceCollection AddAthenasServicesDI(this IServiceCollection services)
     {
         services.AddScoped<IAlunoService, AlunoService>();
@@ -29,8 +43,14 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Registra os repositórios da aplicação no contêiner de injeção de dependências.
+    /// </summary>
+    /// <param name="services">A coleção de serviços.</param>
+    /// <returns>A coleção de serviços atualizada.</returns>
     public static IServiceCollection AddAthenasRepositoriesDI(this IServiceCollection services)
     {
+        
         services.AddSingleton<IUsuarioRepository, UsuarioRepository>();
         services.AddSingleton<IAlunoRepository, AlunoRepository>();
         services.AddSingleton<ICertificadoRepository, CertificadoRepository>();
@@ -42,6 +62,11 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Configura o versionamento da API, permitindo que diferentes versões de uma API coexistam.
+    /// </summary>
+    /// <param name="services">A coleção de serviços.</param>
+    /// <returns>A coleção de serviços atualizada.</returns>
     public static IServiceCollection AddApiVersionamento(this IServiceCollection services)
     {
         services.AddApiVersioning(options =>
@@ -59,6 +84,13 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Configura e adiciona o Swagger (OpenAPI) para documentar a API.
+    /// </summary>
+    /// <param name="services">A coleção de serviços.</param>
+    /// <param name="apiTitulo">O título da API.</param>
+    /// <param name="apiVersao">A versão da API.</param>
+    /// <returns>A coleção de serviços atualizada.</returns>
     public static IServiceCollection AddSwaggerGenDoc(this IServiceCollection services, string apiTitulo, string apiVersao)
     {
         services.AddSwaggerGen(options =>
@@ -83,6 +115,11 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Configura a exploração de API versionada, que é útil para visualizar as diferentes versões da API no Swagger.
+    /// </summary>
+    /// <param name="services">A coleção de serviços.</param>
+    /// <returns>A coleção de serviços atualizada.</returns>
     public static IServiceCollection AddApiVersionamentoExplorer(this IServiceCollection services)
     {
         services.AddVersionedApiExplorer(setup =>
@@ -94,9 +131,15 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Configura a autenticação JWT (JSON Web Token) para proteger os endpoints da API.
+    /// </summary>
+    /// <param name="services">A coleção de serviços.</param>
+    /// <param name="configuration">A configuração da aplicação.</param>
+    /// <returns>A coleção de serviços atualizada.</returns>
     public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        var key = Encoding.UTF8.GetBytes(configuration["Jwt:key"]);
+        var key = Encoding.UTF8.GetBytes(configuration["JwtKeyBase"]);
 
         services.AddAuthentication(options =>
         {
@@ -119,6 +162,11 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Configura o Swagger para suportar autenticação JWT Bearer.
+    /// </summary>
+    /// <param name="services">A coleção de serviços.</param>
+    /// <returns>A coleção de serviços atualizada.</returns>
     public static IServiceCollection AddSwaggerAutenticacaoJwtBearer(this IServiceCollection services)
     {
         services.AddSwaggerGen(options =>
@@ -160,7 +208,12 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection AddConfigureLowerCaseRoutes(this IServiceCollection services)
+    /// <summary>
+    /// Configura as rotas da aplicação para serem lowercase.
+    /// </summary>
+    /// <param name="services">A coleção de serviços.</param>
+    /// <returns>A coleção de serviços atualizada.</returns>
+    public static IServiceCollection AddRotasLowerCase(this IServiceCollection services)
     {
         services.Configure<RouteOptions>(options =>
         {
@@ -170,11 +223,16 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Configura as políticas CORS para permitir acesso de qualquer origem, método e cabeçalho.
+    /// </summary>
+    /// <param name="services">A coleção de serviços.</param>
+    /// <returns>A coleção de serviços atualizada.</returns>
     public static IServiceCollection AddPoliciesCors(this IServiceCollection services)
     {
         services.AddCors(options =>
         {
-            options.AddPolicy("api-cors", builder =>
+            options.AddDefaultPolicy(builder =>
             {
                 builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
             });
@@ -182,4 +240,48 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
+
+    /// <summary>
+    /// Configura as configurações do Refit para serviços REST.
+    /// </summary>
+    /// <param name="services">A coleção de serviços.</param>
+    /// <param name="configuration">A configuração da aplicação.</param>
+    /// <returns>A coleção de serviços atualizada.</returns>
+    public static IServiceCollection AddConfiguracaoRestClient(this IServiceCollection services, IConfiguration configuration)
+    {
+        RefitSettings config = new RefitSettings()
+        {
+            ContentSerializer = new NewtonsoftJsonContentSerializer(
+                new JsonSerializerSettings
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                })
+        };
+
+        services.AddRefitClient<IGeradorCertificadoRepository>(config)
+            .ConfigureHttpClient(client => client.BaseAddress = new Uri(configuration.GetValue<string>("Clients:Certificado")));
+
+        services.AddRefitClient<IProcessosPagamentoRepository>(config)
+            .ConfigureHttpClient(client => client.BaseAddress = new Uri(configuration.GetValue<string>("Clients:Boleto")));
+
+        return services;
+    }
+
+    /// <summary>
+    /// Configura as configurações do AWSS3.
+    /// </summary>
+    /// <param name="services">A coleção de serviços.</param>
+    /// <returns>A coleção de serviços atualizada.</returns>
+    public static IServiceCollection AddAWSBucketS3(this IServiceCollection services)
+    {
+        //optionsAws.Credentials = new BasicAWSCredentials(configuration["AWS:S3:AccessKey"], configuration["AWS:S3:SecretKey"]);
+        //services.AddDefaultAWSOptions(configuration.GetAWSOptions());
+        //services.AddAWSService<IAmazonS3>();
+
+        services.AddSingleton<IAwsS3Repository, AwsS3Repository>();
+
+        return services;
+    }
+
+
 }
