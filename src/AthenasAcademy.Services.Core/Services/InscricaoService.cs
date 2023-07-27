@@ -5,7 +5,6 @@ using AthenasAcademy.Services.Core.Extensions;
 using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Core.Services.Interfaces;
-using AthenasAcademy.Services.Core.Services.SQSProducer;
 using AthenasAcademy.Services.Domain.Requests;
 using AthenasAcademy.Services.Domain.Responses;
 
@@ -44,6 +43,7 @@ public class InscricaoService : IInscricaoService
         FichaAluno fichaAluno = await RegistrarFichaAluno(request, usuario, inscricao);
 
         fichaAluno.OpcaoCurso = opcaoCurso;
+        fichaAluno.Contrato = new Contrato();
 
         // liberar contrato boleto e contrato
         await _matriculaService.RegistrarPreMatricula(fichaAluno);
@@ -93,7 +93,7 @@ public class InscricaoService : IInscricaoService
         TelefoneAlunoModel telefoneAluno = await _alunoService.CadastrarTelefoneAluno(telefoneAlunoArgument);
 
         // cadastrar detalhes
-        NovoDetalheAlunoArgument detalheAlunoArgument = await MontarNovoRegistroDetalheAluno(aluno.Id, usuario, inscricao);
+        NovoDetalheAlunoArgument detalheAlunoArgument = await MontarNovoRegistroDetalheAluno(aluno.Id, request, usuario, inscricao);
         DetalheAlunoModel detalheAluno = await _alunoService.CadastrarDetalheAluno(detalheAlunoArgument);
 
         return new FichaAluno
@@ -105,7 +105,7 @@ public class InscricaoService : IInscricaoService
         };
     }
 
-    private static async Task<NovoDetalheAlunoArgument> MontarNovoRegistroDetalheAluno(int id, UsuarioModel usuario, InscricaoCandidatoModel inscricao)
+    private static async Task<NovoDetalheAlunoArgument> MontarNovoRegistroDetalheAluno(int id, NovaInscricaoCandidatoRequest request, UsuarioModel usuario, InscricaoCandidatoModel inscricao)
     {
         return await Task.FromResult(new NovoDetalheAlunoArgument()
         {
@@ -113,7 +113,8 @@ public class InscricaoService : IInscricaoService
             CodigoInscricao = inscricao.CodigoInscricao,
             DataInscricao = inscricao.DataInscricao,
             CodigoUsuario = usuario.Id,
-            DataUsuario = usuario.DataCadastro
+            DataUsuario = usuario.DataCadastro,
+            CodigoCurso = request.Curso.CodigoCurso
         });
     }
 
@@ -152,7 +153,7 @@ public class InscricaoService : IInscricaoService
             CPF = request.CPF.FormatarCPF(),
             Sexo = request.Sexo,
             DataNascimento = request.DataNascimento,
-            Email = request.Email.Trim().ToLower(),
+            Email = request.Email.Trim().ToLower()
         });
     }
 
@@ -164,7 +165,7 @@ public class InscricaoService : IInscricaoService
             Email = request.Email.Trim().ToLower(),
             Telefone = request.Telefone.TelefoneCelular ?? request.Telefone.TelefoneResidencial ?? request.Telefone.TelefoneRecado,
             CodigoCurso = request.Curso.CodigoCurso,
-            NomeCurso = request.Curso.CodigoCurso.ToString()
+            NomeCurso = request.Curso.NomeCurso
         };
 
         return await _inscricaoRepository.RegistrarNovaInscricao(argument);

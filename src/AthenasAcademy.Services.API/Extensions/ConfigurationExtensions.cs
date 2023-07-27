@@ -24,6 +24,7 @@ public static class ConfigurationExtensions
             {"AwsBucketBase", credenciais.AwsBucketBase},
             {"LegadoAwsSecretKeyBase", credenciais.ClientLegadoAwsSecretKey},
             {"JwtKeyBase", credenciais.JwtSecretKey},
+            {"AthenasBase", credenciais.StringConnectionAthenasBase},
             {"UsuarioBase", credenciais.StringConnectionBaseUsuario },
             {"InscricaoBase", credenciais.StringConnectionBaseInscricao},
             {"AlunoBase", credenciais.StringConnectionBaseAluno},

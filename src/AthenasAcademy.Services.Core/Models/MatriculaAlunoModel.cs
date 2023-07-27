@@ -7,6 +7,5 @@ public class MatriculaAlunoModel
     public bool Ativa { get; set; }
     public int CodigoAluno { get; set; }
     public string NomeAluno { get; set; }
-    public DateTime DataMatricula { get; set; }
-    public int CodigoContrato { get; set; }
+    public DateTime? DataMatricula { get; set; }
 }

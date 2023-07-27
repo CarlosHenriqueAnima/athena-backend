@@ -57,7 +57,8 @@ public class MatriculaService : IMatriculaService
 
     private async Task ValidarProcessoMatricula(int inscricao)
     {
-        //// buscar inscricao
+        /// TODO - StackOverFlow: BUG
+        //// buscar inscricao - StackOverFlow: BURG
         //InscricaoCandidatoModel inscricaoAluno = await _inscricaoService.ObterInscricao(inscricao);
 
         //if (inscricaoAluno is null)
@@ -83,13 +84,13 @@ public class MatriculaService : IMatriculaService
 
         if (!matriculaAluno.Ativa)
             throw new APICustomException(
-                message: $"Matrícula {matriculaAluno.Matricula} ainda foi não ativada.",
+                message: $"Matrícula {matriculaAluno.Matricula} ainda não foi ativada.",
                 responseType: Domain.Configurations.Enums.ExceptionResponseType.Error,
                 statusCode: HttpStatusCode.BadRequest);
 
         if (!matriculaAluno.Assinado)
             throw new APICustomException(
-                message: $"Contrato de matrícula ainda foi não assinado.",
+                message: $"Contrato de matrícula {matriculaAluno.CodigoContrato} ainda foi não assinado.",
                 responseType: Domain.Configurations.Enums.ExceptionResponseType.Error,
                 statusCode: HttpStatusCode.BadRequest);
 

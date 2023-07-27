@@ -21,9 +21,9 @@ public class InscricaoRepository : BaseRepository, IInscricaoRepository
             using IDbConnection connection = await GetConnectionAsync(Database.Inscricao);
             string query = @"
                 INSERT INTO inscricao_candidato 
-                (nome, email, telefone, codigo_curso, nome_curso, boleto_pago, data_inscricao) 
-                VALUES (@Nome, @Email, @Telefone, @CodigoCurso, @NomeCurso, @BoletoPago, @DataInscricao)
-                RETURNING *";
+                (data_inscricao, nome, email, telefone, codigo_curso, nome_curso, boleto_pago) 
+                VALUES (@DataInscricao, @Nome, @Email, @Telefone, @CodigoCurso, @NomeCurso, @BoletoPago)
+                RETURNING id,codigo_inscricao AS CodigoInscricao, data_inscricao AS DataInscricao, nome, email, telefone, codigo_curso AS CodigoCurso, nome_curso AS NomeCurso, boleto, boleto_pago AS BoletoPago;";
 
             return await connection.QueryFirstOrDefaultAsync<InscricaoCandidatoModel>(query, argument);
         }

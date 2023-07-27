@@ -19,13 +19,12 @@ public class MatriculaRepository : BaseRepository, IMatriculaRepository
         try
         {
             using IDbConnection connection = await GetConnectionAsync(Database.Matricula);
-            connection.Open();
             IDbTransaction transaction = connection.BeginTransaction();
 
             try
             {
                 var matriculaAluno = await RegistrarPreMatriculaAluno(transaction, fichaAluno);
-                var contratoMatriculaAluno = await RegistrarPreContratoMatriculaAluno(transaction, fichaAluno);
+                var contratoMatriculaAluno = await RegistrarPreContratoMatriculaAluno(transaction, fichaAluno, matriculaAluno.Id);
 
                 transaction.Commit();
 
@@ -36,13 +35,11 @@ public class MatriculaRepository : BaseRepository, IMatriculaRepository
                     Ativa = matriculaAluno.Ativa,
                     CodigoAluno = matriculaAluno.CodigoAluno,
                     NomeAluno = matriculaAluno.NomeAluno,
-                    DataMatricula = matriculaAluno.DataMatricula,
                     CodigoContrato = contratoMatriculaAluno.Contrato,
                     ContratoAlunoId = contratoMatriculaAluno.Id,
                     Assinado = contratoMatriculaAluno.Assinado,
                     FormaPagamento = contratoMatriculaAluno.FormaPagamento,
                     ValorContrato = contratoMatriculaAluno.ValorContrato,
-                    DataAceite = contratoMatriculaAluno.DataAceite
                 };
             }
             catch (Exception ex)
@@ -102,16 +99,17 @@ public class MatriculaRepository : BaseRepository, IMatriculaRepository
     {
         try
         {
-            string queryMatriculaAluno = @"INSERT INTO matricula_aluno (matricula, ativa, codigo_aluno, nome_aluno, codigo_contrato) 
-                                       VALUES (nextval('matricula_seq'), @Ativa, @CodigoAluno, @NomeAluno, @CodigoContrato) 
-                                       RETURNING *";
+            string queryMatriculaAluno = @"
+                                        INSERT INTO matricula_aluno (ativa, codigo_aluno, nome_aluno) 
+                                        VALUES (@Ativa, @CodigoAluno, @NomeAluno) 
+                                        RETURNING id, matricula, ativa, codigo_aluno AS CodigoAluno, nome_aluno AS NomeAluno";
 
             return await transaction.Connection.QueryFirstAsync<MatriculaAlunoModel>(queryMatriculaAluno,
                 new
                 {
                     Ativa = false,
                     CodigoAluno = fichaAluno.Aluno.Id,
-                    NomeAluno = fichaAluno.Aluno.Nome + fichaAluno.Aluno.Sobrenome,
+                    NomeAluno = fichaAluno.Aluno.Nome +" " + fichaAluno.Aluno.Sobrenome,
                 });
         }
         catch (Exception ex)
@@ -120,20 +118,23 @@ public class MatriculaRepository : BaseRepository, IMatriculaRepository
         }
     }
 
-    private static async Task<ContratoMatriculaAlunoModel> RegistrarPreContratoMatriculaAluno(IDbTransaction transaction, FichaAluno fichaAluno)
+
+    private static async Task<ContratoMatriculaAlunoModel> RegistrarPreContratoMatriculaAluno(IDbTransaction transaction, FichaAluno fichaAluno, int idMatricula)
     {
         try
         {
-            string queryContratoMatriculaAluno = @"INSERT INTO contrato_matricula_aluno (id_matricula, contrato, assinado, forma_pagamento, valor_contrato) 
-                                               VALUES ((SELECT currval('matricula_seq')), nextval('contrato_seq'), @Assinado, @FormaPagamento, @ValorContrato) 
-                                               RETURNING *";
+            string queryContratoMatriculaAluno = @"
+                                                INSERT INTO contrato_matricula_aluno (id_matricula, assinado, forma_pagamento, valor_contrato) 
+                                                VALUES (@IdMatricula, @Assinado, @FormaPagamento, @ValorContrato) 
+                                                RETURNING id, id_matricula AS IdMatricula, contrato, assinado, forma_pagamento AS FormaPagamento, valor_contrato as ValorContrato;";
 
             return await transaction.Connection.QueryFirstAsync<ContratoMatriculaAlunoModel>(queryContratoMatriculaAluno,
                 new
                 {
-                    fichaAluno.Contrato.Assinado,
+                    IdMatricula = idMatricula,
+                    Assinado = false,
                     fichaAluno.Contrato.FormaPagamento,
-                    fichaAluno.Contrato.ValorContrato,
+                    fichaAluno.Contrato.ValorContrato
                 });
         }
         catch (Exception ex)
@@ -142,4 +143,6 @@ public class MatriculaRepository : BaseRepository, IMatriculaRepository
         }
     }
 
+
 }
+

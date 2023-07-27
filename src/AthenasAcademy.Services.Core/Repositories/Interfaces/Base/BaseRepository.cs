@@ -23,7 +23,7 @@ public class BaseRepository
     {
         try
         {
-            NpgsqlConnectionStringBuilder builder = new(GetConnectionString(database));
+            NpgsqlConnectionStringBuilder builder = new(GetConnectionString(Database.Athenas));
 
             builder.MaxPoolSize = 100;
             builder.MinPoolSize = 1;
@@ -45,6 +45,7 @@ public class BaseRepository
     {
         return database switch
         {
+            Database.Athenas => _configuration["AthenasBase"],
             Database.Usuario => _configuration["UsuarioBase"],
             Database.Inscricao => _configuration["InscricaoBase"],
             Database.Aluno => _configuration["AlunoBase"],

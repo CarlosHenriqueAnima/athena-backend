@@ -40,7 +40,7 @@ public class AlunoRepository : BaseRepository, IAlunoRepository
         {
             using IDbConnection connection = await GetConnectionAsync(Database.Aluno);
             string query = @"
-                    INSERT INTO detalhe (id_aluno, codigo_usuario, data_usuario, codigo_inscricao, data_inscricao, codigo_curso, codigo_matricula, data_matricula, codigo_contrato, data_contrato)
+                    INSERT INTO detalhe_aluno (id_aluno, codigo_usuario, data_usuario, codigo_inscricao, data_inscricao, codigo_curso, codigo_matricula, data_matricula, codigo_contrato, data_contrato)
                     VALUES (@IdAluno, @CodigoUsuario, @DataUsuario, @CodigoInscricao, @DataInscricao, @CodigoCurso, @CodigoMatricula, @DataMatricula, @CodigoContrato, @DataContrato)
                     RETURNING *;";
 

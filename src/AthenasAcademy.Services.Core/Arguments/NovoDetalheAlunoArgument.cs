@@ -11,4 +11,5 @@ public class NovoDetalheAlunoArgument
     public DateTime? DataMatricula { get; set; }
     public DateTime? DataContrato { get; set; }
     public int? CodigoContrato { get; set; }
+    public int? CodigoCurso { get; set; }
 }

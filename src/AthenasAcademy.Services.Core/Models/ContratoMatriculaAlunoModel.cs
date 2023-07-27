@@ -8,5 +8,5 @@ public class ContratoMatriculaAlunoModel
     public bool Assinado { get; set; }
     public string FormaPagamento { get; set; }
     public decimal ValorContrato { get; set; }
-    public DateTime DataAceite { get; set; }
+    public DateTime? DataAceite { get; set; }
 }
