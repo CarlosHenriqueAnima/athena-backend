@@ -51,10 +51,10 @@ namespace AthenasAcademy.Services.Test.Services
                              .ReturnsAsync(fichaAluno);
             _matriculaRepositoryMock.Setup(repo => repo.AtivarMatricula(fichaAluno))
                                     .ReturnsAsync(matricula);
-            _queueProducerServiceMock.Setup(service => service.Certificado(fichaAluno))
-                                     .Returns(_queueProducerServiceMock.Object);
-            _queueProducerServiceMock.Setup(queue => queue.Send())
-                                     .Returns(Task.CompletedTask);
+            _queueProducerServiceMock.Setup(service => service.GerarBoleto(fichaAluno))
+                                     .ReturnsAsync(true);
+            _queueProducerServiceMock.Setup(service => service.GerarContrato(fichaAluno))
+                                     .ReturnsAsync(true);
 
             // Act
             var result = await _matriculaService.MatricularAluno(inscricao);
@@ -76,14 +76,10 @@ namespace AthenasAcademy.Services.Test.Services
             var matricula = _matriculaFactory.ObterMatriculaModelValida();
             _matriculaRepositoryMock.Setup(repo => repo.GerarPreMatricula(fichaAluno))
                                     .ReturnsAsync(matricula);
-            _queueProducerServiceMock.Setup(service => service.Contrato(fichaAluno))
-                                     .Returns(_queueProducerServiceMock.Object);
-            _queueProducerServiceMock.Setup(queue => queue.Send())
-                                     .Returns(Task.CompletedTask);
-            _queueProducerServiceMock.Setup(service => service.Boleto(fichaAluno))
-                                     .Returns(_queueProducerServiceMock.Object);
-            _queueProducerServiceMock.Setup(queue => queue.Send())
-                                     .Returns(Task.CompletedTask);
+            _queueProducerServiceMock.Setup(service => service.GerarContrato(fichaAluno))
+                                     .ReturnsAsync(true);
+            _queueProducerServiceMock.Setup(service => service.GerarBoleto(fichaAluno))
+                                     .ReturnsAsync(true);
 
             // Act
             await _matriculaService.RegistrarPreMatricula(fichaAluno);
@@ -92,8 +88,8 @@ namespace AthenasAcademy.Services.Test.Services
             Assert.Equal(matricula.Matricula, fichaAluno.Contrato.Matricula);
             Assert.Equal(matricula.CodigoContrato, fichaAluno.Contrato.NumeroContrato);
             _matriculaRepositoryMock.Verify(repo => repo.GerarPreMatricula(fichaAluno), Times.Once);
-            _queueProducerServiceMock.Verify(service => service.Contrato(fichaAluno), Times.Once);
-            _queueProducerServiceMock.Verify(queue => queue.Send(), Times.Exactly(2));
+            _queueProducerServiceMock.Verify(service => service.GerarBoleto(fichaAluno), Times.Once);
+            _queueProducerServiceMock.Verify(queue => queue.GerarContrato(fichaAluno), Times.Exactly(2));
         }
     }
 }

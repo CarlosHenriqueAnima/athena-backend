@@ -167,7 +167,7 @@ namespace AthenasAcademy.Services.Test.Factory
             var telefone = ObterTelefoneAlunoModelValido();
             var detalhesFicha = ObterDetalheAlunoModelValido();
             var OpcaoCurso = _cursoFactory.ObterOpcaoCursoValida();
-            var obterContrato = ObterContratoExemplo();
+            var obterContrato = ObterContratoValido();
             return new FichaAluno()
             {
                 Aluno = aluno,
@@ -179,7 +179,7 @@ namespace AthenasAcademy.Services.Test.Factory
             };
         }
 
-        public Contrato ObterContratoExemplo()
+        public Contrato ObterContratoValido()
         {
             return new Contrato
             {
