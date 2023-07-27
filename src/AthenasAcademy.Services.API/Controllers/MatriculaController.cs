@@ -30,14 +30,14 @@ public class MatriculaController : ControllerBase
     /// <summary>
     /// Realiza a matrícula de um novo aluno.
     /// </summary>
-    /// <param name="inscricao">Os dados da matrícula do aluno.</param>
+    /// <param name="matricula">Os dados da matrícula do aluno.</param>
     /// <returns>Um objeto contendo os detalhes da matrícula do aluno.</returns>
-    [HttpPut("matricular-aluno")]
+    [HttpPut("matricular-aluno/{matricula:int}")]
     [ProducesResponseType(typeof(MatriculaStatusResponse), StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> MatricularAluno([FromQuery] int? inscricao)
+    public async Task<IActionResult> MatricularAluno(int matricula)
     {
-        return Ok(await _matriculaService.MatricularAluno(inscricao.Value));
+        return Ok(await _matriculaService.MatricularAluno(matricula));
     }
 }

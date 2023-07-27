@@ -100,10 +100,7 @@ public class AlunoService : IAlunoService
                                matricula.HasValue ? "codigo_matricula" :
                                throw new ArgumentException("É necessário fornecer apenas um dos critérios de busca: ID, inscrição ou matrícula.");
 
-            int id = aluno.HasValue ? aluno.Value :
-                   inscricao.HasValue ? inscricao.Value :
-                   matricula.HasValue ? matricula.Value :
-                   throw new ArgumentException("É necessário fornecer apenas um dos critérios de busca: ID, inscrição ou matrícula.");
+            int id = aluno ?? (inscricao ?? matricula ?? throw new ArgumentException("É necessário fornecer apenas um dos critérios de busca: ID, inscrição ou matrícula."));
 
 
             return await _alunoRepository.ObterDetalheAluno(argumento, id);

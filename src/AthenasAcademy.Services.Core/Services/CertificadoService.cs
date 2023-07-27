@@ -74,13 +74,12 @@ public class CertificadoService : ICertificadoService
     {
         CertificadoModel certificado = await _certificadoRepository.ObterCertificado(matricula);
 
-        if (certificado is null)
-            throw new APICustomException(
+        return certificado is null
+            ? throw new APICustomException(
                 message: string.Format("Certificado não localizado para a matrícula {0}.", matricula),
                 responseType: ExceptionResponseType.Error,
-                statusCode: System.Net.HttpStatusCode.BadRequest);
-
-        return await _awsS3Repository.ObterPDFAsync(certificado.CaminhoCertificadoPdf);
+                statusCode: System.Net.HttpStatusCode.BadRequest)
+            : await _awsS3Repository.ObterPDFAsync(certificado.CaminhoCertificadoPdf);
     }
 
     private async Task<NovoCertificadoRequest> MontarRequestNovoCertificado(int matricula)
@@ -102,5 +101,5 @@ public class CertificadoService : ICertificadoService
         return certificadoRequest;
     }
 
-    private int ObterRendimentoRandom() => new Random().Next(70, 101);
+    private static int ObterRendimentoRandom() => new Random().Next(70, 101);
 }

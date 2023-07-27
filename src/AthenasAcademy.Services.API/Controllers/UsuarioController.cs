@@ -1,5 +1,4 @@
-﻿using AthenasAcademy.Services.Core.Configurations.Enums;
-using AthenasAcademy.Services.Core.Services.Interfaces;
+﻿using AthenasAcademy.Services.Core.Services.Interfaces;
 using AthenasAcademy.Services.Domain.Requests;
 using AthenasAcademy.Services.Domain.Responses;
 using Microsoft.AspNetCore.Authorization;
@@ -36,7 +35,7 @@ public class UsuarioController : ControllerBase
     [ProducesResponseType(typeof(NovoUsuarioResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult> CadastrarUsuario([FromBody] NovoUsuarioRequest request)
+    public async Task<IActionResult> CadastrarUsuario([FromBody] NovoUsuarioRequest request)
     {
         return Ok(await _autorizaService.CadastrarUsuario(request));
     }
@@ -52,7 +51,7 @@ public class UsuarioController : ControllerBase
     [ProducesResponseType(typeof(LoginUsuarioResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult> LoginUsuario([FromBody] LoginUsuarioRequest request)
+    public async Task<IActionResult> LoginUsuario([FromBody] LoginUsuarioRequest request)
     {
         return Ok(await _autorizaService.LoginUsuario(request));
     }

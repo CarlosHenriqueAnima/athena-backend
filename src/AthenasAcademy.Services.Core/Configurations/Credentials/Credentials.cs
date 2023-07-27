@@ -5,6 +5,11 @@
         public string AwsAccessKey { get; set; }
         public string AwsSecretKey { get; set; }
         public string AwsBucketBase { get; set; }
+
+        public string AwsSQSFilaCertificadotBase { get; set; }
+        public string AwsSQSFilaContratotBase { get; set; }
+        public string AwsSQSFilaPagamentotBase { get; set; }
+
         public string ClientLegadoAwsSecretKey { get; set; }
         public string JwtSecretKey { get; set; }
 

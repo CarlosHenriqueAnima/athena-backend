@@ -1,5 +1,4 @@
 ﻿using AthenasAcademy.Services.Core.CrossCutting;
-using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Domain.Responses;
 
 namespace AthenasAcademy.Services.Core.Services.Interfaces;
@@ -13,8 +12,13 @@ public interface IMatriculaService
     /// Realiza a matrícula de um aluno com base no número de inscrição.
     /// </summary>
     /// <param name="inscricao">O número de inscrição do aluno a ser matriculado.</param>
-    /// <returns>Um objeto contendo o status da matrícula do aluno.</returns>
+    /// <returns>Um objeto que contém o status da matrícula do aluno.</returns>
     Task<MatriculaStatusResponse> MatricularAluno(int inscricao);
 
+    /// <summary>
+    /// Registra a pré-matrícula de um aluno, fornecendo a ficha do aluno com os dados necessários.
+    /// </summary>
+    /// <param name="fichaAluno">A ficha do aluno contendo os dados para a pré-matrícula.</param>
+    /// <returns>Uma tarefa que representa o registro da pré-matrícula do aluno.</returns>
     Task RegistrarPreMatricula(FichaAluno fichaAluno);
 }

@@ -35,7 +35,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICursoService, CursoService>();
         services.AddScoped<IInscricaoService, InscricaoService>();
         services.AddScoped<IMatriculaService, MatriculaService>();
-        services.AddScoped<IPagamentoService, PagamentoService>();
         services.AddScoped<IAutorizaUsuarioService, AutorizaUsuarioService>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IQueueProducerService, QueueProducerService>();
@@ -56,7 +55,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ICursoRepository, CursoRepository>();
         services.AddSingleton<IInscricaoRepository, InscricaoRepository>();
         services.AddSingleton<IMatriculaRepository, MatriculaRepository>();
-        services.AddSingleton<IPagamentoRepository, PagamentoRepository>();
 
         return services;
     }
@@ -241,9 +239,6 @@ public static class ServiceCollectionExtensions
 
         services.AddRefitClient<IGeradorCertificadoRepository>(config)
             .ConfigureHttpClient(client => client.BaseAddress = new Uri(configuration.GetValue<string>("Clients:Certificado")));
-
-        services.AddRefitClient<IProcessosPagamentoRepository>(config)
-            .ConfigureHttpClient(client => client.BaseAddress = new Uri(configuration.GetValue<string>("Clients:Boleto")));
 
         return services;
     }
