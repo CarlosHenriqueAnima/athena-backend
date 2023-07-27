@@ -16,5 +16,10 @@ public interface IInscricaoService
     /// <returns>Uma tarefa que representa o cadastro do candidato.</returns>
     Task<InscricaoCandidatoResponse> CadastrarCandidato(NovaInscricaoCandidatoRequest request);
 
+    /// <summary>
+    /// Obtém as informações da inscrição de um candidato com base no número da inscrição.
+    /// </summary>
+    /// <param name="inscricao">O número da inscrição do candidato.</param>
+    /// <returns>Uma tarefa que representa a operação assíncrona de obtenção das informações da inscrição do candidato.</returns>
     Task<InscricaoCandidatoModel> ObterInscricao(int inscricao);
 }

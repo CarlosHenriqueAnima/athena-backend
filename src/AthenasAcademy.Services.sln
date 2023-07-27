@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AthenasAcademy.Services.Dom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AthenasAcademy.Services.Test", "AthenasAcademy.Services.Test\AthenasAcademy.Services.Test.csproj", "{B21E5225-D4AB-456F-8486-8FEC18B74C40}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AthenasAcademy.Services.Handling", "AthenasAcademy.Services.Handling\AthenasAcademy.Services.Handling.csproj", "{4E536A8D-51BD-4DE1-88BD-173C0524FE46}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,10 +33,6 @@ Global
 		{B21E5225-D4AB-456F-8486-8FEC18B74C40}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B21E5225-D4AB-456F-8486-8FEC18B74C40}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B21E5225-D4AB-456F-8486-8FEC18B74C40}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4E536A8D-51BD-4DE1-88BD-173C0524FE46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4E536A8D-51BD-4DE1-88BD-173C0524FE46}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4E536A8D-51BD-4DE1-88BD-173C0524FE46}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4E536A8D-51BD-4DE1-88BD-173C0524FE46}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

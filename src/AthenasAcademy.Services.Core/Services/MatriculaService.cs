@@ -25,20 +25,20 @@ public class MatriculaService : IMatriculaService
         _matriculaRepository = matriculaRepository;
     }
 
-    public async Task<MatriculaStatusResponse> MatricularAluno(int inscricao)
+    public async Task<MatriculaStatusResponse> MatricularAluno(int matricula)
     {
-        await ValidarProcessoMatricula(inscricao);
+        await ValidarProcessoMatricula(matricula);
 
-        var fichaAluno = await _alunoService.ObterFichaAluno(inscricao);
+        var fichaAluno = await _alunoService.ObterFichaAluno(matricula);
 
-        var matricula = await _matriculaRepository.AtivarMatricula(fichaAluno);
+        var matriculaAluno = await _matriculaRepository.AtivarMatricula(fichaAluno);
 
-        await _queueProducerService.Certificado(fichaAluno).Send();
+        //await _queueProducerService.Certificado(fichaAluno).Send();
 
         return await Task.FromResult(new MatriculaStatusResponse
         {
-            Matricula = matricula.Matricula,
-            Contrato = matricula.CodigoContrato,
+            Matricula = matriculaAluno.Matricula,
+            Contrato = matriculaAluno.CodigoContrato,
             BoletoPago = true,
             ContratoAssinado = true,
         });
@@ -51,8 +51,8 @@ public class MatriculaService : IMatriculaService
         fichaAluno.Contrato.Matricula = matricula.Matricula;
         fichaAluno.Contrato.NumeroContrato = matricula.CodigoContrato;
 
-        await _queueProducerService.Contrato(fichaAluno).Send();
-        await _queueProducerService.Boleto(fichaAluno).Send();
+        await _queueProducerService.GerarContrato(fichaAluno);
+        await _queueProducerService.GerarBoleto(fichaAluno);
     }
 
     private async Task ValidarProcessoMatricula(int inscricao)
@@ -74,10 +74,7 @@ public class MatriculaService : IMatriculaService
         //        statusCode: HttpStatusCode.BadRequest);
 
         // buscar matricula
-        MatriculaModel matriculaAluno = await _matriculaRepository.ObterMatricula(inscricao);
-
-        if (matriculaAluno is null)
-            throw new APICustomException(
+        MatriculaModel matriculaAluno = await _matriculaRepository.ObterMatricula(inscricao) ?? throw new APICustomException(
                 message: $"Não constam matrículas para inscrição {inscricao}.",
                 responseType: Domain.Configurations.Enums.ExceptionResponseType.Error,
                 statusCode: HttpStatusCode.BadRequest);

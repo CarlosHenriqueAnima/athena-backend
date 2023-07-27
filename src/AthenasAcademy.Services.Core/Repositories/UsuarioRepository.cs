@@ -18,7 +18,7 @@ public class UsuarioRepository : BaseRepository, IUsuarioRepository
     {
         try
         {
-            using IDbConnection connection = await GetConnectionAsync(Database.Usuario);
+            using IDbConnection connection = await GetConnectionAsync();
             string query = @"SELECT 
                                     id,
                                     usuario, 
@@ -40,7 +40,7 @@ public class UsuarioRepository : BaseRepository, IUsuarioRepository
     {
         try
         {
-            using IDbConnection connection = await GetConnectionAsync(Database.Usuario);
+            using IDbConnection connection = await GetConnectionAsync();
             string query = @"INSERT INTO usuario (usuario, email, senha_hash, ativo, data_cadastro, data_alteracao, id_perfil)
                              VALUES (@Usuario, @Email, @Senha, @Ativo, @DataCadastro, @DataAlteracao, 2)
                              RETURNING id, usuario, senha_hash AS Senha, id_perfil AS Perfil";

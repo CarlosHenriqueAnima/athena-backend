@@ -16,7 +16,7 @@ public class CertificadoRepository : BaseRepository, ICertificadoRepository
     {
         try
         {
-            using IDbConnection connection = await GetConnectionAsync(Database.Certificado);
+            using IDbConnection connection = await GetConnectionAsync();
             string query = @"
                 INSERT INTO certificado (
                     nome_aluno,
@@ -56,7 +56,7 @@ public class CertificadoRepository : BaseRepository, ICertificadoRepository
     {
         try
         {
-            using IDbConnection connection = await GetConnectionAsync(Database.Certificado);
+            using IDbConnection connection = await GetConnectionAsync();
             string query = @"
                     SELECT 
                         id,
@@ -79,5 +79,6 @@ public class CertificadoRepository : BaseRepository, ICertificadoRepository
         {
             return null;
         }
+
     }
 }

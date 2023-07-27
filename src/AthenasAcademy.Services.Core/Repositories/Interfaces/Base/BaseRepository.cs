@@ -19,16 +19,17 @@ public class BaseRepository
         _configuration = configuration;
     }
 
-    protected async Task<IDbConnection> GetConnectionAsync(Database database)
+    protected async Task<IDbConnection> GetConnectionAsync()
     {
         try
         {
-            NpgsqlConnectionStringBuilder builder = new(GetConnectionString(Database.Athenas));
-
-            builder.MaxPoolSize = 100;
-            builder.MinPoolSize = 1;
-            builder.ConnectionIdleLifetime = 500;
-            builder.Pooling = true;
+            NpgsqlConnectionStringBuilder builder = new(GetConnectionString(Database.Athenas))
+            {
+                MaxPoolSize = 100,
+                MinPoolSize = 1,
+                ConnectionIdleLifetime = 500,
+                Pooling = true
+            };
 
             _connection = new NpgsqlConnection(builder.ConnectionString);
 

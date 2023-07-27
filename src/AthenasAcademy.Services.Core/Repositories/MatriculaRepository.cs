@@ -18,7 +18,7 @@ public class MatriculaRepository : BaseRepository, IMatriculaRepository
     {
         try
         {
-            using IDbConnection connection = await GetConnectionAsync(Database.Matricula);
+            using IDbConnection connection = await GetConnectionAsync();
             IDbTransaction transaction = connection.BeginTransaction();
 
             try
@@ -86,7 +86,7 @@ public class MatriculaRepository : BaseRepository, IMatriculaRepository
             LEFT JOIN contrato_matricula_aluno cm ON ma.id = cm.id_matricula
             WHERE ma.matricula = @Matricula";
 
-            using IDbConnection connection = await GetConnectionAsync(Database.Matricula);
+            using IDbConnection connection = await GetConnectionAsync();
             return await connection.QueryFirstOrDefaultAsync<MatriculaModel>(query, new { Matricula = matricula });
         }
         catch (Exception ex)

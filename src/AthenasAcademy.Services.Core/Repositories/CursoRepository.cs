@@ -20,7 +20,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using IDbConnection connection = await GetConnectionAsync(Database.Curso);
+            using IDbConnection connection = await GetConnectionAsync();
             string query = @"SELECT 
                                     id, 
                                     nome, 
@@ -45,7 +45,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using IDbConnection connection = await GetConnectionAsync(Database.Curso);
+            using IDbConnection connection = await GetConnectionAsync();
             string query = @"SELECT 
                                     id, 
                                     nome, 
@@ -70,7 +70,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using IDbConnection connection = await GetConnectionAsync(Database.Curso);
+            using IDbConnection connection = await GetConnectionAsync();
             string query = @"
                 INSERT INTO curso (nome, descricao, carga_horaria, id_area_conhecimento, ativo, data_cadastro, data_alteracao)
                 VALUES (@Nome, @Descricao, @CargaHoraria, @IdAreaConhecimento, @Ativo, @DataCadastro, @DataAlteracao)
@@ -89,7 +89,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using IDbConnection connection = await GetConnectionAsync(Database.Curso);
+            using IDbConnection connection = await GetConnectionAsync();
             string query = @"UPDATE curso
                                  SET nome = @Nome,
                                      descricao = @Descricao,
@@ -113,7 +113,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using IDbConnection connection = await GetConnectionAsync(Database.Curso);
+            using IDbConnection connection = await GetConnectionAsync();
             string query = @"UPDATE curso
                                  SET ativo = false
                                  WHERE id = @Id";
@@ -135,7 +135,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using IDbConnection connection = await GetConnectionAsync(Database.Curso);
+            using IDbConnection connection = await GetConnectionAsync();
             string query = @"SELECT 
                                     id, 
                                     nome, 
@@ -160,7 +160,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using IDbConnection connection = await GetConnectionAsync(Database.Curso);
+            using IDbConnection connection = await GetConnectionAsync();
             string query = @"SELECT 
                                     id, 
                                     nome, 
@@ -184,7 +184,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using IDbConnection connection = await GetConnectionAsync(Database.Curso);
+            using IDbConnection connection = await GetConnectionAsync();
             string query = @"SELECT 
                                 dis.id, 
                                 dis.nome, 
@@ -209,7 +209,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using IDbConnection connection = await GetConnectionAsync(Database.Curso);
+            using IDbConnection connection = await GetConnectionAsync();
             string query = @"INSERT INTO disciplina (nome, descricao, carga_horaria, id_curso, ativo, data_cadastro, data_alteracao)
                                  VALUES (@Nome, @Descricao, @CargaHoraria, @IdCurso, @Ativo, @DataCadastro, @DataAlteracao)
                                  RETURNING id, nome, descricao, carga_horaria AS CargaHoraria, id_curso AS IdCurso, ativo, data_cadastro AS DataCadastro, data_alteracao AS DataAlteracao";
@@ -228,7 +228,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using IDbConnection connection = await GetConnectionAsync(Database.Curso);
+            using IDbConnection connection = await GetConnectionAsync();
             string query = @"UPDATE disciplina
                                  SET nome = @Nome,
                                      descricao = @Descricao,
@@ -251,7 +251,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using IDbConnection connection = await GetConnectionAsync(Database.Curso);
+            using IDbConnection connection = await GetConnectionAsync();
             string query = @"UPDATE disciplina
                                  SET ativo = false
                                  WHERE id = @Id";
@@ -273,7 +273,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using IDbConnection connection = await GetConnectionAsync(Database.Curso);
+            using IDbConnection connection = await GetConnectionAsync();
             string query = @"SELECT 
                                     id, 
                                     nome, 
@@ -296,7 +296,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using IDbConnection connection = await GetConnectionAsync(Database.Curso);
+            using IDbConnection connection = await GetConnectionAsync();
             string query = @"SELECT 
                                     id, 
                                     nome, 
@@ -318,7 +318,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using IDbConnection connection = await GetConnectionAsync(Database.Curso);
+            using IDbConnection connection = await GetConnectionAsync();
             string query = @"
                 INSERT INTO area_conhecimento (nome, descricao, ativo, data_cadastro, data_alteracao)
                 VALUES (@Nome, @Descricao, @Ativo, @DataCadastro, @DataAlteracao)
@@ -336,7 +336,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using IDbConnection connection = await GetConnectionAsync(Database.Curso);
+            using IDbConnection connection = await GetConnectionAsync();
             string query = @"
                 UPDATE area_conhecimento
                 SET nome = @Nome,
@@ -359,7 +359,7 @@ public class CursoRepository : BaseRepository, ICursoRepository
     {
         try
         {
-            using IDbConnection connection = await GetConnectionAsync(Database.Curso);
+            using IDbConnection connection = await GetConnectionAsync();
             string query = @"
                 UPDATE area_conhecimento
                 SET ativo = false,
