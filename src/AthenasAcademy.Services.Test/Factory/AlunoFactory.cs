@@ -66,6 +66,21 @@ namespace AthenasAcademy.Services.Test.Factory
             };
         }
 
+        public DetalheAlunoArgumentoModel RetornarDetalheAlunoArgumentoModelValido()
+        {
+            return new DetalheAlunoArgumentoModel
+            {
+                IdAluno = 1,
+                CodigoUsuario = 1,
+                DataUsuario = new DateTime(2023, 7, 26, 10, 30, 0),
+                CodigoInscricao = 1,
+                DataInscricao = new DateTime(2023, 7, 26),
+                CodigoMatricula = 1,
+                CodigoContrato = 1,
+                NomeCompleto = "Nome Completo do Aluno"
+            };
+        }
+
         public EnderecoAlunoModel ObterEnderecoAlunoModelValido()
         {
             return new EnderecoAlunoModel
