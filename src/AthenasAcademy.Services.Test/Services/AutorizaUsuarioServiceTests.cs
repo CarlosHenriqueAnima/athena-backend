@@ -197,7 +197,7 @@ namespace AthenasAcademy.Services.Test.Services
                                   .ReturnsAsync(expectedUsuarioModel);
 
             // Act
-            var result = await _autorizaUsuarioService.ObterUsuario("email@dominio.com", false);
+            var result = await _autorizaUsuarioService.ObterUsuario(usuario, false);
 
             // Assert
             Assert.NotNull(result);
@@ -213,7 +213,7 @@ namespace AthenasAcademy.Services.Test.Services
                                   .ReturnsAsync((UsuarioModel)null);
 
             // Act & Assert
-            await Assert.ThrowsAsync<APICustomException>(() => _autorizaUsuarioService.ObterUsuario("email@dominio.com", true));
+            await Assert.ThrowsAsync<APICustomException>(() => _autorizaUsuarioService.ObterUsuario(usuario, true));
         }
 
         [Fact]
@@ -225,7 +225,7 @@ namespace AthenasAcademy.Services.Test.Services
                                   .ThrowsAsync(new Exception("Usuario não encontrado"));
 
             // Act & Assert
-            await Assert.ThrowsAsync<APICustomException>(() => _autorizaUsuarioService.ObterUsuario("email@dominio.com", true));
+            await Assert.ThrowsAsync<APICustomException>(() => _autorizaUsuarioService.ObterUsuario(usuario, true));
         }
     }
 }
