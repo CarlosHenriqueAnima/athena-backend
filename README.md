@@ -128,3 +128,4 @@ Limitações e Considerações
 Contribuições
 
 Para qualquer dúvida, problema ou sugestão, entre em contato com [inserir endereço de e-mail ou link para o suporte aqui].
+.
