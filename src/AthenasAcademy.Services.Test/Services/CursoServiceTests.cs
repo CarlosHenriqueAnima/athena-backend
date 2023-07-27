@@ -19,6 +19,8 @@ namespace AthenasAcademy.Services.Test.Services
         private readonly ICursoService _cursoService;
 
         private readonly CursoFactory _cursoFactory;
+        private readonly DisciplinaFactory _disciplinaFactory;
+        private readonly AreaConhecimentoFactory _areaConhecimentoFactory;
 
         public CursoServiceTests()
         {
@@ -27,6 +29,8 @@ namespace AthenasAcademy.Services.Test.Services
             _cursoService = new CursoService(_cursoRepositoryMock.Object, mapper);
 
             _cursoFactory = new CursoFactory();
+            _disciplinaFactory = new DisciplinaFactory();
+            _areaConhecimentoFactory = new AreaConhecimentoFactory();
         }
 
         #region Curso
@@ -91,12 +95,12 @@ namespace AthenasAcademy.Services.Test.Services
         public async Task CadastrarCurso_SolicitacaoValida_RetornaNovoCursoResponse()
         {
             // Arrange
-            var request = new NovoCursoRequest { /* mock */ };
-            var areaConhecimento = new AreaConhecimentoModel { /* mock */ };
+            var request = _cursoFactory.ObterNovoCursoRequestValido();
+            var areaConhecimento = _areaConhecimentoFactory.ObterAreaConhecimentoValida();
             _cursoRepositoryMock.Setup(repo => repo.ObterAreaConhecimento(request.IdAreaConhecimento))
                                 .ReturnsAsync(areaConhecimento);
             _cursoRepositoryMock.Setup(repo => repo.CadastrarCurso(It.IsAny<CursoArgument>()))
-                                .ReturnsAsync(new CursoModel { /* mock */ });
+                                .ReturnsAsync(_cursoFactory.ObterCursoModelValido());
 
             // Act
             var result = await _cursoService.CadastrarCurso(request);
@@ -107,10 +111,10 @@ namespace AthenasAcademy.Services.Test.Services
         }
 
         [Fact]
-        public async Task CadastrarCurso_InvalidCurso_ThrowsAPICustomException()
+        public async Task CadastrarCurso_CursoInvalido_RetornaAPICustomException()
         {
             // Arrange
-            var request = new NovoCursoRequest { /* mock */ };
+            var request = _cursoFactory.ObterNovoCursoRequestValido();
             _cursoRepositoryMock.Setup(repo => repo.ObterAreaConhecimento(request.IdAreaConhecimento))
                                 .ReturnsAsync((AreaConhecimentoModel)null);
 
@@ -118,15 +122,17 @@ namespace AthenasAcademy.Services.Test.Services
             await Assert.ThrowsAsync<APICustomException>(() => _cursoService.CadastrarCurso(request));
         }
 
-        // AtualizarCurso
         [Fact]
-        public async Task AtualizarCurso_ValidRequest_ReturnsCursoResponse()
+        public async Task AtualizarCurso_SolicitacaoValida_RetornaCursoResponse()
         {
             // Arrange
-            var request = new CursoRequest { /* mock */ };
-            var curso = new CursoModel { /* mock */ };
-            var disciplinas = new List<DisciplinaModel> { new DisciplinaModel { /* mock */ } };
-            var areaConhecimento = new AreaConhecimentoModel { /* mock */ };
+            var request = _cursoFactory.ObterCursoRequestValido(
+                                                                _disciplinaFactory.ObterListaDisciplinaRequestValidas(),
+                                                                _areaConhecimentoFactory.ObterAreaConhecimentoRequestValida()
+                                                               );
+            var curso = _cursoFactory.ObterCursoModelValido();
+            var disciplinas = _disciplinaFactory.ObterListaDisciplinaModelValidos();
+            var areaConhecimento = _areaConhecimentoFactory.ObterAreaConhecimentoValida();
             _cursoRepositoryMock.Setup(repo => repo.ObterCurso(request.Id))
                                 .ReturnsAsync(curso);
             _cursoRepositoryMock.Setup(repo => repo.ObterDisciplinasDoCurso(request.Id))
@@ -134,7 +140,7 @@ namespace AthenasAcademy.Services.Test.Services
             _cursoRepositoryMock.Setup(repo => repo.ObterAreaConhecimento(request.Id))
                                 .ReturnsAsync(areaConhecimento);
             _cursoRepositoryMock.Setup(repo => repo.AtualizarCurso(It.IsAny<CursoArgument>()))
-                                .ReturnsAsync(new CursoModel { /* mock */ });
+                                .ReturnsAsync(_cursoFactory.ObterCursoModelValido());
 
             // Act
             var result = await _cursoService.AtualizarCurso(request);
@@ -145,10 +151,13 @@ namespace AthenasAcademy.Services.Test.Services
         }
 
         [Fact]
-        public async Task AtualizarCurso_InvalidRequest_ThrowsAPICustomException()
+        public async Task AtualizarCurso_SolicitacaoInvalida_RetornaAPICustomException()
         {
             // Arrange
-            var request = new CursoRequest { /* mock */ };
+            var request = _cursoFactory.ObterCursoRequestValido(
+                                                                _disciplinaFactory.ObterListaDisciplinaRequestValidas(),
+                                                                _areaConhecimentoFactory.ObterAreaConhecimentoRequestValida()
+                                                               );
             _cursoRepositoryMock.Setup(repo => repo.ObterCurso(request.Id))
                                 .ReturnsAsync((CursoModel)null);
 
@@ -157,12 +166,12 @@ namespace AthenasAcademy.Services.Test.Services
         }
 
         [Fact]
-        public async Task DesativarCurso_ValidId_ReturnsTrue()
+        public async Task DesativarCurso_IdValido_RetornaTrue()
         {
             // Arrange
             var id = 1;
             _cursoRepositoryMock.Setup(repo => repo.ObterCurso(id))
-                                .ReturnsAsync(new CursoModel { /* mock */ });
+                                .ReturnsAsync(_cursoFactory.ObterCursoModelValido());
             _cursoRepositoryMock.Setup(repo => repo.DesativarCurso(id))
                                 .ReturnsAsync(true);
 
@@ -174,7 +183,7 @@ namespace AthenasAcademy.Services.Test.Services
         }
 
         [Fact]
-        public async Task DesativarCurso_InvalidId_ThrowsAPICustomException()
+        public async Task DesativarCurso_IdInvalido_RetornaAPICustomException()
         {
             // Arrange
             var id = 999999;
@@ -188,7 +197,7 @@ namespace AthenasAcademy.Services.Test.Services
 
         #region Disciplina
         [Fact]
-        public async Task ObterDisciplina_InvalidId_ThrowsAPICustomException()
+        public async Task ObterDisciplina_IdInvalido_RetornaAPICustomException()
         {
             // Arrange
             var id = 1;
@@ -200,7 +209,7 @@ namespace AthenasAcademy.Services.Test.Services
         }
 
         [Fact]
-        public async Task ObterDisciplinas_NoDisciplinas_ThrowsAPICustomException()
+        public async Task ObterDisciplinas_ListaVazia_RetornaAPICustomException()
         {
             // Arrange
             _cursoRepositoryMock.Setup(repo => repo.ObterDisciplinas())
@@ -211,10 +220,10 @@ namespace AthenasAcademy.Services.Test.Services
         }
 
         [Fact]
-        public async Task CadastrarDisciplina_InvalidCurso_ThrowsAPICustomException()
+        public async Task CadastrarDisciplina_CursoInvalido_RetornaAPICustomException()
         {
             // Arrange
-            var request = new NovaDisciplinaRequest { /* mock */ };
+            var request = _disciplinaFactory.ObterNovaDisciplinaRequestValido();
             _cursoRepositoryMock.Setup(repo => repo.ObterCurso(request.IdCurso))
                                 .ReturnsAsync((CursoModel)null);
 
@@ -223,11 +232,11 @@ namespace AthenasAcademy.Services.Test.Services
         }
 
         [Fact]
-        public async Task AtualizarDisciplina_InvalidId_ThrowsAPICustomException()
+        public async Task AtualizarDisciplina_IdInvalido_ThrowsAPICustomException()
         {
             // Arrange
-            var request = new DisciplinaRequest { /* mock */ };
-            var disciplina = new DisciplinaModel { /* mock */ };
+            var request = _disciplinaFactory.ObterDisciplinaRequestValido();
+            var disciplina = _disciplinaFactory.ObterDisciplinaModelValido();
             _cursoRepositoryMock.Setup(repo => repo.ObterDisciplina(request.Id))
                                 .ReturnsAsync((DisciplinaModel)null);
 
@@ -236,7 +245,7 @@ namespace AthenasAcademy.Services.Test.Services
         }
 
         [Fact]
-        public async Task DesativarDisciplina_InvalidId_ThrowsAPICustomException()
+        public async Task DesativarDisciplina_IdInvalido_RetornaAPICustomException()
         {
             // Arrange
             var id = 1;
@@ -248,7 +257,7 @@ namespace AthenasAcademy.Services.Test.Services
         }
 
         [Fact]
-        public async Task DesativarDisciplina_AlreadyInactive_ReturnsFalse()
+        public async Task DesativarDisciplina_JaDesativada_RetornaFalse()
         {
             // Arrange
             var id = 1;
@@ -267,7 +276,7 @@ namespace AthenasAcademy.Services.Test.Services
 
         #region AreaConhecimento
         [Fact]
-        public async Task ObterAreaConhecimento_InvalidId_ThrowsAPICustomException()
+        public async Task ObterAreaConhecimento_IdInvalido_RetornaAPICustomException()
         {
             // Arrange
             var id = 1;
@@ -279,7 +288,7 @@ namespace AthenasAcademy.Services.Test.Services
         }
 
         [Fact]
-        public async Task ObterAreasConhecimento_NoAreas_ThrowsAPICustomException()
+        public async Task ObterAreasConhecimento_ListaVazia_RetornaAPICustomException()
         {
             // Arrange
             _cursoRepositoryMock.Setup(repo => repo.ObterAreasConhecimento())
@@ -290,23 +299,23 @@ namespace AthenasAcademy.Services.Test.Services
         }
 
         [Fact]
-        public async Task CadastrarAreaConhecimento_ThrowsAPICustomException()
+        public async Task CadastrarAreaConhecimento_AreaInvalida_RetornaAPICustomException()
         {
             // Arrange
-            var request = new NovaAreaConhecimentoRequest { /* mock */ };
+            var request = _areaConhecimentoFactory.ObterNovaAreaConhecimentoRequest();
             _cursoRepositoryMock.Setup(repo => repo.CadastrarAreaConhecimento(
                 It.IsAny<AreaConhecimentoArgument>()))
-                .ThrowsAsync(new Exception("Some error occurred."));
+                .ThrowsAsync(new Exception("Area de conhecimento já cadastrada."));
 
             // Act & Assert
             await Assert.ThrowsAsync<APICustomException>(() => _cursoService.CadastrarAreaConhecimento(request));
         }
 
         [Fact]
-        public async Task AtualizarAreaConhecimento_InvalidRequest_ThrowsAPICustomException()
+        public async Task AtualizarAreaConhecimento_SolicitacaoInvalida_RetornaAPICustomException()
         {
             // Arrange
-            var request = new AreaConhecimentoRequest { /* mock */ };
+            var request = _areaConhecimentoFactory.ObterAreaConhecimentoRequestValida();
             _cursoRepositoryMock.Setup(repo => repo.ObterAreaConhecimento(request.Id))
                                 .ReturnsAsync((AreaConhecimentoModel)null);
 
@@ -315,7 +324,7 @@ namespace AthenasAcademy.Services.Test.Services
         }
 
         [Fact]
-        public async Task DesativarAreaConhecimento_InvalidId_ThrowsAPICustomException()
+        public async Task DesativarAreaConhecimento_IdInvalida_RetornaAPICustomException()
         {
             // Arrange
             var id = 1;

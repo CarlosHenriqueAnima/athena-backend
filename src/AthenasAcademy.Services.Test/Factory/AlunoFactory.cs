@@ -1,10 +1,17 @@
 ﻿using AthenasAcademy.Services.Core.Arguments;
+using AthenasAcademy.Services.Core.CrossCutting;
 using AthenasAcademy.Services.Core.Models;
+using AthenasAcademy.Services.Domain.Requests;
 
 namespace AthenasAcademy.Services.Test.Factory
 {
     public class AlunoFactory
     {
+        public readonly CursoFactory _cursoFactory;
+        public AlunoFactory()
+        {
+            _cursoFactory = new CursoFactory();
+        }
         public AlunoModel ObterAlunoModelValido()
         {
             return new AlunoModel()
@@ -36,12 +43,12 @@ namespace AthenasAcademy.Services.Test.Factory
             return new NovoDetalheAlunoArgument
             {
                 IdAluno = 1,
-                CodigoUsuario = "COD001",
+                CodigoUsuario = 1,
                 DataUsuario = new DateTime(2023, 7, 26, 10, 30, 0),
-                CodigoInscricao = "INSC001",
+                CodigoInscricao = 1,
                 DataInscricao = new DateTime(2023, 7, 26),
-                CodigoMatricula = "MAT001",
-                CodigoContrato = "CON001"
+                CodigoMatricula = 1,
+                CodigoContrato = 1
             };
         }
 
@@ -50,12 +57,12 @@ namespace AthenasAcademy.Services.Test.Factory
             return new DetalheAlunoModel
             {
                 IdAluno = 1,
-                CodigoUsuario = "COD001",
+                CodigoUsuario = 1,
                 DataUsuario = new DateTime(2023, 7, 26, 10, 30, 0),
-                CodigoInscricao = "INSC001",
+                CodigoInscricao = 1,
                 DataInscricao = new DateTime(2023, 7, 26),
-                CodigoMatricula = "MAT001",
-                CodigoContrato = "CON001"
+                CodigoMatricula = 1,
+                CodigoContrato = 1
             };
         }
 
@@ -92,6 +99,30 @@ namespace AthenasAcademy.Services.Test.Factory
             };
         }
 
+        public NovoTelefoneRequest ObterNovoTelefoneRequestValido()
+        {
+            return new NovoTelefoneRequest
+            {
+                TelefoneCelular = "99999-9999",
+                TelefoneResidencial = "99999-9999",
+                TelefoneRecado = "99999-9999"
+            };
+        }
+
+        public NovoEnderecoRequest ObterNovoEnderecoRequestValido()
+        {
+            return new NovoEnderecoRequest
+            {
+                Logradouro = "Rua das Flores",
+                Numero = "123",
+                Complemento = "Ap. 5",
+                Bairro = "Centro",
+                Localidade = "São Paulo",
+                UF = "SP",
+                CEP = "01010-010"
+            };
+        }
+
         public NovoTelefoneAlunoArgument RetornarNovoTelefoneAlunoArgumentValido()
         {
             return new NovoTelefoneAlunoArgument
@@ -111,6 +142,35 @@ namespace AthenasAcademy.Services.Test.Factory
                 TelefoneCelular = "99999-9999",
                 TelefoneResidencial = "99999-9999",
                 TelefoneRecado = "99999-9999"
+            };
+        }
+
+        public FichaAluno ObterFichaAlunoValida()
+        {
+            var aluno = ObterAlunoModelValido();
+            var endereco = ObterEnderecoAlunoModelValido();
+            var telefone = ObterTelefoneAlunoModelValido();
+            var detalhesFicha = ObterDetalheAlunoModelValido();
+            var OpcaoCurso = _cursoFactory.ObterOpcaoCursoValida();
+            var obterContrato = ObterContratoExemplo();
+            return new FichaAluno()
+            {
+                Aluno = aluno,
+                Endereco = endereco,
+                Telefone = telefone,
+                DetalhesFicha = detalhesFicha,
+                OpcaoCurso = OpcaoCurso,
+                Contrato = obterContrato
+            };
+        }
+
+        public Contrato ObterContratoExemplo()
+        {
+            return new Contrato
+            {
+                NumeroContrato = 123456,
+                Matricula = 7890,
+                Assinado = true
             };
         }
     }

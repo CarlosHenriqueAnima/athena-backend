@@ -23,13 +23,13 @@ namespace AthenasAcademy.Services.Test.Services
         }
 
         [Fact]
-        public async Task GerarTokenUsuario_ValidUsuario_ReturnsTokenModel()
+        public async Task GerarTokenUsuario_UsuarioValido_RetornaTokenModel()
         {
             // Arrange
             var usuario = new UsuarioTokenModel
             {
                 Usuario = "testuser",
-                Perfil = Role.Usuario
+                Perfil = (int)Role.Usuario
             };
 
             // Act
@@ -44,7 +44,7 @@ namespace AthenasAcademy.Services.Test.Services
         }
 
         [Fact]
-        public async Task GerarTokenRequestClient_ValidConfig_ReturnsToken()
+        public async Task GerarTokenRequestClient_ConfiguracaoValida_RetornaToken()
         {
             // Arrange
             _configurationMock.Setup(config => config["LegadoAwsSecretKeyBase"])
@@ -59,13 +59,13 @@ namespace AthenasAcademy.Services.Test.Services
         }
 
         [Fact]
-        public async Task GerarTokenUsuario_ValidUsuario_ReturnsTokenModelWithValidToken()
+        public async Task GerarTokenUsuario_UsuarioValido_RetornaTokenModelComTokenValido()
         {
             // Arrange
             var usuario = new UsuarioTokenModel
             {
                 Usuario = "testuser",
-                Perfil = Role.Usuario
+                Perfil = (int)Role.Usuario
             };
 
             // Act
