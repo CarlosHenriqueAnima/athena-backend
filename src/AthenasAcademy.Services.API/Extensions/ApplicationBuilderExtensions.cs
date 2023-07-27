@@ -37,4 +37,22 @@ public static class ApplicationBuilderExtensions
 
         return builder;
     }
+
+    /// <summary>
+    /// Adiciona configuração do CORS no build.
+    /// </summary>
+    /// <param name="builder">O construtor de aplicativo a ser estendido.</param>
+    /// <returns>O construtor de aplicativo após a configuração do CORS.</returns>
+
+    public static IApplicationBuilder UseCorsConfig(this IApplicationBuilder builder)
+    {
+        builder.UseCors(builder =>
+        {
+            builder.AllowAnyHeader();
+            builder.AllowAnyMethod();
+            builder.AllowAnyOrigin();
+        });
+
+        return builder;
+    }
 }

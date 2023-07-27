@@ -18,12 +18,13 @@ public class UsuarioRepository : BaseRepository, IUsuarioRepository
     {
         try
         {
-            using IDbConnection connection = GetConnection(Database.Usuario);
+            using IDbConnection connection = await GetConnectionAsync(Database.Usuario);
             string query = @"SELECT 
                                     id,
                                     usuario, 
                                     senha_hash AS Senha, 
-                                    id_perfil AS Perfil
+                                    id_perfil AS Perfil,
+                                    ativo
                                 FROM usuario
                                 WHERE usuario = @Usuario OR email = @Usuario";
 
@@ -35,33 +36,11 @@ public class UsuarioRepository : BaseRepository, IUsuarioRepository
         }
     }
 
-    public async Task<IEnumerable<UsuarioModel>> BuscarUsuarios()
-    {
-        try
-        {
-            using IDbConnection connection = GetConnection(Database.Usuario);
-            string query = @"SELECT 
-                                    id,
-                                    usuario, 
-                                    senha_hash AS Senha, 
-                                    id_perfil AS Perfil,
-                                    ativo,
-                                    data_cadastro As DataCadastro
-                                FROM usuario";
-
-            return await connection.QueryAsync<UsuarioModel>(query);
-        }
-        catch (Exception ex)
-        {
-            throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
-        }
-    }
-
     public async Task<UsuarioModel> CadastrarUsuario(NovoUsuarioArgument novoUsuario)
     {
         try
         {
-            using IDbConnection connection = GetConnection(Database.Usuario);
+            using IDbConnection connection = await GetConnectionAsync(Database.Usuario);
             string query = @"INSERT INTO usuario (usuario, email, senha_hash, ativo, data_cadastro, data_alteracao, id_perfil)
                              VALUES (@Usuario, @Email, @Senha, @Ativo, @DataCadastro, @DataAlteracao, 2)
                              RETURNING id, usuario, senha_hash AS Senha, id_perfil AS Perfil";

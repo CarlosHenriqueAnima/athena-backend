@@ -1,4 +1,5 @@
-﻿using AthenasAcademy.Services.Core.Services.Interfaces;
+﻿using AthenasAcademy.Services.Core.Configurations.Enums;
+using AthenasAcademy.Services.Core.Services.Interfaces;
 using AthenasAcademy.Services.Domain.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ namespace AthenasAcademy.Services.API.Controllers;
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
 [ApiController]
+[Authorize]
 public class MatriculaController : ControllerBase
 {
     private readonly IMatriculaService _matriculaService;
@@ -30,13 +32,12 @@ public class MatriculaController : ControllerBase
     /// </summary>
     /// <param name="inscricao">Os dados da matrícula do aluno.</param>
     /// <returns>Um objeto contendo os detalhes da matrícula do aluno.</returns>
-    [HttpPut("matricular-aluno/{inscricao:int}")]
-    [Authorize(Roles = "Usuario, Admnistrador")]
+    [HttpPut("matricular-aluno")]
     [ProducesResponseType(typeof(MatriculaStatusResponse), StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> MatricularAluno(int inscricao)
+    public async Task<IActionResult> MatricularAluno([FromQuery] int? inscricao)
     {
-        return Ok(await _matriculaService.MatricularAluno(inscricao));
+        return Ok(await _matriculaService.MatricularAluno(inscricao.Value));
     }
 }

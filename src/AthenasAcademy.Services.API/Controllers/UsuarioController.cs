@@ -56,19 +56,4 @@ public class UsuarioController : ControllerBase
     {
         return Ok(await _autorizaService.LoginUsuario(request));
     }
-
-    /// <summary>
-    /// Obtém informações de todos os usuários.
-    /// </summary>
-    /// <returns>Lista de objetos contendo informações de todos os usuários.</returns>
-    [HttpGet]
-    [Route("todos")]
-    [Authorize(Roles = "Administrador")]
-    [ProducesResponseType(typeof(IEnumerable<UsuarioResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult> LoginUsuario()
-    {
-        return Ok(await _autorizaService.ObterUsuarios());
-    }
 }

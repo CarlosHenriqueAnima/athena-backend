@@ -8,6 +8,6 @@ public class NovoAlunoArgument
     public char Sexo { get; set; }
     public DateTime DataNascimento { get; set; }
     public string Email { get; set; }
-    public bool Ativo => true;
+    public bool Ativo => false;
     public DateTime DataCadastro => DateTime.Now;
 }

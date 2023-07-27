@@ -18,14 +18,31 @@ public class InscricaoRepository : BaseRepository, IInscricaoRepository
     {
         try
         {
-            using IDbConnection connection = GetConnection(Database.Inscricao);
+            using IDbConnection connection = await GetConnectionAsync(Database.Inscricao);
             string query = @"
                 INSERT INTO inscricao_candidato 
-                (nome, email, telefone, codigo_curso, nome_curso, boleto_pago, data_inscricao) 
-                VALUES (@Nome, @Email, @Telefone, @CodigoCurso, @NomeCurso, @BoletoPago, @DataInscricao)
-                RETURNING *";
+                (data_inscricao, nome, email, telefone, codigo_curso, nome_curso, boleto_pago) 
+                VALUES (@DataInscricao, @Nome, @Email, @Telefone, @CodigoCurso, @NomeCurso, @BoletoPago)
+                RETURNING id,codigo_inscricao AS CodigoInscricao, data_inscricao AS DataInscricao, nome, email, telefone, codigo_curso AS CodigoCurso, nome_curso AS NomeCurso, boleto, boleto_pago AS BoletoPago;";
 
             return await connection.QueryFirstOrDefaultAsync<InscricaoCandidatoModel>(query, argument);
+        }
+        catch (Exception ex)
+        {
+            throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
+        }
+    }
+
+    public async Task<InscricaoCandidatoModel> ObterInscricao(int inscricao)
+    {
+        try
+        {
+            string query = "SELECT * FROM inscricao_candidato WHERE codigo_inscricao = @CodigoInscricao";
+
+            using IDbConnection connection = await GetConnectionAsync(Database.Inscricao);
+            var inscricaoCandidato = await connection.QueryFirstOrDefaultAsync<InscricaoCandidatoModel>(query, new { CodigoInscricao = inscricao });
+
+            return inscricaoCandidato;
         }
         catch (Exception ex)
         {

@@ -18,7 +18,6 @@ public class CertificadoService : ICertificadoService
     private readonly IAwsS3Repository _awsS3Repository;
     private readonly IGeradorCertificadoRepository _geradorCertificadoClient;
     private readonly ITokenService _tokenService;
-    private readonly IMatriculaService _matriculaService;
     private readonly IAlunoService _alunoService;
     private readonly ICursoService _cursoService;
 
@@ -27,7 +26,6 @@ public class CertificadoService : ICertificadoService
         ICertificadoRepository certificadoRepository,
         IGeradorCertificadoRepository geradorCertificadoClient,
         ITokenService tokenService,
-        IMatriculaService matriculaService,
         IAlunoService alunoService,
         ICursoService cursoService)
     {
@@ -35,7 +33,6 @@ public class CertificadoService : ICertificadoService
         _certificadoRepository = certificadoRepository;
         _geradorCertificadoClient = geradorCertificadoClient;
         _tokenService = tokenService;
-        _matriculaService = matriculaService;
         _alunoService = alunoService;
         _cursoService = cursoService;
     }
@@ -88,29 +85,22 @@ public class CertificadoService : ICertificadoService
 
     private async Task<NovoCertificadoRequest> MontarRequestNovoCertificado(int matricula)
     {
-        // recuperar detalhes matricula
-        DetalheMatriculaAlunoModel detalhesContrato = await _matriculaService.ObterDetalhesMatricula(matricula);
-
-        // recuperar detalhes aluno
-        var aluno = await _alunoService.ObterAluno(detalhesContrato.IdAluno);
-
-        // recuperar detalhes curso //(detalhesContrato.IdCurso);
-        var curso = await _cursoService.ObterCurso(1);
+        var aluno = await _alunoService.ObterDetalheAluno(matricula: matricula);
+        var curso = await _cursoService.ObterCurso(aluno.CodigoCurso);
 
         NovoCertificadoRequest certificadoRequest = new()
         {
-            //NomeAluno = aluno.Nome,
-            //Matricula = aluno.Id,
-            Aproveitamento = ObterRendimentoRandom(),
-            DataConclusao = DateTime.Now,
+            NomeAluno = aluno.NomeCompleto,
+            Matricula = aluno.CodigoMatricula.Value,
             NomeCurso = curso.Nome,
             CodigoCurso = curso.Id,
-            CargaHoraria = curso.CargaHoraria,
+            CargaHoraria = curso.Disciplinas.Sum(disciplina => disciplina.CargaHoraria),
+            DataConclusao = DateTime.Now,
+            Aproveitamento = ObterRendimentoRandom(),
         };
 
         return certificadoRequest;
     }
 
     private int ObterRendimentoRandom() => new Random().Next(70, 101);
-
 }

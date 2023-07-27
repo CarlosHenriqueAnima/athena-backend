@@ -4,6 +4,7 @@ using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Core.Repositories.S3;
 using AthenasAcademy.Services.Core.Services;
 using AthenasAcademy.Services.Core.Services.Interfaces;
+using AthenasAcademy.Services.Core.Services.SQSProducer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -37,6 +38,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPagamentoService, PagamentoService>();
         services.AddScoped<IAutorizaUsuarioService, AutorizaUsuarioService>();
         services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IQueueProducerService, QueueProducerService>();
 
         return services;
     }
@@ -221,24 +223,6 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Configura as políticas CORS para permitir acesso de qualquer origem, método e cabeçalho.
-    /// </summary>
-    /// <param name="services">A coleção de serviços.</param>
-    /// <returns>A coleção de serviços atualizada.</returns>
-    public static IServiceCollection AddPoliciesCors(this IServiceCollection services)
-    {
-        services.AddCors(options =>
-        {
-            options.AddDefaultPolicy(builder =>
-            {
-                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-            });
-        });
-
-        return services;
-    }
-
-    /// <summary>
     /// Configura as configurações do Refit para serviços REST.
     /// </summary>
     /// <param name="services">A coleção de serviços.</param>
@@ -279,6 +263,4 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
-
-
 }

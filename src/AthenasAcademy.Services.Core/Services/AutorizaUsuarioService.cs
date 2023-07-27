@@ -34,7 +34,7 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
     {
         try
         {
-            await ValidarUsuarioExistenteCadastro(novoUsuario.Email);
+            await ValidarUsuarioExistenteCadastro(novoUsuario.Email, true);
 
             NovoUsuarioArgument argument = _mapper.Map<NovoUsuarioArgument>(novoUsuario);
             argument.Usuario = novoUsuario.Email.Trim().ToLower();
@@ -81,15 +81,9 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
         return response;
     }
 
-    public async Task<IEnumerable<UsuarioResponse>> ObterUsuarios()
+    public async Task<UsuarioModel> ObterUsuario(string usuario, bool exception)
     {
-        IEnumerable<UsuarioModel> usuarios = await _usuarioRepository.BuscarUsuarios();
-        return _mapper.Map<IEnumerable<UsuarioResponse>>(usuarios);
-    }
-
-    public async Task<UsuarioModel> ObterUsuario(string usuario)
-    {
-        return await ValidarUsuarioExistenteCadastro(usuario);
+        return await ValidarUsuarioExistenteCadastro(usuario, exception);
     }
     #endregion
 
@@ -123,11 +117,11 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
         return senhaConfere;
     }
 
-    private async Task<UsuarioModel> ValidarUsuarioExistenteCadastro(string usuario)
+    private async Task<UsuarioModel> ValidarUsuarioExistenteCadastro(string usuario, bool exception)
     {
         UsuarioModel usuarioBanco = await _usuarioRepository.BuscarUsuario(new() { Email = usuario.Trim().ToLower() });
 
-        if (usuarioBanco is not null)
+        if (usuarioBanco is not null && exception)
             throw new APICustomException(
                 message: string.Format("O e-mail {0} não está disponível para cadastro.", usuario),
                 responseType: ExceptionResponseType.Warning,

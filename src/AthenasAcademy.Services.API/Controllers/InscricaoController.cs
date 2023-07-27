@@ -30,7 +30,8 @@ public class InscricaoController : ControllerBase
     /// <param name="request">Os dados do candidato a serem cadastrados.</param>
     /// <returns>Os dados do candidato cadastrado.</returns>
     [HttpPost("cadastrar-candidato")]
-    [Authorize(Roles = "Usuario, Admnistrador")]
+    //[Authorize(Roles = "Usuario")]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(InscricaoCandidatoResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ExceptionResponse), StatusCodes.Status500InternalServerError)]

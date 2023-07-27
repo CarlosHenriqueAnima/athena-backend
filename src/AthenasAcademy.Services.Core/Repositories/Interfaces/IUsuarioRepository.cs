@@ -7,7 +7,5 @@ public interface IUsuarioRepository
 {
     Task<UsuarioModel> BuscarUsuario(UsuarioArgument novoUsuario);
 
-    Task<IEnumerable<UsuarioModel>> BuscarUsuarios();
-
     Task<UsuarioModel> CadastrarUsuario(NovoUsuarioArgument novoUsuario);
 }

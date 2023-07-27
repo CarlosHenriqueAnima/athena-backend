@@ -13,4 +13,6 @@ public class FichaAluno
     public DetalheAlunoModel DetalhesFicha { get; set; }
 
     public OpcaoCurso OpcaoCurso { get; set; }
+
+    public Contrato Contrato { get; set; }
 }

@@ -108,7 +108,7 @@ public class TokenService : ITokenService
 
     private SigningCredentials GerarTokenCredentials()
     {
-        string key = _configuration["Jwt:Key"];
+        string key = _configuration["JwtKeyBase"];
         SymmetricSecurityKey symmetricKey = new(Encoding.UTF8.GetBytes(key));
         return new SigningCredentials(symmetricKey, SecurityAlgorithms.HmacSha256);
     }

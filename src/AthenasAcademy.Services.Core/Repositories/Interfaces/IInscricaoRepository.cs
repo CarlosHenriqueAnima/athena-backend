@@ -14,4 +14,6 @@ public interface IInscricaoRepository
     /// <param name="argument">Os dados da inscrição do candidato a serem registrados.</param>
     /// <returns>Uma tarefa que representa o registro da inscrição do candidato.</returns>
     Task<InscricaoCandidatoModel> RegistrarNovaInscricao(InscricaoCandidatoArgument argument);
+
+    Task<InscricaoCandidatoModel> ObterInscricao(int inscricao);
 }

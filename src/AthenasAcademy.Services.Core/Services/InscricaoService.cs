@@ -16,18 +16,20 @@ public class InscricaoService : IInscricaoService
     private readonly IAutorizaUsuarioService _usuarioService;
     private readonly ICursoService _cursoService;
     private readonly IAlunoService _alunoService;
+    private readonly IMatriculaService _matriculaService;
 
     public InscricaoService(
         IInscricaoRepository inscricaoRepository,
         IAutorizaUsuarioService usuarioService,
         ICursoService cursoService,
-        IAlunoService alunoService)
+        IAlunoService alunoService,
+        IMatriculaService matriculaService)
     {
         _inscricaoRepository = inscricaoRepository;
         _usuarioService = usuarioService;
         _cursoService = cursoService;
         _alunoService = alunoService;
-
+        _matriculaService = matriculaService;
     }
 
     public async Task<InscricaoCandidatoResponse> CadastrarCandidato(NovaInscricaoCandidatoRequest request)
@@ -38,11 +40,13 @@ public class InscricaoService : IInscricaoService
 
         InscricaoCandidatoModel inscricao = await RegistrarNovaInscricaoCandidato(request);
 
-        FichaAluno fichaAluno = await RegistrarAluno(request, usuario, inscricao);
+        FichaAluno fichaAluno = await RegistrarFichaAluno(request, usuario, inscricao);
 
-        // await _servicoGeracaoContrato.Gerar(fichaAluno, opcaoCurso);
+        fichaAluno.OpcaoCurso = opcaoCurso;
+        fichaAluno.Contrato = new Contrato();
 
-        // await _servicoGeracaoBoleto.Gerar(fichaAluno, opcaoCurso);
+        // liberar contrato boleto e contrato
+        await _matriculaService.RegistrarPreMatricula(fichaAluno);
 
         return new InscricaoCandidatoResponse
         {
@@ -74,7 +78,7 @@ public class InscricaoService : IInscricaoService
         };
     }
 
-    private async Task<FichaAluno> RegistrarAluno(NovaInscricaoCandidatoRequest request, UsuarioModel usuario, InscricaoCandidatoModel inscricao)
+    private async Task<FichaAluno> RegistrarFichaAluno(NovaInscricaoCandidatoRequest request, UsuarioModel usuario, InscricaoCandidatoModel inscricao)
     {
         // cadastrar aluno
         NovoAlunoArgument alunoArgument = await MontarNovoRegistroAluno(request);
@@ -89,7 +93,7 @@ public class InscricaoService : IInscricaoService
         TelefoneAlunoModel telefoneAluno = await _alunoService.CadastrarTelefoneAluno(telefoneAlunoArgument);
 
         // cadastrar detalhes
-        NovoDetalheAlunoArgument detalheAlunoArgument = await MontarNovoRegistroDetalheAluno(aluno.Id, usuario, inscricao);
+        NovoDetalheAlunoArgument detalheAlunoArgument = await MontarNovoRegistroDetalheAluno(aluno.Id, request, usuario, inscricao);
         DetalheAlunoModel detalheAluno = await _alunoService.CadastrarDetalheAluno(detalheAlunoArgument);
 
         return new FichaAluno
@@ -101,15 +105,16 @@ public class InscricaoService : IInscricaoService
         };
     }
 
-    private static async Task<NovoDetalheAlunoArgument> MontarNovoRegistroDetalheAluno(int id, UsuarioModel usuario, InscricaoCandidatoModel inscricao)
+    private static async Task<NovoDetalheAlunoArgument> MontarNovoRegistroDetalheAluno(int id, NovaInscricaoCandidatoRequest request, UsuarioModel usuario, InscricaoCandidatoModel inscricao)
     {
         return await Task.FromResult(new NovoDetalheAlunoArgument()
         {
             IdAluno = id,
-            CodigoInscricao = inscricao.CodigoInscricao.ToString(),
+            CodigoInscricao = inscricao.CodigoInscricao,
             DataInscricao = inscricao.DataInscricao,
-            CodigoUsuario = usuario.Id.ToString(),
-            DataUsuario = usuario.DataCadastro
+            CodigoUsuario = usuario.Id,
+            DataUsuario = usuario.DataCadastro,
+            CodigoCurso = request.Curso.CodigoCurso
         });
     }
 
@@ -148,7 +153,7 @@ public class InscricaoService : IInscricaoService
             CPF = request.CPF.FormatarCPF(),
             Sexo = request.Sexo,
             DataNascimento = request.DataNascimento,
-            Email = request.Email.Trim().ToLower(),
+            Email = request.Email.Trim().ToLower()
         });
     }
 
@@ -160,7 +165,7 @@ public class InscricaoService : IInscricaoService
             Email = request.Email.Trim().ToLower(),
             Telefone = request.Telefone.TelefoneCelular ?? request.Telefone.TelefoneResidencial ?? request.Telefone.TelefoneRecado,
             CodigoCurso = request.Curso.CodigoCurso,
-            NomeCurso = request.Curso.CodigoCurso.ToString()
+            NomeCurso = request.Curso.NomeCurso
         };
 
         return await _inscricaoRepository.RegistrarNovaInscricao(argument);
@@ -168,7 +173,7 @@ public class InscricaoService : IInscricaoService
 
     private async Task<UsuarioModel> ValidarUsuarioExistente(NovaInscricaoCandidatoRequest request)
     {
-        UsuarioModel usuario = await _usuarioService.ObterUsuario(request.Email.Trim().ToLower());
+        UsuarioModel usuario = await _usuarioService.ObterUsuario(request.Email.Trim().ToLower(), false);
 
         if (usuario is null)
             throw new APICustomException(
@@ -183,5 +188,10 @@ public class InscricaoService : IInscricaoService
                 statusCode: System.Net.HttpStatusCode.BadRequest);
 
         return usuario;
+    }
+
+    public async Task<InscricaoCandidatoModel> ObterInscricao(int inscricao)
+    {
+        return await _inscricaoRepository.ObterInscricao(inscricao);
     }
 }

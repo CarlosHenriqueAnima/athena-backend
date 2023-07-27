@@ -10,17 +10,23 @@ public static partial class StringExtensions
         if (string.IsNullOrEmpty(texto))
             return texto;
 
-        texto = Regexx().Replace(texto, " ");
+        texto = Regex.Replace(texto, @"\s+", " "); // Remove espaços extras
 
         string[] palavras = texto.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-        for (int i = 1; i < palavras.Length; i++)
+        for (int i = 0; i < palavras.Length; i++)
         {
-            palavras[i] = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(palavras[i].ToLower());
+            if (i == 0)
+            {
+                palavras[i] = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(palavras[i].ToLower());
+            }
+            else
+            {
+                palavras[i] = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(palavras[i].ToLower());
+            }
         }
 
-        texto = string.Concat(palavras);
-        texto = char.ToLower(texto[0]) + texto[1..];
+        texto = string.Join(" ", palavras);
 
         return texto;
     }
