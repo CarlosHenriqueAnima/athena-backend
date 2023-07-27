@@ -27,7 +27,6 @@ namespace AthenasAcademy.Services.Test.Factory
                 Senha = "dU@33D!J.4JNcA#",
                 Ativo = true,
                 DataCadastro = DateTime.Now
-
             };
         }
 
@@ -40,6 +39,14 @@ namespace AthenasAcademy.Services.Test.Factory
                 Senha = "dU@33D!J.4JNcA#",
                 Ativo = true,
                 DataCadastro = RetornarNovoUsuarioArgumentValido().DataCadastro
+            };
+        }
+
+        public UsuarioArgument RetornarUsuarioArgumentValido()
+        {
+            return new UsuarioArgument()
+            {
+                Email = "email@dominio.com"
             };
         }
 

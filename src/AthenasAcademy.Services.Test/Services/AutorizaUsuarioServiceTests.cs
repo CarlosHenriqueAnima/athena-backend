@@ -151,42 +151,40 @@ namespace AthenasAcademy.Services.Test.Services
         public async Task ObterUsuarios_SolicitacaoValida_RetornaListaUsuarioResponse()
         {
             // Arrange
-            var expectedUsuarios = _autorizacaoFactory.ObterListaUsuarioModelValidos();
-            _usuarioRepositoryMock.Setup(repo => repo.BuscarUsuarios())
-                                  .ReturnsAsync(expectedUsuarios);
+            var expectedUsuario = _autorizacaoFactory.ObterUsuarioModelValido();
+            _usuarioRepositoryMock.Setup(repo => repo.BuscarUsuario(_autorizacaoFactory.RetornarUsuarioArgumentValido()))
+                                  .ReturnsAsync(expectedUsuario);
 
             // Act
-            var result = await _autorizaUsuarioService.ObterUsuarios();
+            var result = await _autorizaUsuarioService.ObterUsuario("email@dominio.com", false);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(expectedUsuarios.Count, result.Count());
         }
 
         [Fact]
         public async Task ObterUsuarios_SemResultados_RetornaListaVazia()
         {
             // Arrange
-            _usuarioRepositoryMock.Setup(repo => repo.BuscarUsuarios())
-                                  .ReturnsAsync(new List<UsuarioModel>());
+            _usuarioRepositoryMock.Setup(repo => repo.BuscarUsuario(_autorizacaoFactory.RetornarUsuarioArgumentValido()))
+                                  .ReturnsAsync(new UsuarioModel());
 
             // Act
-            var result = await _autorizaUsuarioService.ObterUsuarios();
+            var result = await _autorizaUsuarioService.ObterUsuario("email@dominio.com", false);
 
             // Assert
             Assert.NotNull(result);
-            Assert.Empty(result);
         }
 
         [Fact]
         public async Task ObterUsuarios_ExcecaoDeRepositorio_RetornaAPICustomException()
         {
             // Arrange
-            _usuarioRepositoryMock.Setup(repo => repo.BuscarUsuarios())
+            _usuarioRepositoryMock.Setup(repo => repo.BuscarUsuario(_autorizacaoFactory.RetornarUsuarioArgumentValido()))
                                   .ThrowsAsync(new Exception("Nenhum usuario encontrado"));
 
             // Act & Assert
-            await Assert.ThrowsAsync<APICustomException>(() => _autorizaUsuarioService.ObterUsuarios());
+            await Assert.ThrowsAsync<APICustomException>(() => _autorizaUsuarioService.ObterUsuario("email@dominio.com", true));
         }
 
         [Fact]
@@ -199,7 +197,7 @@ namespace AthenasAcademy.Services.Test.Services
                                   .ReturnsAsync(expectedUsuarioModel);
 
             // Act
-            var result = await _autorizaUsuarioService.ObterUsuario(usuario);
+            var result = await _autorizaUsuarioService.ObterUsuario("email@dominio.com", false);
 
             // Assert
             Assert.NotNull(result);
@@ -215,7 +213,7 @@ namespace AthenasAcademy.Services.Test.Services
                                   .ReturnsAsync((UsuarioModel)null);
 
             // Act & Assert
-            await Assert.ThrowsAsync<APICustomException>(() => _autorizaUsuarioService.ObterUsuario(usuario));
+            await Assert.ThrowsAsync<APICustomException>(() => _autorizaUsuarioService.ObterUsuario("email@dominio.com", true));
         }
 
         [Fact]
@@ -227,7 +225,7 @@ namespace AthenasAcademy.Services.Test.Services
                                   .ThrowsAsync(new Exception("Usuario não encontrado"));
 
             // Act & Assert
-            await Assert.ThrowsAsync<APICustomException>(() => _autorizaUsuarioService.ObterUsuario(usuario));
+            await Assert.ThrowsAsync<APICustomException>(() => _autorizaUsuarioService.ObterUsuario("email@dominio.com", true));
         }
     }
 }
