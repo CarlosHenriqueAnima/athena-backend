@@ -76,7 +76,7 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
         {
             Resultado = true,
             Token = _mapper.Map<TokenResponse>(token),
-            DadosUsuario = await ObterDadosUsuarioResponse(loginUsuario.Usuario)
+            //DadosUsuario = await ObterDadosUsuarioResponse(loginUsuario.Usuario)
     };
 
         return response;
