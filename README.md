@@ -130,5 +130,6 @@ Código 200 - Sucesso Atualizar curso
 [Inserir informações sobre quaisquer limitações conhecidas da API, como taxa de limite de solicitações, recursos restritos, etc.]
 Contribuições
 
-Para qualquer dúvida, problema ou sugestão, entre em contato com [inserir endereço de e-mail ou link para o suporte aqui].
-.
+# Cobertura de testes
+
+Apesar de termos realizado os testes apenas em produção, para mitigar qualquer risco e garantir a confiabilidade do código, utilizamos no GitHub o conceito de "branch". Um branch é uma ramificação do desenvolvimento, uma linha independente que nos permite trabalhar em novos recursos ou correções de bugs sem afetar diretamente o código principal. Dessa forma, conseguimos isolar o trabalho em progresso e permitir que várias pessoas trabalhem em diferentes funcionalidades simultaneamente. Ao utilizar branches, podemos desenvolver e testar com segurança antes de incorporar as alterações ao código principal, evitando problemas e bugs que poderiam impactar diretamente a produção.
