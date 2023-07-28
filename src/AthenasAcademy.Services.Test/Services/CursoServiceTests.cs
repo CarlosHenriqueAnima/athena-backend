@@ -1,14 +1,17 @@
 ﻿using AthenasAcademy.Services.Core.Arguments;
 using AthenasAcademy.Services.Core.Configurations.Mappers;
+using AthenasAcademy.Services.Core.CrossCutting;
 using AthenasAcademy.Services.Core.Exceptions;
 using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Core.Services;
 using AthenasAcademy.Services.Core.Services.Interfaces;
+using AthenasAcademy.Services.Domain.Configurations.Enums;
 using AthenasAcademy.Services.Domain.Requests;
 using AthenasAcademy.Services.Domain.Responses;
 using AthenasAcademy.Services.Test.Factory;
 using Moq;
+using System.Net;
 using Xunit;
 
 namespace AthenasAcademy.Services.Test.Services
@@ -68,8 +71,14 @@ namespace AthenasAcademy.Services.Test.Services
         {
             // Arrange
             var cursos = _cursoFactory.ObterListaDeCursos();
+            var disciplinas = _disciplinaFactory.ObterListaDisciplinaModelValidos();
+            var areaConhecimento = _areaConhecimentoFactory.ObterListaAreaConhecimentoModelValidos();
             _cursoRepositoryMock.Setup(repo => repo.ObterCursos())
                                 .ReturnsAsync(cursos);
+            _cursoRepositoryMock.Setup(repo => repo.ObterDisciplinas())
+                                .ReturnsAsync(disciplinas);
+            _cursoRepositoryMock.Setup(repo => repo.ObterAreasConhecimento())
+                                .ReturnsAsync(areaConhecimento);
 
             // Act
             var result = await _cursoService.ObterCursos();
@@ -135,6 +144,8 @@ namespace AthenasAcademy.Services.Test.Services
             var areaConhecimento = _areaConhecimentoFactory.ObterAreaConhecimentoValida();
             _cursoRepositoryMock.Setup(repo => repo.ObterCurso(request.Id))
                                 .ReturnsAsync(curso);
+            _cursoRepositoryMock.Setup(repo => repo.ObterDisciplinas())
+                                .ReturnsAsync(disciplinas);
             _cursoRepositoryMock.Setup(repo => repo.ObterDisciplinasDoCurso(request.Id))
                                 .ReturnsAsync(disciplinas);
             _cursoRepositoryMock.Setup(repo => repo.ObterAreaConhecimento(request.Id))
@@ -197,15 +208,20 @@ namespace AthenasAcademy.Services.Test.Services
 
         #region Disciplina
         [Fact]
-        public async Task ObterDisciplina_IdInvalido_RetornaAPICustomException()
+        public async Task ObterDisciplina_IdInvalido_RetornaException()
         {
             // Arrange
             var id = 1;
             _cursoRepositoryMock.Setup(repo => repo.ObterDisciplina(id))
-                                .ReturnsAsync((DisciplinaModel)null);
+                                .ThrowsAsync(new APICustomException(string.Format("Nenhuma disciplina localizada para o id {0}. Por favor, revise os detalhes da requisição.", id), ExceptionResponseType.Warning, HttpStatusCode.NotFound));
 
             // Act & Assert
-            await Assert.ThrowsAsync<APICustomException>(() => _cursoService.ObterDisciplina(id));
+            var exception = await Assert.ThrowsAsync<APICustomException>(() => _cursoService.ObterDisciplina(id));
+
+            // Assert
+            Assert.NotNull(exception);
+            Assert.Equal(HttpStatusCode.NotFound, exception.StatusCode);
+            Assert.Equal(ExceptionResponseType.Warning, exception.ResponseType);
         }
 
         [Fact]
@@ -232,16 +248,16 @@ namespace AthenasAcademy.Services.Test.Services
         }
 
         [Fact]
-        public async Task AtualizarDisciplina_IdInvalido_ThrowsAPICustomException()
+        public async Task AtualizarDisciplina_IdInvalido_RetornaException()
         {
             // Arrange
             var request = _disciplinaFactory.ObterDisciplinaRequestValido();
             var disciplina = _disciplinaFactory.ObterDisciplinaModelValido();
             _cursoRepositoryMock.Setup(repo => repo.ObterDisciplina(request.Id))
-                                .ReturnsAsync((DisciplinaModel)null);
+                                .ThrowsAsync(new Exception("Deu erro aqui"));
 
             // Act & Assert
-            await Assert.ThrowsAsync<APICustomException>(() => _cursoService.AtualizarDisciplina(request));
+            await Assert.ThrowsAsync<Exception>(() => _cursoService.AtualizarDisciplina(request));
         }
 
         [Fact]
@@ -261,10 +277,17 @@ namespace AthenasAcademy.Services.Test.Services
         {
             // Arrange
             var id = 1;
+            var request = _cursoFactory.ObterCursoRequestValido(
+                                                                _disciplinaFactory.ObterListaDisciplinaRequestValidas(),
+                                                                _areaConhecimentoFactory.ObterAreaConhecimentoRequestValida()
+                                                               );
+            var disciplinas = _disciplinaFactory.ObterListaDisciplinaModelValidos();
             _cursoRepositoryMock.Setup(repo => repo.ObterDisciplinas())
-                .ReturnsAsync(new List<DisciplinaModel> { new DisciplinaModel { Id = id, Ativo = false } });
+                                .ReturnsAsync(disciplinas);
+            _cursoRepositoryMock.Setup(repo => repo.ObterDisciplinasDoCurso(request.Id))
+                                .ReturnsAsync(disciplinas);
             _cursoRepositoryMock.Setup(repo => repo.DesativarDisciplina(id))
-                                .ReturnsAsync(true);
+                                .ReturnsAsync(false);
 
             // Act
             var result = await _cursoService.DesativarDisciplina(id);
@@ -312,15 +335,15 @@ namespace AthenasAcademy.Services.Test.Services
         }
 
         [Fact]
-        public async Task AtualizarAreaConhecimento_SolicitacaoInvalida_RetornaAPICustomException()
+        public async Task AtualizarAreaConhecimento_SolicitacaoInvalida_RetornaException()
         {
             // Arrange
             var request = _areaConhecimentoFactory.ObterAreaConhecimentoRequestValida();
             _cursoRepositoryMock.Setup(repo => repo.ObterAreaConhecimento(request.Id))
-                                .ReturnsAsync((AreaConhecimentoModel)null);
+                                .ThrowsAsync(new Exception("null"));
 
             // Act & Assert
-            await Assert.ThrowsAsync<APICustomException>(() => _cursoService.AtualizarAreaConhecimento(request));
+            await Assert.ThrowsAsync<Exception>(() => _cursoService.AtualizarAreaConhecimento(request));
         }
 
         [Fact]

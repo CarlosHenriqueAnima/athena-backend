@@ -54,7 +54,7 @@ namespace AthenasAcademy.Services.Test.Factory
                 Nome = $"Disciplina {index}",
                 Descricao = $"Descrição da disciplina {index}",
                 CargaHoraria = 40 + index,
-                IdCurso = 1,
+                IdCurso = index,
                 Ativo = true,
                 DataCadastro = DateTime.Now.AddDays(index),
                 DataAlteracao = null

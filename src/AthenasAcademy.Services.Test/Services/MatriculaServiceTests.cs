@@ -46,11 +46,14 @@ namespace AthenasAcademy.Services.Test.Services
             // Arrange
             var inscricao = 1001;
             var fichaAluno = _alunoFactory.ObterFichaAlunoValida();
-            var matricula = _matriculaFactory.ObterMatriculaModelValida();
+            var matriculaInativa = _matriculaFactory.ObterMatriculaModelInativa();
+            var matriculaAtivada = _matriculaFactory.ObterMatriculaModelValida();
             _alunoServiceMock.Setup(service => service.ObterFichaAluno(inscricao))
-                             .ReturnsAsync(fichaAluno);
+                                    .ReturnsAsync(fichaAluno);
+            _matriculaRepositoryMock.Setup(repo => repo.ObterMatricula(inscricao))
+                                    .ReturnsAsync(matriculaInativa);
             _matriculaRepositoryMock.Setup(repo => repo.AtivarMatricula(fichaAluno))
-                                    .ReturnsAsync(matricula);
+                                    .ReturnsAsync(matriculaAtivada);
             _queueProducerServiceMock.Setup(service => service.GerarBoleto(fichaAluno))
                                      .ReturnsAsync(true);
             _queueProducerServiceMock.Setup(service => service.GerarContrato(fichaAluno))
@@ -62,8 +65,8 @@ namespace AthenasAcademy.Services.Test.Services
             // Assert
             Assert.NotNull(result);
             Assert.IsType<MatriculaStatusResponse>(result);
-            Assert.Equal(matricula.Matricula, result.Matricula);
-            Assert.Equal(matricula.CodigoContrato, result.Contrato);
+            Assert.Equal(matriculaAtivada.Matricula, result.Matricula);
+            Assert.Equal(matriculaAtivada.CodigoContrato, result.Contrato);
             Assert.True(result.BoletoPago);
             Assert.True(result.ContratoAssinado);
         }

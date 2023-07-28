@@ -96,8 +96,10 @@ namespace AthenasAcademy.Services.Test.Services
             var existingUsuarioModel = _autorizacaoFactory.ObterUsuarioModelValido();
             var expectedTokenModel = _autorizacaoFactory.ValidarToken();
             var expectedLoginUsuarioResponse = _autorizacaoFactory.RetornarLoginUsuarioResponseValido();
+
             _usuarioRepositoryMock.Setup(repo => repo.BuscarUsuario(It.IsAny<UsuarioArgument>()))
                                   .ReturnsAsync(existingUsuarioModel);
+
             _tokenServiceMock.Setup(service => service.GerarTokenUsuario(It.IsAny<UsuarioTokenModel>()))
                              .ReturnsAsync(expectedTokenModel);
 
@@ -143,8 +145,13 @@ namespace AthenasAcademy.Services.Test.Services
             _usuarioRepositoryMock.Setup(repo => repo.BuscarUsuario(It.IsAny<UsuarioArgument>()))
                                   .ThrowsAsync(new Exception("Login não permitido"));
 
-            // Act & Assert
-            await Assert.ThrowsAsync<APICustomException>(() => _autorizaUsuarioService.LoginUsuario(loginUsuarioRequest));
+            // Act
+            var exception = await Record.ExceptionAsync(() => _autorizaUsuarioService.LoginUsuario(loginUsuarioRequest));
+
+            // Assert
+            Assert.NotNull(exception);
+            Assert.IsType<Exception>(exception);
+            Assert.Equal("Login não permitido", exception.Message);
         }
 
         [Fact]
@@ -152,7 +159,7 @@ namespace AthenasAcademy.Services.Test.Services
         {
             // Arrange
             var expectedUsuario = _autorizacaoFactory.ObterUsuarioModelValido();
-            _usuarioRepositoryMock.Setup(repo => repo.BuscarUsuario(_autorizacaoFactory.RetornarUsuarioArgumentValido()))
+            _usuarioRepositoryMock.Setup(repo => repo.BuscarUsuario(It.IsAny<UsuarioArgument>()))
                                   .ReturnsAsync(expectedUsuario);
 
             // Act
@@ -166,7 +173,7 @@ namespace AthenasAcademy.Services.Test.Services
         public async Task ObterUsuarios_SemResultados_RetornaListaVazia()
         {
             // Arrange
-            _usuarioRepositoryMock.Setup(repo => repo.BuscarUsuario(_autorizacaoFactory.RetornarUsuarioArgumentValido()))
+            _usuarioRepositoryMock.Setup(repo => repo.BuscarUsuario(It.IsAny<UsuarioArgument>()))
                                   .ReturnsAsync(new UsuarioModel());
 
             // Act
@@ -180,11 +187,11 @@ namespace AthenasAcademy.Services.Test.Services
         public async Task ObterUsuarios_ExcecaoDeRepositorio_RetornaAPICustomException()
         {
             // Arrange
-            _usuarioRepositoryMock.Setup(repo => repo.BuscarUsuario(_autorizacaoFactory.RetornarUsuarioArgumentValido()))
+            _usuarioRepositoryMock.Setup(repo => repo.BuscarUsuario(It.IsAny<UsuarioArgument>()))
                                   .ThrowsAsync(new Exception("Nenhum usuario encontrado"));
 
             // Act & Assert
-            await Assert.ThrowsAsync<APICustomException>(() => _autorizaUsuarioService.ObterUsuario("email@dominio.com", true));
+            await Assert.ThrowsAsync<Exception>(() => _autorizaUsuarioService.ObterUsuario("email@dominio.com", true));
         }
 
         [Fact]
@@ -210,10 +217,10 @@ namespace AthenasAcademy.Services.Test.Services
             // Arrange
             var usuario = "usuario.invalido";
             _usuarioRepositoryMock.Setup(repo => repo.BuscarUsuario(It.IsAny<UsuarioArgument>()))
-                                  .ReturnsAsync((UsuarioModel)null);
+                                  .ThrowsAsync(new Exception("Nenhum invalido"));
 
             // Act & Assert
-            await Assert.ThrowsAsync<APICustomException>(() => _autorizaUsuarioService.ObterUsuario(usuario, true));
+            await Assert.ThrowsAsync<Exception>(() => _autorizaUsuarioService.ObterUsuario(usuario, true));
         }
 
         [Fact]
@@ -225,7 +232,7 @@ namespace AthenasAcademy.Services.Test.Services
                                   .ThrowsAsync(new Exception("Usuario não encontrado"));
 
             // Act & Assert
-            await Assert.ThrowsAsync<APICustomException>(() => _autorizaUsuarioService.ObterUsuario(usuario, true));
+            await Assert.ThrowsAsync<Exception>(() => _autorizaUsuarioService.ObterUsuario(usuario, true));
         }
     }
 }

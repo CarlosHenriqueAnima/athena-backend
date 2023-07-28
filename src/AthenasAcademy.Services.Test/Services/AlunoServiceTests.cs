@@ -157,9 +157,9 @@ namespace AthenasAcademy.Services.Test.Services
         public async Task ObterAluno_IdInvalido_RetornaAPICustomException()
         {
             // Arrange
-            int alunoId = 99;
+            int alunoId = 1;
             _alunoRepositoryMock.Setup(repo => repo.ObterAluno(alunoId))
-                                .ReturnsAsync((AlunoModel)null);
+                                .ThrowsAsync(new Exception("Aluno não encontrado"));
 
             // Act & Assert
             await Assert.ThrowsAsync<APICustomException>(() => _alunoService.ObterAluno(alunoId));

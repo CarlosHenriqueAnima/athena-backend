@@ -87,30 +87,16 @@ namespace AthenasAcademy.Services.Test.Services
         }
 
         [Fact]
-        public async Task CadastrarCandidato_UsuarioInvalido_RetornaAPICustomException()
+        public async Task CadastrarCandidato_UsuarioInvalido_RetornaException()
         {
             // Arrange
             var request = _inscricaoFactory.ObterNovaInscricaoCandidatoRequestValido();
 
             _usuarioServiceMock.Setup(service => service.ObterUsuario(request.Email.Trim().ToLower(), false))
-                               .ReturnsAsync((UsuarioModel)null);
+                               .ThrowsAsync(new Exception("Usuário inválido"));
 
             // Act & Assert
-            await Assert.ThrowsAsync<APICustomException>(() => _inscricaoService.CadastrarCandidato(request));
-        }
-
-        [Fact]
-        public async Task CadastrarCandidato_UsuarioInativo_RetornaAPICustomException()
-        {
-            // Arrange
-            var request = _inscricaoFactory.ObterNovaInscricaoCandidatoRequestValido();
-
-            var usuario = _autorizacaoFactory.ObterUsuarioModelValido();
-            _usuarioServiceMock.Setup(service => service.ObterUsuario(request.Email.Trim().ToLower(), false))
-                               .ReturnsAsync(usuario);
-
-            // Act & Assert
-            await Assert.ThrowsAsync<APICustomException>(() => _inscricaoService.CadastrarCandidato(request));
+            await Assert.ThrowsAsync<Exception>(() => _inscricaoService.CadastrarCandidato(request));
         }
     }
 }

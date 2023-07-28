@@ -19,6 +19,19 @@ namespace AthenasAcademy.Services.Test.Factory
             };
         }
 
+        public List<AreaConhecimentoModel> ObterListaAreaConhecimentoModelValidos()
+        {
+            return Enumerable.Range(1, 2).Select(index => new AreaConhecimentoModel
+            {
+                Id = index,
+                Nome = $"Área de Conhecimento {index}",
+                Descricao = $"Descrição da Área de Conhecimento {index}",
+                Ativo = true,
+                DataCadastro = DateTime.Now.AddDays(-30).AddDays(index),
+                DataAlteracao = null
+            }).ToList();
+        }
+
         public AreaConhecimentoRequest ObterAreaConhecimentoRequestValida()
         {
             return new AreaConhecimentoRequest
