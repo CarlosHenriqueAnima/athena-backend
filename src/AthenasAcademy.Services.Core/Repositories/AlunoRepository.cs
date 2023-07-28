@@ -6,6 +6,7 @@ using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Core.Repositories.Interfaces.Base;
 using AthenasAcademy.Services.Domain.Configurations.Enums;
+using AthenasAcademy.Services.Domain.Responses;
 using Dapper;
 using System.Data;
 
@@ -15,6 +16,7 @@ namespace AthenasAcademy.Services.Core.Repositories;
 public class AlunoRepository : BaseRepository, IAlunoRepository
 {
     public AlunoRepository(IConfiguration configuration) : base(configuration) { }
+
 
     public async Task<AlunoModel> CadastrarAluno(NovoAlunoArgument aluno)
     {
@@ -167,6 +169,29 @@ public class AlunoRepository : BaseRepository, IAlunoRepository
                 Telefone = telefone,
                 DetalhesFicha = detalhe
             };
+        }
+        catch (Exception ex)
+        {
+            throw new DatabaseCustomException(ex.Message, ExceptionResponseType.Error);
+        }
+    }
+
+    public async Task AtualizarMatriculaContratoAluno(int matricula, int contrato, int inscricao)
+    {
+        try
+        {
+            using IDbConnection connection = await GetConnectionAsync();
+            string query = @"UPDATE detalhe_aluno 
+                             SET codigo_contrato = @Contrato,
+                                 codigo_matricula = @Matricula
+                             WHERE codigo_inscricao = @Inscricao;";
+
+            await connection.QueryFirstAsync<AlunoModel>(query, 
+                new { 
+                        Contrato = contrato, 
+                        Matricula = matricula, 
+                        Inscricao = inscricao
+                    });
         }
         catch (Exception ex)
         {

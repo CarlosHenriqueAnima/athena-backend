@@ -4,6 +4,7 @@ using AthenasAcademy.Services.Core.Exceptions;
 using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Domain.Configurations.Enums;
+using AthenasAcademy.Services.Domain.Responses;
 
 namespace AthenasAcademy.Services.Core.Services;
 
@@ -124,6 +125,21 @@ public class AlunoService : IAlunoService
         {
             throw new APICustomException(
                 message: $"Erro ao obter a ficha do aluno. {ex.Message}",
+                responseType: ExceptionResponseType.Error,
+                statusCode: System.Net.HttpStatusCode.InternalServerError);
+        }
+    }
+
+    public async Task AtualizarMatriculaContratoAluno(int matricula, int contrato, int inscricao)
+    {
+        try
+        {
+            await _alunoRepository.AtualizarMatriculaContratoAluno(matricula, contrato, inscricao);
+        }
+        catch (Exception ex)
+        {
+            throw new APICustomException(
+                message: $"Erro ao atualizar cadastro do aluno. {ex.Message}",
                 responseType: ExceptionResponseType.Error,
                 statusCode: System.Net.HttpStatusCode.InternalServerError);
         }

@@ -2,6 +2,8 @@
 using AthenasAcademy.Services.Core.CrossCutting;
 using AthenasAcademy.Services.Core.Models;
 
+namespace AthenasAcademy.Services.Core.Services.Interfaces;
+
 /// <summary>
 /// Interface responsável por definir os métodos de serviço para manipulação de alunos.
 /// </summary>
@@ -67,4 +69,13 @@ public interface IAlunoService
     /// Caso não seja possível localizar o aluno com o número de inscrição fornecido, a tarefa retornará nulo.
     /// </remarks>
     Task<FichaAluno> ObterFichaAluno(int inscricao);
+
+    /// <summary>
+    /// Atualiza as informações de matrícula e contrato de um aluno.
+    /// </summary>
+    /// <param name="matricula">O número da matrícula do aluno.</param>
+    /// <param name="contrato">O número do contrato do aluno.</param>
+    /// <param name="inscricao">O número da inscrição do aluno.</param>
+    /// <returns>Uma tarefa que representa a operação de atualização da matrícula e contrato do aluno.</returns>
+    Task AtualizarMatriculaContratoAluno(int matricula, int contrato, int inscricao);
 }

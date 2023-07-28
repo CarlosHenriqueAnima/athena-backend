@@ -75,10 +75,11 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
         LoginUsuarioResponse response = new()
         {
             Resultado = true,
-            Token = _mapper.Map<TokenResponse>(token)
-        };
+            Token = _mapper.Map<TokenResponse>(token),
+            DadosUsuario = await ObterDadosUsuarioResponse(loginUsuario.Usuario)
+    };
 
-        return ComplementarResponseLogin(response);
+        return response;
     }
 
     public async Task<UsuarioModel> ObterUsuario(string usuario, bool exception)
@@ -152,12 +153,56 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
 
         return await _tokenService.GerarTokenUsuario(usuarioToken);
     }
-    #endregion
 
-
-    private LoginUsuarioResponse ComplementarResponseLogin(LoginUsuarioResponse response)
+    public async Task<DadosUsuarioResponse> ObterDadosUsuarioResponse(string usuario)
     {
-        return response;
+        IEnumerable<DadosUsuarioModel> dadosUsuarios = await _usuarioRepository.ObterDadosCompletosUsuario(usuario);
+
+        if (dadosUsuarios == null || !dadosUsuarios.Any())
+            return null;
+
+
+        DadosUsuarioModel primeiroUsuario = dadosUsuarios.FirstOrDefault();
+
+        return new DadosUsuarioResponse
+        {
+            IdUsuario = primeiroUsuario.IdUsuario,
+            Login = primeiroUsuario.Login,
+            DataCadastroUsuario = primeiroUsuario.DataCadastroUsuario,
+            NomeAluno = primeiroUsuario.NomeAluno,
+            CPF = primeiroUsuario.CPF,
+            Sexo = primeiroUsuario.Sexo,
+            DataNascimento = primeiroUsuario.DataNascimento,
+            CodigoInscricao = primeiroUsuario.CodigoInscricao,
+            DataInscricao = primeiroUsuario.DataInscricao,
+            BoletoPago = primeiroUsuario.BoletoPago,
+            DiretorioBoleto = primeiroUsuario.DiretorioBoleto,
+            NomeCurso = primeiroUsuario.NomeCurso,
+            DescricaoCurso = primeiroUsuario.DescricaoCurso,
+            CargaHorariaCurso = primeiroUsuario.CargaHorariaCurso,
+            AreaDoConhecimento = primeiroUsuario.AreaDoConhecimento,
+            Matricula = primeiroUsuario.Matricula,
+            Ativa = primeiroUsuario.Ativa,
+            DataMatricula = primeiroUsuario.DataMatricula,
+            Contrato = primeiroUsuario.Contrato,
+            Assinado = primeiroUsuario.Assinado,
+            FormaPagamento = primeiroUsuario.FormaPagamento,
+            ValorPagamento = primeiroUsuario.ValorPagamento,
+            DataAceite = primeiroUsuario.DataAceite,
+            DiretorioContrato = primeiroUsuario.DiretorioContrato,
+            Aproveitamento = primeiroUsuario.Aproveitamento,
+            DataConclusao = primeiroUsuario.DataConclusao,
+            Gerado = primeiroUsuario.Gerado,
+            DiretorioCertificadoPDF = primeiroUsuario.DiretorioCertificadoPDF,
+            DiretorioCertificadoPNG = primeiroUsuario.DiretorioCertificadoPNG,
+            Disciplinas = dadosUsuarios.Select(d => new DadosDisciplinaUsuarioResponse
+            {
+                Disciplina = d.Disciplina,
+                DescricaoDisciplina = d.DescricaoDisciplina,
+                CargaHorariaDisciplina = d.CargaHorariaDisciplina
+            }).ToList()
+        };
     }
+    #endregion
 
 }

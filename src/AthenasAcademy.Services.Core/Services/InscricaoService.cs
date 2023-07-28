@@ -49,6 +49,9 @@ public class InscricaoService : IInscricaoService
         // liberar contrato boleto e contrato
         (int matricula, int contrato) = await _matriculaService.RegistrarPreContratoMatricula(fichaAluno);
 
+        // atualizar inscricao com matricula e contrato
+        await _alunoService.AtualizarMatriculaContratoAluno(matricula, contrato, inscricao.CodigoInscricao);
+
         return new InscricaoCandidatoResponse
         {
             Inscricao = inscricao.CodigoInscricao,
