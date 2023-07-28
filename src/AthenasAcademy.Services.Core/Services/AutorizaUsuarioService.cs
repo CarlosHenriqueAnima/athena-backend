@@ -78,7 +78,7 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
             Token = _mapper.Map<TokenResponse>(token)
         };
 
-        return response;
+        return ComplementarResponseLogin(response);
     }
 
     public async Task<UsuarioModel> ObterUsuario(string usuario, bool exception)
@@ -153,5 +153,11 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
         return await _tokenService.GerarTokenUsuario(usuarioToken);
     }
     #endregion
+
+
+    private LoginUsuarioResponse ComplementarResponseLogin(LoginUsuarioResponse response)
+    {
+        return response;
+    }
 
 }

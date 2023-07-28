@@ -19,6 +19,6 @@ public interface IMatriculaService
     /// Registra a pré-matrícula de um aluno, fornecendo a ficha do aluno com os dados necessários.
     /// </summary>
     /// <param name="fichaAluno">A ficha do aluno contendo os dados para a pré-matrícula.</param>
-    /// <returns>Uma tarefa que representa o registro da pré-matrícula do aluno.</returns>
-    Task RegistrarPreMatricula(FichaAluno fichaAluno);
+    /// <returns>Pré-matrícula do aluno com número de contrato e número de inscrição./returns>
+    Task<(int, int)> RegistrarPreContratoMatricula(FichaAluno fichaAluno);
 }
