@@ -96,7 +96,5 @@ public class MatriculaService : IMatriculaService
                 message: $"Aluno já matriculado.",
                 responseType: Domain.Configurations.Enums.ExceptionResponseType.Error,
                 statusCode: HttpStatusCode.BadRequest);
-
-        throw new NotImplementedException();
     }
 }
