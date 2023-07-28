@@ -126,10 +126,6 @@ Código 200 - Sucesso Atualizar curso
 
 
 
-# Uso da API
-
-[Inserir instruções ou exemplos de como integrar e usar a API em diferentes tecnologias e linguagens de programação.]
-Limitações e Considerações
 
 [Inserir informações sobre quaisquer limitações conhecidas da API, como taxa de limite de solicitações, recursos restritos, etc.]
 Contribuições
