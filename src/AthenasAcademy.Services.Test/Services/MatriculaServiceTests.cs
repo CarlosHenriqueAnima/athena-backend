@@ -1,17 +1,11 @@
-﻿using AthenasAcademy.Services.Core.CrossCutting;
-using AthenasAcademy.Services.Core.Models;
-using AthenasAcademy.Services.Core.Repositories.Interfaces;
-using AthenasAcademy.Services.Core.Services.SQSProducer;
+﻿using AthenasAcademy.Services.Core.Repositories.Interfaces;
 using AthenasAcademy.Services.Core.Services;
+using AthenasAcademy.Services.Core.Services.Interfaces;
+using AthenasAcademy.Services.Core.Services.SQSProducer;
 using AthenasAcademy.Services.Domain.Responses;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
 using AthenasAcademy.Services.Test.Factory;
+using Moq;
+using Xunit;
 
 namespace AthenasAcademy.Services.Test.Services
 {

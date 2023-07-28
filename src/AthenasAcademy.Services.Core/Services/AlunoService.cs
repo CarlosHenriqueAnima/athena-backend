@@ -3,6 +3,7 @@ using AthenasAcademy.Services.Core.CrossCutting;
 using AthenasAcademy.Services.Core.Exceptions;
 using AthenasAcademy.Services.Core.Models;
 using AthenasAcademy.Services.Core.Repositories.Interfaces;
+using AthenasAcademy.Services.Core.Services.Interfaces;
 using AthenasAcademy.Services.Domain.Configurations.Enums;
 using AthenasAcademy.Services.Domain.Responses;
 
