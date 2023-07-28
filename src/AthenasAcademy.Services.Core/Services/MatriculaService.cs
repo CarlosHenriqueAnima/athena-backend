@@ -33,8 +33,6 @@ public class MatriculaService : IMatriculaService
 
         var matriculaAluno = await _matriculaRepository.AtivarMatricula(fichaAluno);
 
-        //await _queueProducerService.Certificado(fichaAluno).Send();
-
         return await Task.FromResult(new MatriculaStatusResponse
         {
             Matricula = matriculaAluno.Matricula,
@@ -44,7 +42,7 @@ public class MatriculaService : IMatriculaService
         });
     }
 
-    public async Task RegistrarPreMatricula(FichaAluno fichaAluno)
+    public async Task<(int, int)> RegistrarPreContratoMatricula(FichaAluno fichaAluno)
     {
         MatriculaModel matricula = await _matriculaRepository.GerarPreMatricula(fichaAluno);
 
@@ -53,6 +51,8 @@ public class MatriculaService : IMatriculaService
 
         await _queueProducerService.GerarContrato(fichaAluno);
         await _queueProducerService.GerarBoleto(fichaAluno);
+
+        return (matricula.Matricula, matricula.CodigoContrato);
     }
 
     private async Task ValidarProcessoMatricula(int inscricao)
@@ -91,7 +91,7 @@ public class MatriculaService : IMatriculaService
                 responseType: Domain.Configurations.Enums.ExceptionResponseType.Error,
                 statusCode: HttpStatusCode.BadRequest);
 
-        if (matriculaAluno.Assinado && matriculaAluno.Ativa)
+        if (!matriculaAluno.Assinado && !matriculaAluno.Ativa)
             throw new APICustomException(
                 message: $"Aluno já matriculado.",
                 responseType: Domain.Configurations.Enums.ExceptionResponseType.Error,

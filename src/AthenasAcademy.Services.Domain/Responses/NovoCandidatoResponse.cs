@@ -4,7 +4,11 @@ public class InscricaoCandidatoResponse
 {
     public int Inscricao { get; set; }
 
-    public static string MensagemGeracaoBoleto => "Boleto em Processamento.";
+    public int Matricula { get; set; }
 
-    public static string MensagemGeracaoContrato => "Contrato em Processamento.";
+    public int Contrato { get; set; }
+
+    public string MensagemGeracaoBoleto { get; set; }  = "Boleto em Processamento.";
+
+    public string MensagemGeracaoContrato { get; set; }  = "Contrato em Processamento.";
 }

@@ -42,15 +42,18 @@ public class InscricaoService : IInscricaoService
 
         FichaAluno fichaAluno = await RegistrarFichaAluno(request, usuario, inscricao);
 
+        fichaAluno.DetalhesFicha.CodigoInscricao = inscricao.CodigoInscricao;
         fichaAluno.OpcaoCurso = opcaoCurso;
         fichaAluno.Contrato = new Contrato();
 
         // liberar contrato boleto e contrato
-        await _matriculaService.RegistrarPreMatricula(fichaAluno);
+        (int matricula, int contrato) = await _matriculaService.RegistrarPreContratoMatricula(fichaAluno);
 
         return new InscricaoCandidatoResponse
         {
-            Inscricao = inscricao.CodigoInscricao
+            Inscricao = inscricao.CodigoInscricao,
+            Matricula = matricula,
+            Contrato = contrato
         };
     }
 
