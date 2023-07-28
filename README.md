@@ -108,24 +108,28 @@ Respostas da API
 A API retornará respostas com códigos de status HTTP padrão para indicar o resultado de uma solicitação. 
 
 Código 500: Servidor não encontrado
-![image](https://github.com/athenasacademy/athena-backend/assets/106875411/7450167c-83ef-439d-b5db-0101ff6c0f42) 
+![image](https://github.com/athenasacademy/athena-backend/assets/106875411/a4ae2c5c-bbd8-4675-a28e-2b20c7f30002)
+
 
 Código 404 arquivo não encontrado
-![image](https://github.com/athenasacademy/athena-backend/assets/106875411/a0923853-f59d-487d-bcd6-11986470c96d)
-
-
-Código 200 - Sucesso
-![image](https://github.com/athenasacademy/athena-backend/assets/106875411/3f1d18b8-4dda-481c-9a48-ecb6d491e839)
+![image](https://github.com/athenasacademy/athena-backend/assets/106875411/4d3950fb-a9bd-492d-80b7-03a34947ac38)
 
 
 
-# Uso da API
+Código 201 - Sucesso
+O código de sucesso, varia de acordo com o serviço, esse por exemplo trata-se do serviço de criar 
 
-[Inserir instruções ou exemplos de como integrar e usar a API em diferentes tecnologias e linguagens de programação.]
-Limitações e Considerações
+![image](https://github.com/athenasacademy/athena-backend/assets/106875411/66f277e9-f483-4994-aa0b-0823315756cc)
+
+Código 200 - Sucesso Atualizar curso
+![image](https://github.com/athenasacademy/athena-backend/assets/106875411/09cb6608-f3f7-4dc3-9083-bf01fd40d2ee)
+
+
+
 
 [Inserir informações sobre quaisquer limitações conhecidas da API, como taxa de limite de solicitações, recursos restritos, etc.]
 Contribuições
 
-Para qualquer dúvida, problema ou sugestão, entre em contato com [inserir endereço de e-mail ou link para o suporte aqui].
-.
+# Testes
+
+Apesar de termos realizado os testes apenas em produção, para mitigar qualquer risco e garantir a confiabilidade do código, utilizamos no GitHub o conceito de "branch". Um branch é uma ramificação do desenvolvimento, uma linha independente que nos permite trabalhar em novos recursos ou correções de bugs sem afetar diretamente o código principal. Dessa forma, conseguimos isolar o trabalho em progresso e permitir que várias pessoas trabalhem em diferentes funcionalidades simultaneamente. Ao utilizar branches, podemos desenvolver e testar com segurança antes de incorporar as alterações ao código principal, evitando problemas e bugs que poderiam impactar diretamente a produção.
