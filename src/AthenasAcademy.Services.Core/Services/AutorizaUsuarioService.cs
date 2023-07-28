@@ -161,37 +161,36 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
         if (dadosUsuarios == null || !dadosUsuarios.Any())
             return null;
 
-
         DadosUsuarioModel primeiroUsuario = dadosUsuarios.FirstOrDefault();
 
         return new DadosUsuarioResponse
         {
-            IdUsuario = primeiroUsuario.IdUsuario,
+            IdUsuario = primeiroUsuario.IdUsuario ?? null,
             Login = primeiroUsuario.Login,
-            DataCadastroUsuario = primeiroUsuario.DataCadastroUsuario,
+            DataCadastroUsuario = primeiroUsuario.DataCadastroUsuario ?? null,
             NomeAluno = primeiroUsuario.NomeAluno,
             CPF = primeiroUsuario.CPF,
-            Sexo = primeiroUsuario.Sexo,
-            DataNascimento = primeiroUsuario.DataNascimento,
-            CodigoInscricao = primeiroUsuario.CodigoInscricao,
-            DataInscricao = primeiroUsuario.DataInscricao,
+            Sexo = primeiroUsuario.Sexo.Value,
+            DataNascimento = primeiroUsuario.DataNascimento ?? null,
+            CodigoInscricao = primeiroUsuario.CodigoInscricao ?? null,
+            DataInscricao = primeiroUsuario.DataInscricao ?? null,
             BoletoPago = primeiroUsuario.BoletoPago,
             DiretorioBoleto = primeiroUsuario.DiretorioBoleto,
             NomeCurso = primeiroUsuario.NomeCurso,
             DescricaoCurso = primeiroUsuario.DescricaoCurso,
-            CargaHorariaCurso = primeiroUsuario.CargaHorariaCurso,
+            CargaHorariaCurso = primeiroUsuario.CargaHorariaCurso ?? null,
             AreaDoConhecimento = primeiroUsuario.AreaDoConhecimento,
-            Matricula = primeiroUsuario.Matricula,
+            Matricula = primeiroUsuario.Matricula ?? null,
             Ativa = primeiroUsuario.Ativa,
-            DataMatricula = primeiroUsuario.DataMatricula,
+            DataMatricula = primeiroUsuario.DataMatricula ?? null,
             Contrato = primeiroUsuario.Contrato,
             Assinado = primeiroUsuario.Assinado,
             FormaPagamento = primeiroUsuario.FormaPagamento,
-            ValorPagamento = primeiroUsuario.ValorPagamento,
-            DataAceite = primeiroUsuario.DataAceite,
+            ValorPagamento = primeiroUsuario.ValorPagamento ?? null,
+            DataAceite = primeiroUsuario.DataAceite ?? null,
             DiretorioContrato = primeiroUsuario.DiretorioContrato,
-            Aproveitamento = primeiroUsuario.Aproveitamento,
-            DataConclusao = primeiroUsuario.DataConclusao,
+            Aproveitamento = primeiroUsuario.Aproveitamento ?? null,
+            DataConclusao = primeiroUsuario.DataConclusao ?? null,
             Gerado = primeiroUsuario.Gerado,
             DiretorioCertificadoPDF = primeiroUsuario.DiretorioCertificadoPDF,
             DiretorioCertificadoPNG = primeiroUsuario.DiretorioCertificadoPNG,
@@ -199,10 +198,11 @@ public class AutorizaUsuarioService : IAutorizaUsuarioService
             {
                 Disciplina = d.Disciplina,
                 DescricaoDisciplina = d.DescricaoDisciplina,
-                CargaHorariaDisciplina = d.CargaHorariaDisciplina
+                CargaHorariaDisciplina = d.CargaHorariaDisciplina ?? null
             }).ToList()
         };
     }
+
     #endregion
 
 }
