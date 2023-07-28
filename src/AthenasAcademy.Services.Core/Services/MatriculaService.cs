@@ -90,11 +90,5 @@ public class MatriculaService : IMatriculaService
                 message: $"Contrato de matrícula {matriculaAluno.CodigoContrato} ainda foi não assinado.",
                 responseType: Domain.Configurations.Enums.ExceptionResponseType.Error,
                 statusCode: HttpStatusCode.BadRequest);
-
-        if (!matriculaAluno.Assinado && !matriculaAluno.Ativa)
-            throw new APICustomException(
-                message: $"Aluno já matriculado.",
-                responseType: Domain.Configurations.Enums.ExceptionResponseType.Error,
-                statusCode: HttpStatusCode.BadRequest);
     }
 }
