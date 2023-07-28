@@ -46,14 +46,13 @@ namespace AthenasAcademy.Services.Test.Services
             // Arrange
             var inscricao = 1001;
             var fichaAluno = _alunoFactory.ObterFichaAlunoValida();
-            var matriculaInativa = _matriculaFactory.ObterMatriculaModelInativa();
-            var matriculaAtivada = _matriculaFactory.ObterMatriculaModelValida();
+            var matricula = _matriculaFactory.ObterMatriculaModelValida();
             _alunoServiceMock.Setup(service => service.ObterFichaAluno(inscricao))
                                     .ReturnsAsync(fichaAluno);
             _matriculaRepositoryMock.Setup(repo => repo.ObterMatricula(inscricao))
-                                    .ReturnsAsync(matriculaInativa);
+                                    .ReturnsAsync(matricula);
             _matriculaRepositoryMock.Setup(repo => repo.AtivarMatricula(fichaAluno))
-                                    .ReturnsAsync(matriculaAtivada);
+                                    .ReturnsAsync(matricula);
             _queueProducerServiceMock.Setup(service => service.GerarBoleto(fichaAluno))
                                      .ReturnsAsync(true);
             _queueProducerServiceMock.Setup(service => service.GerarContrato(fichaAluno))
@@ -65,8 +64,8 @@ namespace AthenasAcademy.Services.Test.Services
             // Assert
             Assert.NotNull(result);
             Assert.IsType<MatriculaStatusResponse>(result);
-            Assert.Equal(matriculaAtivada.Matricula, result.Matricula);
-            Assert.Equal(matriculaAtivada.CodigoContrato, result.Contrato);
+            Assert.Equal(matricula.Matricula, result.Matricula);
+            Assert.Equal(matricula.CodigoContrato, result.Contrato);
             Assert.True(result.BoletoPago);
             Assert.True(result.ContratoAssinado);
         }
@@ -85,14 +84,14 @@ namespace AthenasAcademy.Services.Test.Services
                                      .ReturnsAsync(true);
 
             // Act
-            await _matriculaService.RegistrarPreMatricula(fichaAluno);
+            await _matriculaService.RegistrarPreContratoMatricula(fichaAluno);
 
             // Assert
             Assert.Equal(matricula.Matricula, fichaAluno.Contrato.Matricula);
             Assert.Equal(matricula.CodigoContrato, fichaAluno.Contrato.NumeroContrato);
             _matriculaRepositoryMock.Verify(repo => repo.GerarPreMatricula(fichaAluno), Times.Once);
             _queueProducerServiceMock.Verify(service => service.GerarBoleto(fichaAluno), Times.Once);
-            _queueProducerServiceMock.Verify(queue => queue.GerarContrato(fichaAluno), Times.Exactly(2));
+            _queueProducerServiceMock.Verify(queue => queue.GerarContrato(fichaAluno), Times.Once);
         }
     }
 }
